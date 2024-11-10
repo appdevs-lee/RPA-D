@@ -49,26 +49,6 @@ struct ReferenceValues {
         }
     }
     
-    static var imageHash: String {
-        get {
-            return UserDefaults.standard.string(forKey: "imageHash") ?? ""
-        }
-        
-        set {
-            UserDefaults.standard.set(newValue, forKey: "imageHash")
-        }
-    }
-    
-    static var deviceCode: String {
-        get {
-            return UserDefaults.standard.string(forKey: "deviceCode") ?? ""
-        }
-        
-        set {
-            UserDefaults.standard.set(newValue, forKey: "deviceCode")
-        }
-    }
-    
     static var fcmToken: String {
         get {
             return UserDefaults.standard.string(forKey: "fcmToken") ?? ""
@@ -79,23 +59,43 @@ struct ReferenceValues {
         }
     }
     
-    static var userId: Int {
+    static var accessToken: String {
         get {
-            return UserDefaults.standard.integer(forKey: "userId")
+            return UserDefaults.standard.string(forKey: "accessToken") ?? ""
         }
         
         set {
-            UserDefaults.standard.set(newValue, forKey: "userId")
+            UserDefaults.standard.set(newValue, forKey: "accessToken")
         }
     }
     
-    static var isCheckBackgroundLocation: Bool {
+    static var refreshToken: String {
         get {
-            return UserDefaults.standard.bool(forKey: "isCheckBackgroundLocation")
+            return UserDefaults.standard.string(forKey: "refreshToken") ?? ""
         }
         
         set {
-            UserDefaults.standard.set(newValue, forKey: "isCheckBackgroundLocation")
+            UserDefaults.standard.set(newValue, forKey: "refreshToken")
+        }
+    }
+    
+    static var role: String {
+        get {
+            return UserDefaults.standard.string(forKey: "role") ?? ""
+        }
+        
+        set {
+            UserDefaults.standard.set(newValue, forKey: "role")
+        }
+    }
+    
+    static var name: String {
+        get {
+            return UserDefaults.standard.string(forKey: "name") ?? ""
+        }
+        
+        set {
+            UserDefaults.standard.set(newValue, forKey: "name")
         }
     }
     

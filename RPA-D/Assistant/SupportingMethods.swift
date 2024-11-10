@@ -544,6 +544,19 @@ extension SupportingMethods {
             
         }
     }
+    
+    // MARK: Permission
+    func requestNotificationPermission(completionHandler: @escaping () -> ()) {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge], completionHandler: {didAllow,Error in
+            if didAllow {
+                print("Push: 권한 허용")
+                completionHandler()
+            } else {
+                print("Push: 권한 거부")
+                completionHandler()
+            }
+        })
+    }
 }
 
 extension CALayer {
@@ -731,6 +744,25 @@ extension UIView {
         self.layer.shadowRadius = radius
     }
 }
+
+extension UILabel {
+    func asColor(targetString: String, color: UIColor) {
+        let fullText = text ?? ""
+        let attributedString = NSMutableAttributedString(string: fullText)
+        let range = (fullText as NSString).range(of: targetString)
+        attributedString.addAttribute(.foregroundColor, value: color, range: range)
+        attributedText = attributedString
+    }
+    
+    func asFontColor(targetString: String, font: UIFont?, color: UIColor?) {
+        let fullText = text ?? ""
+        let attributedString = NSMutableAttributedString(string: fullText)
+        let range = (fullText as NSString).range(of: targetString)
+        attributedString.addAttributes([.font: font as Any, .foregroundColor: color as Any], range: range)
+        attributedText = attributedString
+    }
+}
+
 
 // MARK: - View Protocol
 protocol EssentialViewMethods {
