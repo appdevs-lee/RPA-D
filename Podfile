@@ -7,4 +7,5 @@ target 'RPA-D' do
 
   # Pods for RPA-D
   pod 'Alamofire'
+  pod 'FirebaseMessaging'
 end

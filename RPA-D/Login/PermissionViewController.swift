@@ -1,5 +1,5 @@
 //
-//  SplashViewController.swift
+//  PermissionViewController.swift
 //  RPA-D
 //
 //  Created by 이주성 on 11/10/24.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class SplashViewController: UIViewController {
+final class PermissionViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,15 +32,13 @@ final class SplashViewController: UIViewController {
     //    }
     
     deinit {
-        print("----------------------------------- SplashViewController is disposed -----------------------------------")
+        print("----------------------------------- PermissionViewController is disposed -----------------------------------")
     }
 }
 
 // MARK: Extension for essential methods
-extension SplashViewController: EssentialViewMethods {
+extension PermissionViewController: EssentialViewMethods {
     func setViewFoundation() {
-        self.view.backgroundColor = .white
-        ReferenceValues.firstVC = self
         
     }
     
@@ -80,11 +78,11 @@ extension SplashViewController: EssentialViewMethods {
 }
 
 // MARK: - Extension for methods added
-extension SplashViewController {
+extension PermissionViewController {
     
 }
 
 // MARK: - Extension for selector methods
-extension SplashViewController {
+extension PermissionViewController {
     
 }

@@ -28,6 +28,8 @@
 		2D904F292CE0B326005CF538 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D904F252CE0B326005CF538 /* NetworkMonitor.swift */; };
 		2D904F2A2CE0B326005CF538 /* ReferenceValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D904F262CE0B326005CF538 /* ReferenceValues.swift */; };
 		2D904F2C2CE0B3C2005CF538 /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D904F2B2CE0B3C2005CF538 /* SplashViewController.swift */; };
+		2D904F2F2CE0D002005CF538 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2D904F2E2CE0D002005CF538 /* GoogleService-Info.plist */; };
+		2D904F312CE0D20D005CF538 /* PermissionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D904F302CE0D20D005CF538 /* PermissionViewController.swift */; };
 		B48289BC89928F0CC50C4623 /* Pods_RPA_D.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E746101C42B769B55E0BCDA /* Pods_RPA_D.framework */; };
 /* End PBXBuildFile section */
 
@@ -55,6 +57,8 @@
 		2D904F252CE0B326005CF538 /* NetworkMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		2D904F262CE0B326005CF538 /* ReferenceValues.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReferenceValues.swift; sourceTree = "<group>"; };
 		2D904F2B2CE0B3C2005CF538 /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
+		2D904F2E2CE0D002005CF538 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		2D904F302CE0D20D005CF538 /* PermissionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionViewController.swift; sourceTree = "<group>"; };
 		2E746101C42B769B55E0BCDA /* Pods_RPA_D.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RPA_D.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4EBB60802CDBB97B2D50CE46 /* Pods-RPA-D.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RPA-D.debug.xcconfig"; path = "Target Support Files/Pods-RPA-D/Pods-RPA-D.debug.xcconfig"; sourceTree = "<group>"; };
 		F2954567F689DF28A11B75A0 /* Pods-RPA-D.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RPA-D.release.xcconfig"; path = "Target Support Files/Pods-RPA-D/Pods-RPA-D.release.xcconfig"; sourceTree = "<group>"; };
@@ -98,6 +102,7 @@
 				2D904EFE2CE0B04C005CF538 /* Assets.xcassets */,
 				2D904F002CE0B04C005CF538 /* LaunchScreen.storyboard */,
 				2D904F032CE0B04C005CF538 /* Info.plist */,
+				2D904F2E2CE0D002005CF538 /* GoogleService-Info.plist */,
 				2D904F092CE0B2C1005CF538 /* Template */,
 				2D904F222CE0B30C005CF538 /* Assistant */,
 				2D904F2D2CE0B3DD005CF538 /* Login */,
@@ -110,8 +115,6 @@
 			children = (
 				2D904F0A2CE0B2C1005CF538 /* TemplateView.swift */,
 				2D904F0B2CE0B2C1005CF538 /* TemplateTableViewCell.swift */,
-				2D904F0C2CE0B2C1005CF538 /* CustomizedNavigationController.swift */,
-				2D904F0D2CE0B2C1005CF538 /* CustomizedTabBarController.swift */,
 				2D904F0E2CE0B2C1005CF538 /* BottomSheetViewController.swift */,
 				2D904F0F2CE0B2C1005CF538 /* AlertPopViewController.swift */,
 				2D904F102CE0B2C1005CF538 /* CategoryButton.swift */,
@@ -138,7 +141,10 @@
 		2D904F2D2CE0B3DD005CF538 /* Login */ = {
 			isa = PBXGroup;
 			children = (
+				2D904F0C2CE0B2C1005CF538 /* CustomizedNavigationController.swift */,
+				2D904F0D2CE0B2C1005CF538 /* CustomizedTabBarController.swift */,
 				2D904F2B2CE0B3C2005CF538 /* SplashViewController.swift */,
+				2D904F302CE0D20D005CF538 /* PermissionViewController.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -221,6 +227,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2D904F022CE0B04C005CF538 /* LaunchScreen.storyboard in Resources */,
+				2D904F2F2CE0D002005CF538 /* GoogleService-Info.plist in Resources */,
 				2D904EFF2CE0B04C005CF538 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -283,6 +290,7 @@
 				2D904F292CE0B326005CF538 /* NetworkMonitor.swift in Sources */,
 				2D904F212CE0B2F2005CF538 /* ViewPagerCollectionViewCell.swift in Sources */,
 				2D904F1F2CE0B2EE005CF538 /* TempateViewPagerViewController.swift in Sources */,
+				2D904F312CE0D20D005CF538 /* PermissionViewController.swift in Sources */,
 				2D904F1D2CE0B2EA005CF538 /* TemplateViewController.swift in Sources */,
 				2D904F172CE0B2DD005CF538 /* TemplateTableViewCell.swift in Sources */,
 				2D904EF82CE0B04A005CF538 /* SceneDelegate.swift in Sources */,
@@ -445,6 +453,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -476,6 +485,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

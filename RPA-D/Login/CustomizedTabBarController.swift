@@ -51,8 +51,6 @@ class CustomizedTabBarController: UITabBarController {
 //            self.createTabBarItem(tabBarTitle: SupportingMethods.shared.getText("tabbar.home"), tabBarImage: "Home", selectedImage: "SelectedHome", viewController: setting2VC),
         ]
         
-        // FIXME: 고치기
-        NotificationCenter.default.addObserver(self, selector: #selector(changeTextLanguage(_:)), name: Notification.Name("SetLocalization"), object: nil)
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
