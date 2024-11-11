@@ -330,55 +330,45 @@ extension SupportingMethods {
     }
     
     func determineAppState(_ state: AppState) {
-//        switch state {
-//        case .terminate:
-//            exit(0)
-//            
-//        case .logout:
-//            UserDefaults.standard.removeObject(forKey: "refreshToken")
-//            UserDefaults.standard.removeObject(forKey: "name")
-//            
-//            guard let _ = ReferenceValues.firstVC?.presentedViewController as? TabBarController else {
-//                ReferenceValues.firstVC?.dismiss(animated: true)
-//                
-//                return
-//            }
-//            
-//            ReferenceValues.firstVC?.dismiss(animated: true)
-//            ReferenceValues.firstVC?.navigationController?.popToRootViewController(animated: false)
-//            
-//        case .networkError:
-//            ReferenceValues.firstVC?.backGroundView.isHidden = false
-//            guard let _ = ReferenceValues.firstVC?.presentedViewController as? TabBarController else {
-//                ReferenceValues.firstVC?.dismiss(animated: true)
-//                
-//                ReferenceValues.firstVC?.setUpProgressView()
-//                
-//                return
-//            }
-//            
-//            ReferenceValues.firstVC?.dismiss(animated: false)
-//            ReferenceValues.firstVC?.navigationController?.popToRootViewController(animated: false)
-//            ReferenceValues.firstVC?.setUpProgressView()
-//            
-//        case .serverError:
-//            ReferenceValues.firstVC?.backGroundView.isHidden = false
-//            guard let _ = ReferenceValues.firstVC?.presentedViewController as? TabBarController else {
-//                ReferenceValues.firstVC?.dismiss(animated: true)
-//                
-//                ReferenceValues.firstVC?.setUpProgressView()
-//                
-//                return
-//            }
-//            
-//            ReferenceValues.firstVC?.dismiss(animated: false)
-//            ReferenceValues.firstVC?.navigationController?.popToRootViewController(animated: false)
-//            ReferenceValues.firstVC?.setUpProgressView()
-//        case .expired:
-//            // expired state
-//            
-//            break
-//        }
+        switch state {
+        case .terminate:
+            exit(0)
+            
+        case .logout:
+            break
+            
+        case .networkError:
+            ReferenceValues.firstVC?.splashView.isHidden = false
+            guard let _ = ReferenceValues.firstVC?.presentedViewController as? CustomizedTabBarController else {
+                ReferenceValues.firstVC?.dismiss(animated: true)
+                
+                ReferenceValues.firstVC?.startTimer()
+                
+                return
+            }
+            
+            ReferenceValues.firstVC?.dismiss(animated: false)
+            ReferenceValues.firstVC?.navigationController?.popToRootViewController(animated: false)
+            ReferenceValues.firstVC?.startTimer()
+            
+        case .serverError:
+            ReferenceValues.firstVC?.splashView.isHidden = false
+            guard let _ = ReferenceValues.firstVC?.presentedViewController as? CustomizedTabBarController else {
+                ReferenceValues.firstVC?.dismiss(animated: true)
+                
+                ReferenceValues.firstVC?.startTimer()
+                
+                return
+            }
+            
+            ReferenceValues.firstVC?.dismiss(animated: false)
+            ReferenceValues.firstVC?.navigationController?.popToRootViewController(animated: false)
+            ReferenceValues.firstVC?.startTimer()
+        case .expired:
+            // expired state
+            
+            break
+        }
     }
     
     func checkExpiration(errorMessage: String, completion: (() -> ())?) {
