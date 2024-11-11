@@ -34,22 +34,7 @@ class CustomizedTabBarController: UITabBarController {
         super.viewDidLoad()
         
         // Set Tabbar Desgin
-        self.setDesign()
-        
-        // Set ViewControllers in Tabbar
-//        let mainVC = MainViewController()
-//        let letterVC = LetterViewController()
-//        let aquaVC = AquaViewController()
-//        let settingVC = SettingViewController()
-//        let setting2VC = SettingViewController()
-        
-        self.viewControllers = [
-//            self.createTabBarItem(tabBarTitle: SupportingMethods.shared.getText("tabbar.home"), tabBarImage: "Home", selectedImage: "SelectedHome", viewController: mainVC),
-//            self.createTabBarItem(tabBarTitle: SupportingMethods.shared.getText("tabbar.home"), tabBarImage: "Home", selectedImage: "SelectedHome", viewController: letterVC),
-//            self.createTabBarItem(tabBarTitle: SupportingMethods.shared.getText("tabbar.home"), tabBarImage: "Home", selectedImage: "SelectedHome", viewController: aquaVC),
-//            self.createTabBarItem(tabBarTitle: SupportingMethods.shared.getText("tabbar.home"), tabBarImage: "Home", selectedImage: "SelectedHome", viewController: settingVC),
-//            self.createTabBarItem(tabBarTitle: SupportingMethods.shared.getText("tabbar.home"), tabBarImage: "Home", selectedImage: "SelectedHome", viewController: setting2VC),
-        ]
+        self.setUpTabbar()
         
     }
 
@@ -72,24 +57,34 @@ class CustomizedTabBarController: UITabBarController {
 
 // MARK: Extension for methods add
 extension CustomizedTabBarController {
-    func setDesign() {
+    func setUpTabbar() {
         self.tabBar.backgroundColor = .white
-        self.tabBar.tintColor = .useRGB(red: 151, green: 157, blue: 242)
-        
-        let appearance = UITabBarItem.appearance()
-        let attributes = [NSAttributedString.Key.font: UIFont.useFont(ofSize: 12, weight: .Medium)]
-        appearance.setTitleTextAttributes(attributes, for: .normal)
-        
-        self.tabBar.layer.cornerRadius = 24
-        self.tabBar.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        
         self.tabBar.layer.borderWidth = 0
-//        self.tabBar.addShadow(location: .bottom)
+        
+        // Set ViewControllers in Tabbar
+        let mainVC = MainViewController()
+        let calendarVC = CalendarViewController()
+        let officeVC = OfficeViewController()
+        let profileVC = ProfileViewController()
+        
+        self.viewControllers = [
+            self.createTabBarItem(tabBarTitle: "운행", tabBarImage: "Main", selectedImage: "selectedMain", viewController: mainVC),
+            self.createTabBarItem(tabBarTitle: "배차 달력", tabBarImage: "Calendar", selectedImage: "selectedCalendar", viewController: calendarVC),
+            self.createTabBarItem(tabBarTitle: "사무", tabBarImage: "Office", selectedImage: "selectedOffice", viewController: officeVC),
+            self.createTabBarItem(tabBarTitle: "프로필", tabBarImage: "Profile", selectedImage: "selectedProfile", viewController: profileVC),
+        ]
     }
     
     func createTabBarItem(tabBarTitle: String, tabBarImage: String, selectedImage: String, viewController: UIViewController) -> UINavigationController {
         let naviVC = CustomizedNavigationController(rootViewController: viewController)
         naviVC.tabBarItem.title = tabBarTitle
+        naviVC.tabBarItem.setTitleTextAttributes([
+            .foregroundColor: UIColor.useRGB(red: 196, green: 195, blue: 195),
+            .font: UIFont.useFont(ofSize: 14, weight: .Medium)
+        ], for: .normal)
+        naviVC.tabBarItem.setTitleTextAttributes([
+            .foregroundColor: UIColor.useRGB(red: 46, green: 45, blue: 45),
+        ], for: .selected)
         naviVC.tabBarItem.selectedImage = UIImage(named: selectedImage)?.withRenderingMode(.alwaysOriginal)
         naviVC.tabBarItem.image = UIImage(named: tabBarImage)?.withRenderingMode(.alwaysOriginal)
         

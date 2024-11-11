@@ -345,7 +345,13 @@ extension SplashViewController {
         self.sendFCMTokenRequest {
             // 홈 화면 present
             print("홈 화면 Present")
-            SupportingMethods.shared.turnCoverView(.off)
+            let vc = CustomizedTabBarController()
+            
+            self.present(vc, animated: false) {
+                ReferenceValues.isLoginCheck = true
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
             
         }
         

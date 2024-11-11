@@ -33,6 +33,10 @@
 		2D904F342CE0D8E1005CF538 /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D904F332CE0D8E1005CF538 /* LoginModel.swift */; };
 		2D904F372CE0DCA7005CF538 /* PretendardVariable.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2D904F362CE0DCA5005CF538 /* PretendardVariable.ttf */; };
 		2D904F392CE0DE48005CF538 /* PermissionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D904F382CE0DE48005CF538 /* PermissionTableViewCell.swift */; };
+		2DE005642CE248F4004DE761 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE005632CE248F4004DE761 /* MainViewController.swift */; };
+		2DE005662CE2490C004DE761 /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE005652CE2490C004DE761 /* CalendarViewController.swift */; };
+		2DE005682CE2491C004DE761 /* OfficeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE005672CE2491C004DE761 /* OfficeViewController.swift */; };
+		2DE0056A2CE2492E004DE761 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE005692CE2492E004DE761 /* ProfileViewController.swift */; };
 		B48289BC89928F0CC50C4623 /* Pods_RPA_D.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E746101C42B769B55E0BCDA /* Pods_RPA_D.framework */; };
 /* End PBXBuildFile section */
 
@@ -66,6 +70,10 @@
 		2D904F362CE0DCA5005CF538 /* PretendardVariable.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = PretendardVariable.ttf; sourceTree = "<group>"; };
 		2D904F382CE0DE48005CF538 /* PermissionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionTableViewCell.swift; sourceTree = "<group>"; };
 		2D904F3A2CE0E441005CF538 /* RPA-D.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "RPA-D.entitlements"; sourceTree = "<group>"; };
+		2DE005632CE248F4004DE761 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		2DE005652CE2490C004DE761 /* CalendarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewController.swift; sourceTree = "<group>"; };
+		2DE005672CE2491C004DE761 /* OfficeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfficeViewController.swift; sourceTree = "<group>"; };
+		2DE005692CE2492E004DE761 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		2E746101C42B769B55E0BCDA /* Pods_RPA_D.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RPA_D.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4EBB60802CDBB97B2D50CE46 /* Pods-RPA-D.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RPA-D.debug.xcconfig"; path = "Target Support Files/Pods-RPA-D/Pods-RPA-D.debug.xcconfig"; sourceTree = "<group>"; };
 		F2954567F689DF28A11B75A0 /* Pods-RPA-D.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RPA-D.release.xcconfig"; path = "Target Support Files/Pods-RPA-D/Pods-RPA-D.release.xcconfig"; sourceTree = "<group>"; };
@@ -116,6 +124,10 @@
 				2D904F222CE0B30C005CF538 /* Assistant */,
 				2D904F322CE0D8D7005CF538 /* Models */,
 				2D904F2D2CE0B3DD005CF538 /* Login */,
+				2DE0055F2CE248B8004DE761 /* Main */,
+				2DE005602CE248BF004DE761 /* DispatchCalendar */,
+				2DE005612CE248C7004DE761 /* Office */,
+				2DE005622CE248CD004DE761 /* Profile */,
 			);
 			path = "RPA-D";
 			sourceTree = "<group>";
@@ -174,6 +186,38 @@
 				2D904F362CE0DCA5005CF538 /* PretendardVariable.ttf */,
 			);
 			path = Fonts;
+			sourceTree = "<group>";
+		};
+		2DE0055F2CE248B8004DE761 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				2DE005632CE248F4004DE761 /* MainViewController.swift */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		2DE005602CE248BF004DE761 /* DispatchCalendar */ = {
+			isa = PBXGroup;
+			children = (
+				2DE005652CE2490C004DE761 /* CalendarViewController.swift */,
+			);
+			path = DispatchCalendar;
+			sourceTree = "<group>";
+		};
+		2DE005612CE248C7004DE761 /* Office */ = {
+			isa = PBXGroup;
+			children = (
+				2DE005672CE2491C004DE761 /* OfficeViewController.swift */,
+			);
+			path = Office;
+			sourceTree = "<group>";
+		};
+		2DE005622CE248CD004DE761 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				2DE005692CE2492E004DE761 /* ProfileViewController.swift */,
+			);
+			path = Profile;
 			sourceTree = "<group>";
 		};
 		4046BCD02198D9713B6960FC /* Frameworks */ = {
@@ -309,13 +353,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2DE005682CE2491C004DE761 /* OfficeViewController.swift in Sources */,
+				2DE005662CE2490C004DE761 /* CalendarViewController.swift in Sources */,
 				2D904F182CE0B2DF005CF538 /* CustomizedNavigationController.swift in Sources */,
+				2DE005642CE248F4004DE761 /* MainViewController.swift in Sources */,
 				2D904F342CE0D8E1005CF538 /* LoginModel.swift in Sources */,
 				2D904F272CE0B326005CF538 /* SupportingMethods.swift in Sources */,
 				2D904F1C2CE0B2E8005CF538 /* CategoryButton.swift in Sources */,
 				2D904F392CE0DE48005CF538 /* PermissionTableViewCell.swift in Sources */,
 				2D904F162CE0B2DA005CF538 /* TemplateView.swift in Sources */,
 				2D904F282CE0B326005CF538 /* ServerSetting.swift in Sources */,
+				2DE0056A2CE2492E004DE761 /* ProfileViewController.swift in Sources */,
 				2D904EF62CE0B04A005CF538 /* AppDelegate.swift in Sources */,
 				2D904F292CE0B326005CF538 /* NetworkMonitor.swift in Sources */,
 				2D904F212CE0B2F2005CF538 /* ViewPagerCollectionViewCell.swift in Sources */,
