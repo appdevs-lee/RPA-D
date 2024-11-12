@@ -12,7 +12,7 @@ final class MainViewController: UIViewController {
     var role: Role
     
     init() {
-        switch ReferenceValues.role {
+        switch User.shared.role {
         case "운전원":
             self.role = .driver
             

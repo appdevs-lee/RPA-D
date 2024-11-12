@@ -79,26 +79,6 @@ struct ReferenceValues {
         }
     }
     
-    static var role: String {
-        get {
-            return UserDefaults.standard.string(forKey: "role") ?? ""
-        }
-        
-        set {
-            UserDefaults.standard.set(newValue, forKey: "role")
-        }
-    }
-    
-    static var name: String {
-        get {
-            return UserDefaults.standard.string(forKey: "name") ?? ""
-        }
-        
-        set {
-            UserDefaults.standard.set(newValue, forKey: "name")
-        }
-    }
-    
     static var appMark: String {
         var appMark: String!
         
