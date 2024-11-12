@@ -9,6 +9,32 @@ import UIKit
 
 final class MainViewController: UIViewController {
     
+    var role: Role
+    
+    init() {
+        switch ReferenceValues.role {
+        case "운전원":
+            self.role = .driver
+            
+        case "팀장":
+            self.role = .driverLeader
+            
+        case "관리자":
+            self.role = .manager
+            
+        default:
+            self.role = .manager
+            
+        }
+        
+        super.init(nibName: nil, bundle: nil)
+        
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -96,12 +122,26 @@ extension MainViewController: EssentialViewMethods {
         
         self.navigationItem.title = ""
         
-        let leftBarButtonItem = UIBarButtonItem(title: "운행", style: .plain, target: self, action: nil)
-        leftBarButtonItem.setTitleTextAttributes([
-            .font:UIFont.useFont(ofSize: 20, weight: .Bold),
-            .foregroundColor: UIColor.useRGB(red: 46, green: 45, blue: 45)
-        ], for: .normal)
-        self.navigationItem.leftBarButtonItem = leftBarButtonItem
+        // FIXME: action 삭제 필수
+        switch self.role {
+        case .manager:
+            let leftBarButtonItem = UIBarButtonItem(title: "노선", style: .plain, target: self, action: nil)
+            leftBarButtonItem.setTitleTextAttributes([
+                .font:UIFont.useFont(ofSize: 20, weight: .Bold),
+                .foregroundColor: UIColor.useRGB(red: 46, green: 45, blue: 45)
+            ], for: .normal)
+            self.navigationItem.leftBarButtonItem = leftBarButtonItem
+            
+        default:
+            let leftBarButtonItem = UIBarButtonItem(title: "운행", style: .plain, target: self, action: #selector(leftBarButtonItem(_:)))
+            leftBarButtonItem.setTitleTextAttributes([
+                .font:UIFont.useFont(ofSize: 20, weight: .Bold),
+                .foregroundColor: UIColor.useRGB(red: 46, green: 45, blue: 45)
+            ], for: .normal)
+            self.navigationItem.leftBarButtonItem = leftBarButtonItem
+            
+        }
+        
     }
 }
 
@@ -112,5 +152,10 @@ extension MainViewController {
 
 // MARK: - Extension for selector methods
 extension MainViewController {
-    
+    // FIXME: 추후 삭제 필수
+    @objc func leftBarButtonItem(_ barButtonItem: UIBarButtonItem) {
+        let vc = GetUpCheckViewController()
+        
+        self.present(vc, animated: true)
+    }
 }

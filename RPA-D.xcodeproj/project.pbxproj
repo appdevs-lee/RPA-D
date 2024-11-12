@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		05D3FA7C2CE2DD3300AFDC6B /* GetUpCheckViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05D3FA7B2CE2DD3300AFDC6B /* GetUpCheckViewController.swift */; };
+		05D3FA802CE2EE1500AFDC6B /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05D3FA7F2CE2EE1500AFDC6B /* User.swift */; };
 		2D904EF62CE0B04A005CF538 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D904EF52CE0B04A005CF538 /* AppDelegate.swift */; };
 		2D904EF82CE0B04A005CF538 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D904EF72CE0B04A005CF538 /* SceneDelegate.swift */; };
 		2D904EFF2CE0B04C005CF538 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D904EFE2CE0B04C005CF538 /* Assets.xcassets */; };
@@ -41,6 +43,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		05D3FA7B2CE2DD3300AFDC6B /* GetUpCheckViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetUpCheckViewController.swift; sourceTree = "<group>"; };
+		05D3FA7F2CE2EE1500AFDC6B /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		2D904EF22CE0B04A005CF538 /* RPA-D.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RPA-D.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D904EF52CE0B04A005CF538 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2D904EF72CE0B04A005CF538 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -91,6 +95,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		05D3FA7D2CE2ECD900AFDC6B /* Driver */ = {
+			isa = PBXGroup;
+			children = (
+				05D3FA7B2CE2DD3300AFDC6B /* GetUpCheckViewController.swift */,
+			);
+			path = Driver;
+			sourceTree = "<group>";
+		};
+		05D3FA7E2CE2ECF800AFDC6B /* Manager */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Manager;
+			sourceTree = "<group>";
+		};
 		2D904EE92CE0B04A005CF538 = {
 			isa = PBXGroup;
 			children = (
@@ -175,6 +194,7 @@
 		2D904F322CE0D8D7005CF538 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				05D3FA7F2CE2EE1500AFDC6B /* User.swift */,
 				2D904F332CE0D8E1005CF538 /* LoginModel.swift */,
 			);
 			path = Models;
@@ -191,6 +211,8 @@
 		2DE0055F2CE248B8004DE761 /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				05D3FA7E2CE2ECF800AFDC6B /* Manager */,
+				05D3FA7D2CE2ECD900AFDC6B /* Driver */,
 				2DE005632CE248F4004DE761 /* MainViewController.swift */,
 			);
 			path = Main;
@@ -369,9 +391,11 @@
 				2D904F212CE0B2F2005CF538 /* ViewPagerCollectionViewCell.swift in Sources */,
 				2D904F1F2CE0B2EE005CF538 /* TempateViewPagerViewController.swift in Sources */,
 				2D904F312CE0D20D005CF538 /* PermissionViewController.swift in Sources */,
+				05D3FA7C2CE2DD3300AFDC6B /* GetUpCheckViewController.swift in Sources */,
 				2D904F1D2CE0B2EA005CF538 /* TemplateViewController.swift in Sources */,
 				2D904F172CE0B2DD005CF538 /* TemplateTableViewCell.swift in Sources */,
 				2D904EF82CE0B04A005CF538 /* SceneDelegate.swift in Sources */,
+				05D3FA802CE2EE1500AFDC6B /* User.swift in Sources */,
 				2D904F1E2CE0B2EC005CF538 /* TemplateHeaderFooterView.swift in Sources */,
 				2D904F2A2CE0B326005CF538 /* ReferenceValues.swift in Sources */,
 				2D904F2C2CE0B3C2005CF538 /* SplashViewController.swift in Sources */,

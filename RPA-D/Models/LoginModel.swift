@@ -50,8 +50,14 @@ final class LoginModel {
                             print("loginRequest succeeded")
                             ReferenceValues.accessToken = "Bearer \(decodedData.data.access)"
                             ReferenceValues.refreshToken = decodedData.data.refresh
-                            ReferenceValues.role = decodedData.data.authenticatedUser.role
+                            User.shared.name = decodedData.data.authenticatedUser.name
+                            User.shared.role = decodedData.data.authenticatedUser.role
+                            
+                            // FIXME: Refresh Token 'authenticatedUser' 추가되면 User로 전부 바꿔서 처리.
                             ReferenceValues.name = decodedData.data.authenticatedUser.name
+                            ReferenceValues.role = decodedData.data.authenticatedUser.role
+                            
+                            
                             success?(decodedData.data)
                                                 
                         } else {
@@ -205,6 +211,7 @@ struct UserInfoDetail: Codable {
     let user_id: String
     let name: String
     let role: String
+    let position: String
 }
 
 
