@@ -549,6 +549,11 @@ extension SupportingMethods {
     }
 }
 
+// MARK: Date
+extension Date {
+    
+}
+
 extension CALayer {
     func useSketchShadow(color: UIColor, alpha: Float, x: CGFloat, y: CGFloat, blur: CGFloat, spread: CGFloat) {
         self.masksToBounds = false
