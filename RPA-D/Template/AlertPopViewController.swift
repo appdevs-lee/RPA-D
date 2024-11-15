@@ -73,7 +73,7 @@ final class AlertPopViewController: UIViewController {
     
     lazy var rightButton: UIButton = {
         let button = UIButton()
-        button.backgroundColor = .useRGB(red: 135, green: 129, blue: 247)
+        button.backgroundColor = .useRGB(red: 223, green: 52, blue: 52)
         button.layer.cornerRadius = 16
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = .useFont(ofSize: 16, weight: .SemiBold)

@@ -48,6 +48,7 @@ final class LoginModel {
                     if decodedData.result == "true" { // result == true
                         if let decodedData = try? JSONDecoder().decode(Login.self, from: data) {
                             print("loginRequest succeeded")
+                            print("accessToken:\n\(decodedData.data.access)")
                             ReferenceValues.accessToken = "Bearer \(decodedData.data.access)"
                             ReferenceValues.refreshToken = decodedData.data.refresh
                             
@@ -55,7 +56,6 @@ final class LoginModel {
                             User.shared.role = decodedData.data.authenticatedUser.role
                             
                             success?(decodedData.data)
-                                                
                         } else {
                             print("loginRequest failure: API 성공, Parsing 실패")
                             failure?("API 성공, Parsing 실패")
@@ -117,6 +117,7 @@ final class LoginModel {
                 
                 if let decodedData = try? JSONDecoder().decode(Refresh.self, from: data) {
                     print("tokenRefreshRequest succeeded")
+                    print("accessToken:\n\(decodedData.data.access)")
                     ReferenceValues.accessToken = "Bearer \(decodedData.data.access)"
                     ReferenceValues.refreshToken = decodedData.data.refresh
                     

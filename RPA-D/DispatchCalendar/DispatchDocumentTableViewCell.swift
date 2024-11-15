@@ -18,6 +18,28 @@ final class DispatchDocumentTableViewCell: UITableViewCell {
         return view
     }()
     
+    lazy var dispatchStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [self.dispatchContentStackView, self.dispatchButtonStackView])
+        stackView.axis = .vertical
+        stackView.spacing = 16
+        stackView.distribution = .fill
+        stackView.alignment = .fill
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        
+        return stackView
+    }()
+    
+    lazy var dispatchContentStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [self.dispatchStatusView, self.dispatchInfoView])
+        stackView.axis = .vertical
+        stackView.spacing = 0
+        stackView.distribution = .fill
+        stackView.alignment = .fill
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        
+        return stackView
+    }()
+    
     // MARK: DispatchStatus
     lazy var dispatchStatusView: UIView = {
         let view = UIView()
@@ -251,9 +273,7 @@ extension DispatchDocumentTableViewCell {
         ], to: self)
         
         SupportingMethods.shared.addSubviews([
-            self.dispatchStatusView,
-            self.dispatchInfoView,
-            self.dispatchButtonStackView,
+            self.dispatchStackView,
         ], to: self.baseView)
         
         SupportingMethods.shared.addSubviews([
@@ -294,11 +314,16 @@ extension DispatchDocumentTableViewCell {
             self.baseView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10),
         ])
         
+        // dispatchStackView
+        NSLayoutConstraint.activate([
+            self.dispatchStackView.leadingAnchor.constraint(equalTo: self.baseView.leadingAnchor, constant: 20),
+            self.dispatchStackView.trailingAnchor.constraint(equalTo: self.baseView.trailingAnchor, constant: -20),
+            self.dispatchStackView.topAnchor.constraint(equalTo: self.baseView.topAnchor, constant: 20),
+            self.dispatchStackView.bottomAnchor.constraint(equalTo: self.baseView.bottomAnchor),
+        ])
+        
         // dispatchStatusView
         NSLayoutConstraint.activate([
-            self.dispatchStatusView.leadingAnchor.constraint(equalTo: self.baseView.leadingAnchor, constant: 20),
-            self.dispatchStatusView.trailingAnchor.constraint(equalTo: self.baseView.trailingAnchor, constant: -20),
-            self.dispatchStatusView.topAnchor.constraint(equalTo: self.baseView.topAnchor, constant: 20),
             self.dispatchStatusView.heightAnchor.constraint(equalToConstant: 20),
         ])
         
@@ -326,9 +351,7 @@ extension DispatchDocumentTableViewCell {
         
         // dispatchInfoView
         NSLayoutConstraint.activate([
-            self.dispatchInfoView.leadingAnchor.constraint(equalTo: self.baseView.leadingAnchor, constant: 20),
-            self.dispatchInfoView.trailingAnchor.constraint(equalTo: self.baseView.trailingAnchor, constant: -20),
-            self.dispatchInfoView.topAnchor.constraint(equalTo: self.dispatchStatusView.bottomAnchor),
+            
         ])
         
         // dispatchDateLabel
@@ -376,10 +399,7 @@ extension DispatchDocumentTableViewCell {
         
         // dispatchButtonStackView
         NSLayoutConstraint.activate([
-            self.dispatchButtonStackView.leadingAnchor.constraint(equalTo: self.baseView.leadingAnchor, constant: 20),
-            self.dispatchButtonStackView.trailingAnchor.constraint(equalTo: self.baseView.trailingAnchor, constant: -20),
-            self.dispatchButtonStackView.topAnchor.constraint(equalTo: self.dispatchInfoView.bottomAnchor, constant: 16),
-            self.dispatchButtonStackView.bottomAnchor.constraint(equalTo: self.baseView.bottomAnchor),
+            
         ])
         
         // dispatchDetailButtonTopView
@@ -420,19 +440,62 @@ extension DispatchDocumentTableViewCell {
 
 // MARK: - Extension for methods added
 extension DispatchDocumentTableViewCell {
-    func setCell() {
-        // DispatchStatus
-        self.dispatchStatusImageView.image = .useCustomImage("dispatchStatus.todo")
-        self.dispatchStatusLabel.text = "진행전"
-        
+    func setCell(tense: Tense, item: DispatchDailyItem) {
         // DispatchInfo
-        self.dispatchDateLabel.text = "11.01 06:00 -> 11.01 07:00"
-        self.dispatchETCLabel.text = "일반배차 | 5004"
+        let departureDate = SupportingMethods.shared.convertString(intoCustomString: item.departureDate, "MM.dd HH:mm")
+        let arrivalDate = SupportingMethods.shared.convertString(intoCustomString: item.arrivalDate, "MM.dd HH:mm")
         
-        self.departureLabel.text = "성균관대역 2번 출구(고가 도로 밑 롯데어쩌구저쩌구)"
-        self.arrivalLabel.text = "화성캠퍼스 H1"
+        self.dispatchDateLabel.text = "\(departureDate) -> \(arrivalDate)"
+        self.dispatchETCLabel.text = "\(item.workType)배차 | \(item.busNum)"
         
-        self.dispatchDetailButton.setTitle("상세보기", for: .normal)
+        self.departureLabel.text = "\(item.departure)"
+        self.arrivalLabel.text = "\(item.arrival)"
+        
+        switch tense {
+        case .past:
+            // 운행일보
+            self.dispatchDetailButtonView.isHidden = false
+            self.dispatchCheckButtonView.isHidden = true
+            self.dispatchStatusView.isHidden = true
+            
+            self.dispatchDetailButton.setTitle("운행일보", for: .normal)
+            
+            break
+            
+        case .today:
+            // 상세보기, 운행일보
+            self.dispatchDetailButtonView.isHidden = false
+            self.dispatchCheckButtonView.isHidden = true
+            self.dispatchStatusView.isHidden = false
+            
+            // DispatchStatus
+            if item.status == "운행 전" {
+                self.dispatchStatusImageView.image = .useCustomImage("dispatchStatus.todo")
+                self.dispatchStatusLabel.text = "진행전"
+                self.dispatchDetailButton.setTitle("상세 보기", for: .normal)
+                
+            } else if item.status == "운행 완료" {
+                self.dispatchStatusView.isHidden = true
+                self.dispatchDetailButton.setTitle("운행일보", for: .normal)
+                
+            } else {
+                self.dispatchStatusImageView.image = .useCustomImage("dispatchStatus.doing")
+                self.dispatchStatusLabel.text = "진행중"
+                self.dispatchDetailButton.setTitle("상세 보기", for: .normal)
+                
+            }
+            
+            break
+            
+        case .future:
+            // 배차 수락 및 사유서 작성
+            self.dispatchDetailButtonView.isHidden = true
+            self.dispatchCheckButtonView.isHidden = false
+            self.dispatchStatusView.isHidden = true
+            
+            break
+            
+        }
     }
 }
 

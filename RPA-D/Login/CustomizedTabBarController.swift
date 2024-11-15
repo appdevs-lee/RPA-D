@@ -58,6 +58,7 @@ class CustomizedTabBarController: UITabBarController {
 // MARK: Extension for methods add
 extension CustomizedTabBarController {
     func setUpTabbar() {
+        self.delegate = self
         self.tabBar.backgroundColor = .white
         self.tabBar.layer.borderWidth = 0
         
@@ -107,18 +108,22 @@ extension CustomizedTabBarController: UITabBarControllerDelegate {
         self.currentSelectedIndex = tabBarController.selectedIndex
         
         if tabBarController.selectedIndex == 0 {
+            print("운행")
             
         }
         
         if tabBarController.selectedIndex == 1 {
+            print("배차 달력")
             
         }
         
         if tabBarController.selectedIndex == 2 {
+            print("사무")
             
         }
         
         if tabBarController.selectedIndex == 3 {
+            print("프로필")
             
         }
         

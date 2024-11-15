@@ -58,6 +58,10 @@ final class CalendarViewController: UIViewController {
         // 헤더 양 옆(전달 & 다음 달) 글씨 투명도
         calendar.appearance.headerMinimumDissolvedAlpha = 0.0
         
+        // 이벤트 색상 설정
+        calendar.appearance.eventDefaultColor = .useRGB(red: 223, green: 52, blue: 52)
+        calendar.appearance.eventSelectionColor = .useRGB(red: 223, green: 52, blue: 52)
+        
         calendar.delegate = self
         calendar.dataSource = self
         calendar.translatesAutoresizingMaskIntoConstraints = false
@@ -256,6 +260,11 @@ final class CalendarViewController: UIViewController {
     var categoryList: [String] = ["지정된 배차", "운행일보"]
     var selectedIndex: Int = 0
     var tense: Tense = .today
+    var events: [String] = []
+    
+    // DATA
+    let dispatchModel = DispatchModel()
+    var dispatchDailyList: [DispatchDailyItem] = []
     
     var calendarHeightAnchorLayoutConstraint: NSLayoutConstraint!
     
@@ -270,6 +279,7 @@ final class CalendarViewController: UIViewController {
         self.setSubviews()
         self.setLayouts()
         self.setUpNavigationItem()
+        self.setData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -498,6 +508,32 @@ extension CalendarViewController: EssentialViewMethods {
         self.navigationItem.leftBarButtonItem = leftBarButtonItem
         
     }
+    
+    func setData() {
+        let currentMonth = SupportingMethods.shared.convertDate(intoString: Date(), "yyyy-MM")
+        
+        SupportingMethods.shared.turnCoverView(.on)
+        self.loadDispatchMonthlyRequest(date: currentMonth) { countList in
+            for index in 0..<countList.count {
+                if countList[index] != 0 {
+                    let date: String = index < 9 ? currentMonth + "-0\(index + 1)" : currentMonth + "-\(index + 1)"
+                    self.events.append(date)
+                    
+                }
+                
+            }
+            
+            DispatchQueue.main.async {
+                self.calendar.reloadData()
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+            
+            self.reloadData(date: SupportingMethods.shared.convertDate(intoString: Date()))
+            
+        }
+    }
+    
 }
 
 // MARK: - Extension for methods added
@@ -509,6 +545,61 @@ extension CalendarViewController {
             
         let currentPage = cal.date(byAdding: dateComponents, to: self.calendar.currentPage)
         self.calendar.setCurrentPage(currentPage!, animated: true)
+    }
+    
+    func reloadData(date: String) {
+        SupportingMethods.shared.turnCoverView(.on)
+        self.loadDispatchDailyListRequest(date: date) { item in
+            self.dispatchDailyList = item
+            self.documentCountLabel.text = "\(item.count)건"
+            
+            if item.isEmpty {
+                self.noDocumentStackView.isHidden = false
+                
+            } else {
+                self.noDocumentStackView.isHidden = true
+                
+            }
+            
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+            
+        }
+        
+    }
+    
+    // MARK: API
+    func loadDispatchDailyListRequest(date: String, success: (([DispatchDailyItem]) -> ())?) {
+        self.dispatchModel.loadDispatchDailyListRequest(date: date) { item in
+            success?(item)
+            
+        } failure: { message in
+            SupportingMethods.shared.checkExpiration {
+                print("loadDispatchDailyListRequest API Error: \(message)")
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+            
+        }
+
+    }
+    
+    func loadDispatchMonthlyRequest(date: String, success: (([Int]) -> ())?) {
+        self.dispatchModel.loadDispatchMonthlyRequest(date: date) { dailyDispatchCount in
+            success?(dailyDispatchCount)
+            
+        } failure: { message in
+            SupportingMethods.shared.checkExpiration {
+                print("loadDispatchMonthlyRequest API Error: \(message)")
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+            
+        }
+
     }
     
 }
@@ -613,7 +704,46 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDataSource {
             
         }
         
+        self.selectedIndex = 0
         self.collectionView.reloadData()
+        self.reloadData(date: SupportingMethods.shared.convertDate(intoString: date))
+        
+    }
+    
+    func calendarCurrentPageDidChange(_ calendar: FSCalendar) {
+        let currentMonth = SupportingMethods.shared.convertDate(intoString: calendar.currentPage, "yyyy-MM")
+        
+        self.events = []
+        
+        SupportingMethods.shared.turnCoverView(.on)
+        self.loadDispatchMonthlyRequest(date: currentMonth) { countList in
+            for index in 0..<countList.count {
+                if countList[index] != 0 {
+                    let date: String = index < 9 ? currentMonth + "-0\(index + 1)" : currentMonth + "-\(index + 1)"
+                    self.events.append(date)
+                    
+                }
+                
+            }
+            
+            DispatchQueue.main.async {
+                self.calendar.reloadData()
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+            
+        }
+        
+    }
+    
+    func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
+        let dateString = SupportingMethods.shared.convertDate(intoString: date)
+        if self.events.contains(dateString){
+            return 1
+            
+        }
+        
+        return 0
         
     }
     
@@ -650,13 +780,14 @@ extension CalendarViewController: UICollectionViewDelegateFlowLayout, UICollecti
 // MARK: - Extension for UITableViewDelegate, UITableViewDataSource
 extension CalendarViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 4
+        return self.dispatchDailyList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "DispatchDocumentTableViewCell", for: indexPath) as! DispatchDocumentTableViewCell
+        let item = self.dispatchDailyList[indexPath.row]
         
-        cell.setCell()
+        cell.setCell(tense: self.tense, item: item)
         
         return cell
     }

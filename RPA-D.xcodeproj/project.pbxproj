@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		059082752CE6D2A500E4D204 /* DispatchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 059082742CE6D2A500E4D204 /* DispatchModel.swift */; };
 		05D3FA7C2CE2DD3300AFDC6B /* GetUpCheckViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05D3FA7B2CE2DD3300AFDC6B /* GetUpCheckViewController.swift */; };
 		05D3FA802CE2EE1500AFDC6B /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05D3FA7F2CE2EE1500AFDC6B /* User.swift */; };
 		05DB9A8E2CE448F600742317 /* KindsOfDocumentCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DB9A8D2CE448F600742317 /* KindsOfDocumentCollectionViewCell.swift */; };
@@ -45,6 +46,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		059082742CE6D2A500E4D204 /* DispatchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchModel.swift; sourceTree = "<group>"; };
 		05D3FA7B2CE2DD3300AFDC6B /* GetUpCheckViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetUpCheckViewController.swift; sourceTree = "<group>"; };
 		05D3FA7F2CE2EE1500AFDC6B /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		05DB9A8D2CE448F600742317 /* KindsOfDocumentCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KindsOfDocumentCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -200,6 +202,7 @@
 			children = (
 				05D3FA7F2CE2EE1500AFDC6B /* User.swift */,
 				2D904F332CE0D8E1005CF538 /* LoginModel.swift */,
+				059082742CE6D2A500E4D204 /* DispatchModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -404,6 +407,7 @@
 				05DB9A8E2CE448F600742317 /* KindsOfDocumentCollectionViewCell.swift in Sources */,
 				2D904EF82CE0B04A005CF538 /* SceneDelegate.swift in Sources */,
 				05D3FA802CE2EE1500AFDC6B /* User.swift in Sources */,
+				059082752CE6D2A500E4D204 /* DispatchModel.swift in Sources */,
 				2D904F1E2CE0B2EC005CF538 /* TemplateHeaderFooterView.swift in Sources */,
 				2D904F2A2CE0B326005CF538 /* ReferenceValues.swift in Sources */,
 				2D904F2C2CE0B3C2005CF538 /* SplashViewController.swift in Sources */,
@@ -568,6 +572,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -604,6 +609,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

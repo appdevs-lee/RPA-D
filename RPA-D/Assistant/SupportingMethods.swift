@@ -371,7 +371,7 @@ extension SupportingMethods {
         }
     }
     
-    func checkExpiration(errorMessage: String, completion: (() -> ())?) {
+    func checkExpiration(completion: (() -> ())?) {
         completion?()
         
         let vc = AlertPopViewController(.normalTwoButton(messageTitle: "서비스 접속이 원활하지 않습니다", messageContent: "잠시 후 다시 시도해 주세요.", leftButtonTitle: "앱 종료", leftAction: {
@@ -407,6 +407,18 @@ extension SupportingMethods {
     
     // Date -> String
     func convertDate(intoString date: Date, _ dateFormat: String = "yyyy-MM-dd") -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.timeZone = TimeZone(abbreviation: "KST")!
+        formatter.dateFormat = dateFormat
+        
+        return formatter.string(from: date)
+    }
+    
+    // String -> Date -> Custom String
+    func convertString(intoCustomString dateString: String, _ dateFormat: String = "yyyy-MM-dd HH:mm") -> String {
+        let date = self.convertString(intoDate: dateString, "yyyy-MM-dd HH:mm")
+        
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ko_KR")
         formatter.timeZone = TimeZone(abbreviation: "KST")!
