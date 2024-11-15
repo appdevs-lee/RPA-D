@@ -15,6 +15,8 @@ final class DispatchModel {
     private(set) var loadDispatchDailyDetailRequest: DataRequest?
     // 월별 배차 정보
     private(set) var loadDispatchMonthlyRequest: DataRequest?
+    // 배차 수락 및 거부
+    private(set) var sendDispatchConnectCheckDataRequest: DataRequest?
     
     func loadDispatchDailyListRequest(date: String, success: (([DispatchDailyItem]) -> ())?, failure: ((_ message: String) -> ())?) {
         let url = ServerSetting.server.URL + "/dispatch/daily/list/\(date)"
@@ -150,6 +152,50 @@ final class DispatchModel {
             
         }
         
+    }
+    
+    func sendDispatchConnectCheckDataRequest(id: Int, workType: String, check: String, refusal: String = "", success: (() -> ())?, failure: ((_ message: String) -> ())?) {
+        let url = ServerSetting.server.URL + "/dispatch/connect/check"
+        
+        let headers: HTTPHeaders = [
+            "accept": "application/json",
+            "Authorization": ReferenceValues.accessToken
+        ]
+        
+        let parameters: Parameters = [
+            "check": check, // 0 = 거부, 1 = 수락
+            "refusal": refusal,
+            "regularly_id": workType != "일반" ? "\(id)" : "",
+            "order_id": workType != "일반" ? "" : "\(id)",
+        ]
+        
+        self.sendDispatchConnectCheckDataRequest = AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
+        
+        self.sendDispatchConnectCheckDataRequest?.responseData { (response) in
+            switch response.result {
+            case .success(_):
+                guard let statusCode = response.response?.statusCode else {
+                    print("sendDispatchConnectCheckDataRequest failure: statusCode nil")
+                    failure?("statusCodeNil")
+                    
+                    return
+                }
+                
+                guard statusCode >= 200 && statusCode < 300 else {
+                    print("sendDispatchConnectCheckDataRequest failure: statusCode(\(statusCode))")
+                    failure?("statusCodeError")
+                    
+                    return
+                }
+                
+                print("sendDispatchConnectCheckDataRequest succeeded")
+                success?()
+                
+            case .failure(let error):
+                print("sendDispatchConnectCheckDataRequest error: \(error.localizedDescription)")
+                failure?(error.localizedDescription)
+            }
+        }
     }
     
 }

@@ -7,6 +7,12 @@
 
 import UIKit
 
+protocol DispatchDocumentDelegate: NSObjectProtocol {
+    func dispatchCheckButton(item: DispatchDailyItem)
+    func dispatchRefusalButton(item: DispatchDailyItem)
+    
+}
+
 final class DispatchDocumentTableViewCell: UITableViewCell {
     
     lazy var baseView: UIView = {
@@ -199,6 +205,7 @@ final class DispatchDocumentTableViewCell: UITableViewCell {
         button.titleLabel?.font = .useFont(ofSize: 14, weight: .Bold)
         button.backgroundColor = .useRGB(red: 223, green: 52, blue: 52)
         button.layer.cornerRadius = 12
+        button.addTarget(self, action: #selector(dispatchCheckButton(_:)), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         
         return button
@@ -210,10 +217,15 @@ final class DispatchDocumentTableViewCell: UITableViewCell {
         button.setTitleColor(.useRGB(red: 109, green: 109, blue: 109), for: .normal)
         button.setTitleColor(.useRGB(red: 109, green: 109, blue: 109, alpha: 0.5), for: .highlighted)
         button.titleLabel?.font = .useFont(ofSize: 14, weight: .Regular)
+        button.addTarget(self, action: #selector(dispatchRefusalButton(_:)), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         
         return button
     }()
+    
+    var item: DispatchDailyItem?
+    let dispatchModel = DispatchModel()
+    var delegate: DispatchDocumentDelegate?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -441,6 +453,8 @@ extension DispatchDocumentTableViewCell {
 // MARK: - Extension for methods added
 extension DispatchDocumentTableViewCell {
     func setCell(tense: Tense, item: DispatchDailyItem) {
+        self.item = item
+        
         // DispatchInfo
         let departureDate = SupportingMethods.shared.convertString(intoCustomString: item.departureDate, "MM.dd HH:mm")
         let arrivalDate = SupportingMethods.shared.convertString(intoCustomString: item.arrivalDate, "MM.dd HH:mm")
@@ -489,9 +503,18 @@ extension DispatchDocumentTableViewCell {
             
         case .future:
             // 배차 수락 및 사유서 작성
-            self.dispatchDetailButtonView.isHidden = true
-            self.dispatchCheckButtonView.isHidden = false
             self.dispatchStatusView.isHidden = true
+            
+            if item.connectCheck == "true" {
+                self.dispatchCheckButtonView.isHidden = true
+                self.dispatchDetailButtonView.isHidden = false
+                self.dispatchDetailButton.setTitle("상세 보기", for: .normal)
+                
+            } else {
+                self.dispatchCheckButtonView.isHidden = false
+                self.dispatchDetailButtonView.isHidden = true
+                
+            }
             
             break
             
@@ -499,3 +522,18 @@ extension DispatchDocumentTableViewCell {
     }
 }
 
+// MARK: - Extension for selector added
+extension DispatchDocumentTableViewCell {
+    @objc func dispatchCheckButton(_ sender: UIButton) {
+        guard let item = self.item else { return }
+        self.delegate?.dispatchCheckButton(item: item)
+        
+    }
+
+    @objc func dispatchRefusalButton(_ sender: UIButton) {
+        guard let item = self.item else { return }
+        self.delegate?.dispatchRefusalButton(item: item)
+        
+    }
+    
+}

@@ -529,7 +529,7 @@ extension CalendarViewController: EssentialViewMethods {
                 
             }
             
-            self.reloadData(date: SupportingMethods.shared.convertDate(intoString: Date()))
+            self.reloadTodayData()
             
         }
     }
@@ -549,11 +549,66 @@ extension CalendarViewController {
     
     func reloadData(date: String) {
         SupportingMethods.shared.turnCoverView(.on)
-        self.loadDispatchDailyListRequest(date: date) { item in
-            self.dispatchDailyList = item
-            self.documentCountLabel.text = "\(item.count)건"
+        self.loadDispatchDailyListRequest(date: date) { itemList in
+            self.documentCountLabel.text = "\(itemList.count)건"
             
-            if item.isEmpty {
+            if itemList.isEmpty {
+                self.noDocumentStackView.isHidden = false
+                
+            } else {
+                self.noDocumentStackView.isHidden = true
+                
+            }
+            
+            if self.tense == .today {
+                for item in itemList {
+                    if item.status != "운행 완료" {
+                        self.dispatchDailyList.append(item)
+                        
+                    }
+                    
+                }
+                
+            } else {
+                self.dispatchDailyList = itemList
+                
+            }
+            
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+            
+        }
+        
+    }
+    
+    func reloadTodayData(selectedIndex: Int = 0) {
+        SupportingMethods.shared.turnCoverView(.on)
+        let date = SupportingMethods.shared.convertDate(intoString: Date())
+        self.loadDispatchDailyListRequest(date: date) { itemList in
+            self.dispatchDailyList = []
+            for item in itemList {
+                if selectedIndex == 0 {
+                    if item.status != "운행 완료" {
+                        self.dispatchDailyList.append(item)
+                        
+                    }
+                    
+                } else {
+                    if item.status == "운행 완료" {
+                        self.dispatchDailyList.append(item)
+                        
+                    }
+                    
+                }
+                
+            }
+            
+            self.documentCountLabel.text = "\(self.dispatchDailyList.count)건"
+            
+            if self.dispatchDailyList.isEmpty {
                 self.noDocumentStackView.isHidden = false
                 
             } else {
@@ -772,6 +827,12 @@ extension CalendarViewController: UICollectionViewDelegateFlowLayout, UICollecti
         self.selectedIndex = indexPath.row
         
         self.collectionView.reloadData()
+        if self.tense == .today {
+            self.reloadTodayData(selectedIndex: self.selectedIndex)
+            self.tableView.reloadData()
+            
+        }
+        
     }
     
 }
@@ -788,8 +849,33 @@ extension CalendarViewController: UITableViewDelegate, UITableViewDataSource {
         let item = self.dispatchDailyList[indexPath.row]
         
         cell.setCell(tense: self.tense, item: item)
+        cell.delegate = self
         
         return cell
     }
     
+}
+
+// MARK: - Extension for DispatchDocumentDelegate
+extension CalendarViewController: DispatchDocumentDelegate {
+    func dispatchRefusalButton(item: DispatchDailyItem) {
+        print("사유서 작성")
+        
+    }
+    
+    func dispatchCheckButton(item: DispatchDailyItem) {
+        SupportingMethods.shared.turnCoverView(.on)
+        self.dispatchModel.sendDispatchConnectCheckDataRequest(id: item.id, workType: item.workType, check: "1") {
+            let dateString = String(item.departureDate.split(separator: " ")[0])
+            self.reloadData(date: dateString)
+            
+        } failure: { message in
+            SupportingMethods.shared.checkExpiration {
+                print("sendDispatchConnectCheckDataRequest API error: \(message)")
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+            
+        }
+    }
 }
