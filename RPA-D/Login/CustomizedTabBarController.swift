@@ -61,19 +61,35 @@ extension CustomizedTabBarController {
         self.delegate = self
         self.tabBar.backgroundColor = .white
         self.tabBar.layer.borderWidth = 0
+        switch User.shared.role {
+        case "운전원", "팀장":
+            // Set ViewControllers in Tabbar
+            let mainVC = MainViewController()
+            let calendarVC = CalendarViewController()
+            let officeVC = OfficeViewController()
+            let profileVC = ProfileViewController()
+            
+            self.viewControllers = [
+                self.createTabBarItem(tabBarTitle: "운행", tabBarImage: "Main", selectedImage: "selectedMain", viewController: mainVC),
+                self.createTabBarItem(tabBarTitle: "배차 달력", tabBarImage: "Calendar", selectedImage: "selectedCalendar", viewController: calendarVC),
+                self.createTabBarItem(tabBarTitle: "사무", tabBarImage: "Office", selectedImage: "selectedOffice", viewController: officeVC),
+                self.createTabBarItem(tabBarTitle: "프로필", tabBarImage: "Profile", selectedImage: "selectedProfile", viewController: profileVC),
+            ]
+            break
         
-        // Set ViewControllers in Tabbar
-        let mainVC = MainViewController()
-        let calendarVC = CalendarViewController()
-        let officeVC = OfficeViewController()
-        let profileVC = ProfileViewController()
+        default:
+            // Set ViewControllers in Tabbar
+            let mainVC = ManagerMainViewController()
+            let officeVC = OfficeViewController()
+            
+            self.viewControllers = [
+                self.createTabBarItem(tabBarTitle: "노선", tabBarImage: "Main", selectedImage: "selectedMain", viewController: mainVC),
+                self.createTabBarItem(tabBarTitle: "사무", tabBarImage: "Office", selectedImage: "selectedOffice", viewController: officeVC),
+            ]
+            break
+            
+        }
         
-        self.viewControllers = [
-            self.createTabBarItem(tabBarTitle: "운행", tabBarImage: "Main", selectedImage: "selectedMain", viewController: mainVC),
-            self.createTabBarItem(tabBarTitle: "배차 달력", tabBarImage: "Calendar", selectedImage: "selectedCalendar", viewController: calendarVC),
-            self.createTabBarItem(tabBarTitle: "사무", tabBarImage: "Office", selectedImage: "selectedOffice", viewController: officeVC),
-            self.createTabBarItem(tabBarTitle: "프로필", tabBarImage: "Profile", selectedImage: "selectedProfile", viewController: profileVC),
-        ]
     }
     
     func createTabBarItem(tabBarTitle: String, tabBarImage: String, selectedImage: String, viewController: UIViewController) -> UINavigationController {

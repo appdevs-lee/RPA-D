@@ -9,7 +9,45 @@ import UIKit
 
 final class MainViewController: UIViewController {
     
-    var role: Role
+    lazy var statusBaseView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
+    lazy var titleLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .useRGB(red: 46, green: 45, blue: 45)
+        label.font = .useFont(ofSize: 24, weight: .Bold)
+        label.numberOfLines = 2
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        return label
+    }()
+    
+    lazy var subTitleLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .useRGB(red: 101, green: 100, blue: 100)
+        label.font = .useFont(ofSize: 16, weight: .Regular)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        return label
+    }()
+    
+    lazy var statusButton: UIButton = {
+        let button = UIButton()
+        button.setTitleColor(.useRGB(red: <#T##CGFloat#>, green: <#T##CGFloat#>, blue: <#T##CGFloat#>), for: .normal)
+        button.titleLabel?.font = .useFont(ofSize: <#T##CGFloat#>, weight: <#T##UIFont.PretendardFontType#>)
+        button.backgroundColor = .useRGB(red: 223, green: 52, blue: 52)
+        button.layer.cornerRadius = 8
+        button.translatesAutoresizingMaskIntoConstraints = false
+        
+        return button
+    }()
+    
+    var role: Role = .driver
     
     init() {
         switch User.shared.role {
@@ -19,12 +57,8 @@ final class MainViewController: UIViewController {
         case "팀장":
             self.role = .driverLeader
             
-        case "관리자":
-            self.role = .manager
-            
         default:
-            self.role = .manager
-            
+            break
         }
         
         super.init(nibName: nil, bundle: nil)
@@ -86,15 +120,20 @@ extension MainViewController: EssentialViewMethods {
     }
     
     func setSubviews() {
-        
+        SupportingMethods.shared.addSubviews([
+            self.statusBaseView,
+        ], to: self.view)
     }
     
     func setLayouts() {
-        //let safeArea = self.view.safeAreaLayoutGuide
+        let safeArea = self.view.safeAreaLayoutGuide
         
-        //
+        // statusBaseView
         NSLayoutConstraint.activate([
-            
+            self.statusBaseView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
+            self.statusBaseView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
+            self.statusBaseView.topAnchor.constraint(equalTo: safeArea.topAnchor),
+            self.statusBaseView.heightAnchor.constraint(equalToConstant: ReferenceValues.Size.Device.width * 236 / 375),
         ])
     }
     
