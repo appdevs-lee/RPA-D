@@ -42,6 +42,7 @@
 		2DE005662CE2490C004DE761 /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE005652CE2490C004DE761 /* CalendarViewController.swift */; };
 		2DE005682CE2491C004DE761 /* OfficeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE005672CE2491C004DE761 /* OfficeViewController.swift */; };
 		2DE0056A2CE2492E004DE761 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE005692CE2492E004DE761 /* ProfileViewController.swift */; };
+		2DF135132CE7C1F200EAA052 /* ManagerMainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF135122CE7C1F200EAA052 /* ManagerMainViewController.swift */; };
 		B48289BC89928F0CC50C4623 /* Pods_RPA_D.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E746101C42B769B55E0BCDA /* Pods_RPA_D.framework */; };
 /* End PBXBuildFile section */
 
@@ -84,6 +85,7 @@
 		2DE005652CE2490C004DE761 /* CalendarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewController.swift; sourceTree = "<group>"; };
 		2DE005672CE2491C004DE761 /* OfficeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfficeViewController.swift; sourceTree = "<group>"; };
 		2DE005692CE2492E004DE761 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		2DF135122CE7C1F200EAA052 /* ManagerMainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagerMainViewController.swift; sourceTree = "<group>"; };
 		2E746101C42B769B55E0BCDA /* Pods_RPA_D.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RPA_D.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4EBB60802CDBB97B2D50CE46 /* Pods-RPA-D.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RPA-D.debug.xcconfig"; path = "Target Support Files/Pods-RPA-D/Pods-RPA-D.debug.xcconfig"; sourceTree = "<group>"; };
 		F2954567F689DF28A11B75A0 /* Pods-RPA-D.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RPA-D.release.xcconfig"; path = "Target Support Files/Pods-RPA-D/Pods-RPA-D.release.xcconfig"; sourceTree = "<group>"; };
@@ -107,13 +109,6 @@
 				05D3FA7B2CE2DD3300AFDC6B /* GetUpCheckViewController.swift */,
 			);
 			path = Driver;
-			sourceTree = "<group>";
-		};
-		05D3FA7E2CE2ECF800AFDC6B /* Manager */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Manager;
 			sourceTree = "<group>";
 		};
 		2D904EE92CE0B04A005CF538 = {
@@ -218,7 +213,7 @@
 		2DE0055F2CE248B8004DE761 /* Main */ = {
 			isa = PBXGroup;
 			children = (
-				05D3FA7E2CE2ECF800AFDC6B /* Manager */,
+				2DF135112CE7C1E300EAA052 /* Manager */,
 				05D3FA7D2CE2ECD900AFDC6B /* Driver */,
 				2DE005632CE248F4004DE761 /* MainViewController.swift */,
 			);
@@ -249,6 +244,14 @@
 				2DE005692CE2492E004DE761 /* ProfileViewController.swift */,
 			);
 			path = Profile;
+			sourceTree = "<group>";
+		};
+		2DF135112CE7C1E300EAA052 /* Manager */ = {
+			isa = PBXGroup;
+			children = (
+				2DF135122CE7C1F200EAA052 /* ManagerMainViewController.swift */,
+			);
+			path = Manager;
 			sourceTree = "<group>";
 		};
 		4046BCD02198D9713B6960FC /* Frameworks */ = {
@@ -409,6 +412,7 @@
 				05D3FA802CE2EE1500AFDC6B /* User.swift in Sources */,
 				059082752CE6D2A500E4D204 /* DispatchModel.swift in Sources */,
 				2D904F1E2CE0B2EC005CF538 /* TemplateHeaderFooterView.swift in Sources */,
+				2DF135132CE7C1F200EAA052 /* ManagerMainViewController.swift in Sources */,
 				2D904F2A2CE0B326005CF538 /* ReferenceValues.swift in Sources */,
 				2D904F2C2CE0B3C2005CF538 /* SplashViewController.swift in Sources */,
 				2D904F202CE0B2F0005CF538 /* TemplateCollectionViewCell.swift in Sources */,
