@@ -36,10 +36,19 @@ final class MainViewController: UIViewController {
         return label
     }()
     
+    lazy var statusImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        
+        return imageView
+    }()
+    
     lazy var statusButton: UIButton = {
         let button = UIButton()
-        button.setTitleColor(.useRGB(red: <#T##CGFloat#>, green: <#T##CGFloat#>, blue: <#T##CGFloat#>), for: .normal)
-        button.titleLabel?.font = .useFont(ofSize: <#T##CGFloat#>, weight: <#T##UIFont.PretendardFontType#>)
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = .useFont(ofSize: 16, weight: .Bold)
         button.backgroundColor = .useRGB(red: 223, green: 52, blue: 52)
         button.layer.cornerRadius = 8
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -47,6 +56,26 @@ final class MainViewController: UIViewController {
         return button
     }()
     
+    lazy var tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.backgroundColor = .useRGB(red: 248, green: 248, blue: 248)
+        tableView.bounces = false
+        tableView.keyboardDismissMode = .onDrag
+        tableView.showsVerticalScrollIndicator = false
+        tableView.register(WorkRateTableViewCell.self, forCellReuseIdentifier: "WorkRateTableViewCell")
+        tableView.register(GoToWorkTableViewCell.self, forCellReuseIdentifier: "GoToWorkTableViewCell")
+        tableView.register(DispatchTableViewCell.self, forCellReuseIdentifier: "DispatchTableViewCell")
+        tableView.register(GetOffWorkTableViewCell.self, forCellReuseIdentifier: "GetOffWorkTableViewCell")
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.sectionHeaderTopPadding = 0
+        tableView.separatorStyle = .none
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        
+        return tableView
+    }()
+    
+    var dispatchIsHiddenStatus: [Bool] = []
     var role: Role = .driver
     
     init() {
@@ -80,6 +109,7 @@ final class MainViewController: UIViewController {
         self.setSubviews()
         self.setLayouts()
         self.setUpNavigationItem()
+        self.setData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -116,12 +146,14 @@ extension MainViewController: EssentialViewMethods {
     }
     
     func setNotificationCenters() {
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadData(_:)), name: Notification.Name("ReloadData"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(workReloadData(_:)), name: Notification.Name("WorkReloadData"), object: nil)
     }
     
     func setSubviews() {
         SupportingMethods.shared.addSubviews([
             self.statusBaseView,
+            self.tableView,
         ], to: self.view)
     }
     
@@ -134,6 +166,14 @@ extension MainViewController: EssentialViewMethods {
             self.statusBaseView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
             self.statusBaseView.topAnchor.constraint(equalTo: safeArea.topAnchor),
             self.statusBaseView.heightAnchor.constraint(equalToConstant: ReferenceValues.Size.Device.width * 236 / 375),
+        ])
+        
+        // tableView
+        NSLayoutConstraint.activate([
+            self.tableView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
+            self.tableView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
+            self.tableView.topAnchor.constraint(equalTo: self.statusBaseView.bottomAnchor),
+            self.tableView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor),
         ])
     }
     
@@ -182,6 +222,11 @@ extension MainViewController: EssentialViewMethods {
         }
         
     }
+    
+    func setData() {
+        self.dispatchIsHiddenStatus = Array(repeating: true, count: 3)
+        
+    }
 }
 
 // MARK: - Extension for methods added
@@ -196,5 +241,74 @@ extension MainViewController {
         let vc = GetUpCheckViewController()
         
         self.present(vc, animated: true)
+    }
+    
+    @objc func reloadData(_ notification: Notification) {
+        guard let index = notification.userInfo?["index"] as? Int else { return }
+        
+        self.dispatchIsHiddenStatus[index].toggle()
+        self.tableView.reloadData()
+//        self.tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
+    }
+    
+    @objc func workReloadData(_ notification: Notification) {
+        self.tableView.reloadData()
+        
+    }
+    
+}
+
+// MARK: - Extension for UITableViewDelegate, UITableViewDataSource
+extension MainViewController: UITableViewDelegate, UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 4
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if section == 2 {
+            return 3
+            
+        } else {
+            return 1
+            
+        }
+        
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if indexPath.section == 0 {
+            // WorkRateTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "WorkRateTableViewCell", for: indexPath) as! WorkRateTableViewCell
+            
+            cell.setCell()
+            
+            return cell
+        } else if indexPath.section == 1 {
+            // GoToWorkTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "GoToWorkTableViewCell", for: indexPath) as! GoToWorkTableViewCell
+            
+            cell.setCell()
+            
+            return cell
+            
+        } else if indexPath.section == 3 {
+            // GetOffWorkTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "GetOffWorkTableViewCell", for: indexPath) as! GetOffWorkTableViewCell
+            
+            cell.setCell()
+            
+            return cell
+            
+        } else {
+            // DispatchTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "DispatchTableViewCell", for: indexPath) as! DispatchTableViewCell
+            
+            cell.dispatchContentBaseView.isHidden = self.dispatchIsHiddenStatus[indexPath.row]
+            cell.setCell(index: indexPath.row)
+            
+            return cell
+            
+        }
+        
     }
 }
