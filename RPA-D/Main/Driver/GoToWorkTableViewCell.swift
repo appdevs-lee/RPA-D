@@ -89,16 +89,23 @@ final class GoToWorkTableViewCell: UITableViewCell {
         return view
     }()
     
-    lazy var wakeWorkView: HourlyWorkView = {
+    lazy var separateView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .useRGB(red: 237, green: 237, blue: 237)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
+    lazy var wakeTimeView: HourlyWorkView = {
         let view = HourlyWorkView()
         view.translatesAutoresizingMaskIntoConstraints = false
         
         return view
     }()
     
-    lazy var separateView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .useRGB(red: 237, green: 237, blue: 237)
+    lazy var attendanceView: HourlyWorkView = {
+        let view = HourlyWorkView()
         view.translatesAutoresizingMaskIntoConstraints = false
         
         return view
@@ -171,6 +178,8 @@ extension GoToWorkTableViewCell {
         
         SupportingMethods.shared.addSubviews([
             self.separateView,
+            self.wakeTimeView,
+            self.attendanceView,
         ], to: self.goToWorkContentBaseView)
     }
     
@@ -229,7 +238,7 @@ extension GoToWorkTableViewCell {
         
         // goToWorkContentBaseView
         NSLayoutConstraint.activate([
-            self.goToWorkContentBaseView.heightAnchor.constraint(equalToConstant: 176),
+//            self.goToWorkContentBaseView.heightAnchor.constraint(equalToConstant: 156),
         ])
         
         // separateView
@@ -239,14 +248,58 @@ extension GoToWorkTableViewCell {
             self.separateView.heightAnchor.constraint(equalToConstant: 1),
             self.separateView.topAnchor.constraint(equalTo: self.goToWorkContentBaseView.topAnchor),
         ])
+        
+        // wakeTimeView
+        NSLayoutConstraint.activate([
+            self.wakeTimeView.leadingAnchor.constraint(equalTo: self.goToWorkContentBaseView.leadingAnchor, constant: 16),
+            self.wakeTimeView.trailingAnchor.constraint(equalTo: self.goToWorkContentBaseView.trailingAnchor, constant: -16),
+            self.wakeTimeView.topAnchor.constraint(equalTo: self.separateView.bottomAnchor, constant: 16),
+        ])
+        
+        // attendanceView
+        NSLayoutConstraint.activate([
+            self.attendanceView.leadingAnchor.constraint(equalTo: self.goToWorkContentBaseView.leadingAnchor, constant: 16),
+            self.attendanceView.trailingAnchor.constraint(equalTo: self.goToWorkContentBaseView.trailingAnchor, constant: -16),
+            self.attendanceView.topAnchor.constraint(equalTo: self.wakeTimeView.bottomAnchor, constant: 16),
+            self.attendanceView.bottomAnchor.constraint(equalTo: self.goToWorkContentBaseView.bottomAnchor, constant: -16),
+        ])
+        
     }
 }
 
 // MARK: - Extension for methods added
 extension GoToWorkTableViewCell {
-    func setCell() {
+    func setCell(routine: RoutineItem?) {
+        guard let routine = routine else { return }
+        guard let firstDispatch = routine.tasks.first else { return }
+        
+        let wakeDate = SupportingMethods.shared.convertString(intoDate: firstDispatch!.departureDate, "yyyy-MM-dd HH:mm")
+        self.wakeTimeView.setData(time: SupportingMethods.shared.calculateDateAsTimeInterval(date: wakeDate, second: .anHourAndAHalfAgo), selectRoutine: .wake)
+        
+        let attendanceDate = SupportingMethods.shared.convertString(intoDate: firstDispatch!.departureDate, "yyyy-MM-dd HH:mm")
+        self.attendanceView.setData(time: SupportingMethods.shared.calculateDateAsTimeInterval(date: attendanceDate, second: .aHourAgo), selectRoutine: .attendance)
+        
+        if routine.goToWork.wakeTime == "" && routine.goToWork.attendanceTime == "" {
+            self.wakeTimeView.on(routineType: .attendance)
+            self.wakeTimeView.activate(selectRoutine: .wake, routineType: .attendance)
+            
+            self.attendanceView.on(routineType: .attendance)
+            
+        } else if routine.goToWork.wakeTime != "" && routine.goToWork.attendanceTime == "" {
+            let wakeTime = SupportingMethods.shared.calculateAMorPM(date: routine.goToWork.wakeTime)
+            self.wakeTimeView.off(time: "\(wakeTime) 완료", selectRoutine: .wake)
+            
+            self.attendanceView.on(routineType: .attendance)
+            self.attendanceView.activate(selectRoutine: .attendance, routineType: .attendance)
+            
+        } else {
+            let attendanceTime = SupportingMethods.shared.calculateAMorPM(date: routine.goToWork.attendanceTime)
+            self.attendanceView.off(time: "\(attendanceTime) 완료", selectRoutine: .attendance)
+            
+        }
         
     }
+    
 }
 
 // MARK: - Extension for methods added
@@ -268,4 +321,3 @@ extension GoToWorkTableViewCell {
     }
     
 }
-

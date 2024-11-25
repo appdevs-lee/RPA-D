@@ -7,6 +7,83 @@
 
 import UIKit
 
+enum RoutineType {
+    case attendance // 근태
+    case dispatch // 배차
+}
+
+enum RoutineText: String {
+    // 제 시간 안에\n아침 점호 및 일일점검을 진행해 주세요.
+    // 제 시간 안에\n운행을 준비해 주세요. 제 시간 안에\n탑승 및 운행을 시작해 주세요. 제 시간 안에\n첫 정류장에 도착해 주세요. 제 시간 안에\n다음 정류장으로 출발해 주세요. 제 시간 안에 운행을 완료해 주세요.
+    // 제 시간 안에\n저녁 점호를 완료해 주세요. 수락 대기중인\n배차를 모두 확인해 주세요. 일정이 끝났습니다\n퇴근 버튼을 눌러주세요
+    
+    case wake = "기상 체크"
+    case attendance = "아침 점호 및 일일점검"
+    case dispatchReady = "운행을 준비해 주세요"
+    case dispatchOn = "탑승 및 운행을 시작해 주세요"
+    case arriveFirstStation = "첫 정류장에 도착해 주세요"
+    case goNextStation = "다음 정류장으로 출발해 주세요"
+    case dispatchOff = "운행을 종료해 주세요."
+    
+    var doneString: String {
+        switch self {
+        case .wake:
+            return "기상 체크 완료"
+        case .attendance:
+            return "아침 점호 및 일일점검 완료"
+        case .dispatchReady:
+            return "운행 준비 완료"
+        case .dispatchOn:
+            return "탑승 및 운행 시작 완료"
+        case .arriveFirstStation:
+            return "첫 정류장 도착 완료"
+        case .goNextStation:
+            return "다음 정류장으로 출발 완료"
+        case .dispatchOff:
+            return "운행 종료"
+        }
+    }
+    
+    var activateString: String {
+        switch self {
+        case .wake:
+            return "제 시간 안에\n기상 체크를 완료해 주세요"
+        case .attendance:
+            return "제 시간 안에\n아침 점호 및 일일점검을 진행해 주세요"
+        case .dispatchReady:
+            return "제 시간 안에\n운행을 준비해 주세요"
+        case .dispatchOn:
+            return "제 시간 안에\n탑승 및 운행을 시작해 주세요."
+        case .arriveFirstStation:
+            return "제 시간 안에\n첫 정류장에 도착해 주세요"
+        case .goNextStation:
+            return "제 시간 안에\n운행을 완료해 주세요"
+        case .dispatchOff:
+            return "운행 종료"
+        }
+    }
+    
+    var targetString: String {
+        switch self {
+        case .wake:
+            return "기상 체크"
+        case .attendance:
+            return "아침 점호 및 일일점검"
+        case .dispatchReady:
+            return "운행을 준비"
+        case .dispatchOn:
+            return "탑승 및 운행을 시작"
+        case .arriveFirstStation:
+            return "첫 정류장에 도착"
+        case .goNextStation:
+            return "운행을 완료"
+        case .dispatchOff:
+            return "운행 종료"
+        }
+    }
+    
+}
+
 class HourlyWorkView: UIView {
     
     lazy var circleView: UIView = {
@@ -33,6 +110,17 @@ class HourlyWorkView: UIView {
         return label
     }()
     
+    lazy var contentStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [self.contentBaseView, self.activateContentBaseView])
+        stackView.axis = .vertical
+        stackView.spacing = 0
+        stackView.distribution = .fill
+        stackView.alignment = .fill
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        
+        return stackView
+    }()
+    
     lazy var contentBaseView: UIView = {
         let view = UIView()
         view.backgroundColor = .useRGB(red: 248, green: 248, blue: 248)
@@ -53,6 +141,7 @@ class HourlyWorkView: UIView {
     lazy var activateContentBaseView: UIView = {
         let view = UIView()
         view.isHidden = true
+        view.layer.cornerRadius = 8
         view.translatesAutoresizingMaskIntoConstraints = false
         
         return view
@@ -70,6 +159,7 @@ class HourlyWorkView: UIView {
     
     lazy var activateImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.image = .useCustomImage("activateImage")
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -82,7 +172,6 @@ class HourlyWorkView: UIView {
         
         self.setSubViews()
         self.setLayouts()
-        self.setData()
     }
     
     required init?(coder: NSCoder) {
@@ -96,12 +185,13 @@ extension HourlyWorkView {
         SupportingMethods.shared.addSubviews([
             self.circleView,
             self.timeLabel,
-            self.stickView,
-            self.contentBaseView,
-            self.activateContentBaseView,
+            self.contentStackView,
+//            self.contentBaseView,
+//            self.activateContentBaseView,
         ], to: self)
         
         SupportingMethods.shared.addSubviews([
+            self.stickView,
             self.contentLabel,
         ], to: self.contentBaseView)
 
@@ -134,12 +224,16 @@ extension HourlyWorkView {
             self.stickView.widthAnchor.constraint(equalToConstant: 1),
         ])
         
+        // contentStackView
+        NSLayoutConstraint.activate([
+            self.contentStackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
+            self.contentStackView.topAnchor.constraint(equalTo: self.timeLabel.bottomAnchor, constant: 2),
+            self.contentStackView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            self.contentStackView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+        ])
+        
         // contentBaseView
         NSLayoutConstraint.activate([
-            self.contentBaseView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
-            self.contentBaseView.topAnchor.constraint(equalTo: self.timeLabel.bottomAnchor, constant: 2),
-            self.contentBaseView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-            self.contentBaseView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             self.contentBaseView.heightAnchor.constraint(equalToConstant: 46),
         ])
         
@@ -152,10 +246,6 @@ extension HourlyWorkView {
         
         // activateContentBaseView
         NSLayoutConstraint.activate([
-            self.activateContentBaseView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            self.activateContentBaseView.topAnchor.constraint(equalTo: self.circleView.bottomAnchor, constant: 8),
-            self.activateContentBaseView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-            self.activateContentBaseView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             self.activateContentBaseView.heightAnchor.constraint(equalToConstant: 72),
         ])
         
@@ -176,23 +266,28 @@ extension HourlyWorkView {
         ])
     }
     
-    func setData() {
+    func setData(time: String, selectRoutine: RoutineText) {
         // 텍스트 및 이미지 설정
         
-        self.timeLabel.text = ""
-        self.contentLabel.text = "" // 운행 준비, 탑승 및 운행을 시작해주세요, 첫 정류장에 도착해주세요, 다음 정류장으로 출발해주세요, 운행을 완료해주세요
+        self.timeLabel.text = time
+        self.contentLabel.text = selectRoutine.rawValue
+        // 기상,
+        // 운행 준비, 탑승 및 운행을 시작해주세요, 첫 정류장에 도착해주세요, 다음 정류장으로 출발해주세요, 운행을 완료해주세요
+        // 저녁 점호 확인, 내일 배차 확인, 퇴근
         
-        self.activateContentLabel.text = "" // 제 시간 안에\n운행을 준비해 주세요. 제 시간 안에\n탑승 및 운행을 시작해 주세요. 제 시간 안에 다음 정류장으로 출발해 주세요. 제 시간 안에 운행을 완료해 주세요.
-        self.activateImageView.image = .useCustomImage("")
+//        self.activateContentLabel.text = ""
+        // 제 시간 안에\n아침 점호 및 일일점검을 진행해 주세요.
+        // 제 시간 안에\n운행을 준비해 주세요. 제 시간 안에\n탑승 및 운행을 시작해 주세요. 제 시간 안에\n첫 정류장에 도착해 주세요. 제 시간 안에\n다음 정류장으로 출발해 주세요. 제 시간 안에 운행을 완료해 주세요.
+        // 제 시간 안에\n저녁 점호를 완료해 주세요. 수락 대기중인\n배차를 모두 확인해 주세요. 일정이 끝났습니다\n퇴근 버튼을 눌러주세요
         
         // FIXME: Status에 따라서 활성화 및 비활성화 및 디자인
-        if true {
-            self.activate(targetString: "", color: .useRGB(red: 223, green: 52, blue: 52))
-            
-        } else {
-            self.deactivate()
-            
-        }
+//        if false {
+//            self.activate(text: "", targetString: "", color: .useRGB(red: 223, green: 52, blue: 52))
+//            
+//        } else {
+//            self.deactivate()
+//            
+//        }
         
     }
     
@@ -200,23 +295,58 @@ extension HourlyWorkView {
 
 // MARK: - Extension for methods added
 extension HourlyWorkView {
-    func on() {
+    func on(routineType: RoutineType) {
+        switch routineType {
+        case .attendance:
+            self.circleView.backgroundColor = .useRGB(red: 25, green: 98, blue: 255)
+            
+        case .dispatch:
+            self.circleView.backgroundColor = .useRGB(red: 223, green: 52, blue: 52)
+            
+        }
+        self.timeLabel.textColor = .useRGB(red: 148, green: 147, blue: 147)
+        self.contentLabel.textColor = .useRGB(red: 46, green: 45, blue: 45)
         
     }
     
-    func off() {
+    func off(time: String, selectRoutine: RoutineText) {
         self.deactivate()
+        self.circleView.backgroundColor = .useRGB(red: 196, green: 195, blue: 195)
+        
+        self.timeLabel.text = time
+        self.timeLabel.textColor = .useRGB(red: 196, green: 195, blue: 195)
+        
+        self.contentLabel.text = selectRoutine.doneString
+        self.contentLabel.textColor = .useRGB(red: 196, green: 195, blue: 195)
         
     }
     
-    func activate(targetString: String = "", color: UIColor) {
+    func activate(selectRoutine: RoutineText, routineType: RoutineType) {
+        // 제 시간 안에\n아침 점호 및 일일점검을 진행해 주세요.
+        // 제 시간 안에\n운행을 준비해 주세요. 제 시간 안에\n탑승 및 운행을 시작해 주세요. 제 시간 안에\n첫 정류장에 도착해 주세요. 제 시간 안에\n다음 정류장으로 출발해 주세요. 제 시간 안에 운행을 완료해 주세요.
+        // 제 시간 안에\n저녁 점호를 완료해 주세요. 수락 대기중인\n배차를 모두 확인해 주세요. 일정이 끝났습니다\n퇴근 버튼을 눌러주세요
         self.activateContentBaseView.isHidden = false
+        self.contentBaseView.isHidden = true
         
-        self.activateContentLabel.asColor(targetString: targetString, color: color)
+        self.activateContentLabel.text = selectRoutine.activateString
+        switch routineType {
+        case .attendance:
+            self.circleView.backgroundColor = .useRGB(red: 25, green: 98, blue: 255)
+            self.activateContentBaseView.backgroundColor = .useRGB(red: 238, green: 244, blue: 255)
+            self.activateContentLabel.asFontColor(targetString: selectRoutine.targetString, font: .useFont(ofSize: 18, weight: .Bold), color: .useRGB(red: 25, green: 98, blue: 255))
+            
+        case .dispatch:
+            self.circleView.backgroundColor = .useRGB(red: 223, green: 52, blue: 52)
+            self.activateContentBaseView.backgroundColor = .useRGB(red: 255, green: 245, blue: 245)
+            self.activateContentLabel.asFontColor(targetString: selectRoutine.targetString, font: .useFont(ofSize: 18, weight: .Bold), color: .useRGB(red: 223, green: 52, blue: 52))
+            
+        }
+        
     }
     
     func deactivate() {
         self.activateContentBaseView.isHidden = true
+        self.contentBaseView.isHidden = false
         
     }
     

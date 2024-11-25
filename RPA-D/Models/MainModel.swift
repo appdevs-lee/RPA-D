@@ -1,0 +1,165 @@
+//
+//  MainModel.swift
+//  RPA-D
+//
+//  Created by Awesomepia on 11/25/24.
+//
+
+import UIKit
+import Alamofire
+
+final class MainModel {
+    // 하루 일과 정보
+    private(set) var loadDailyRoutineDataRequest: DataRequest?
+    
+    func loadDailyRoutineDataRequest(success: ((RoutineItem) -> ())?, failure: ((_ message: String) -> ())?) {
+        let checkHour = String(SupportingMethods.shared.convertDate(intoString: Date(), "yyyy-MM-dd HH:mm").split(separator: " ")[1].split(separator: ":")[0])
+        var date = ""
+        if Int(checkHour)! < 04 {
+            date = SupportingMethods.shared.convertDate(intoString: Date(timeIntervalSinceNow: -86400))
+            
+        } else {
+            date = SupportingMethods.shared.convertDate(intoString: Date())
+            
+        }
+        
+        let url = ServerSetting.server.URL + "/dispatch/daily/routine/\(date)"
+        
+        let headers: HTTPHeaders = [
+            "accept": "application/json",
+            "Authorization": ReferenceValues.accessToken
+        ]
+        
+        self.loadDailyRoutineDataRequest = AF.request(url, method: .get, parameters: nil, encoding: URLEncoding.default, headers: headers)
+        
+        self.loadDailyRoutineDataRequest?.responseData { (response) in
+            switch response.result {
+            case .success(let data):
+                guard let statusCode = response.response?.statusCode else {
+                    print("loadDailyRoutineDataRequest failure: statusCode nil")
+                    failure?("statusCodeNil")
+                    
+                    return
+                }
+                
+                guard statusCode >= 200 && statusCode < 300 else {
+                    print("loadDailyRoutineDataRequest failure: statusCode(\(statusCode))")
+                    failure?("statusCodeError")
+                    
+                    return
+                }
+                
+                if let decodedData = try? JSONDecoder().decode(Routine.self, from: data) {
+                    print("loadDailyRoutineDataRequest succeeded")
+                    success?(decodedData.data)
+                    
+                } else {
+                    print("loadDailyRoutineDataRequest failure: API 성공, Parsing 실패")
+                    failure?("API 성공, Parsing 실패")
+                }
+                
+            case .failure(let error):
+                print("loadDailyRoutineDataRequest error: \(error.localizedDescription)")
+                failure?(error.localizedDescription)
+            }
+        }
+    }
+}
+
+struct Routine: Codable {
+    let data: RoutineItem
+}
+
+struct RoutineItem: Codable {
+    let status: String
+    let info: RoutineStatusInfo
+    let goToWork: RoutineGoToWork
+    let tasks: [RoutineDispatch?]
+    let getOffWork: RoutineGetOffWork
+    
+    enum CodingKeys: String, CodingKey {
+        case status
+        case info
+        case goToWork = "go_to_work"
+        case tasks
+        case getOffWork = "get_off_work"
+    }
+}
+
+struct RoutineStatusInfo: Codable {
+    let dispatchId: Int?
+    let workType: String?
+    let departureTime: String
+    let busId: Int?
+    let busNum: String
+    let departure: String
+    let status: String
+    
+    enum CodingKeys: String, CodingKey {
+        case dispatchId = "dispatch_id"
+        case workType = "work_type"
+        case departureTime = "departure_time"
+        case busId = "bus_id"
+        case busNum = "bus_num"
+        case departure
+        case status
+    }
+}
+
+struct RoutineGoToWork: Codable {
+    let wakeTime: String
+    let attendanceTime: String
+    
+    enum CodingKeys: String, CodingKey {
+        case wakeTime = "wake_time"
+        case attendanceTime = "attendance_time"
+    }
+}
+
+struct RoutineDispatch: Codable {
+    let dispatchId: Int?
+    let workType: String
+    let busId: Int?
+    let busNum: String
+    let departure: String
+    let departureDate: String
+    let arrival: String
+    let arrivalDate: String
+    let status: String
+    let statusInfo: [StatusInfo]
+    
+    enum CodingKeys: String, CodingKey {
+        case dispatchId = "dispatch_id"
+        case workType = "work_type"
+        case busId = "bus_id"
+        case busNum = "bus_num"
+        case departure
+        case departureDate = "departure_date"
+        case arrival
+        case arrivalDate = "arrival_date"
+        case status
+        case statusInfo = "status_info"
+    }
+}
+
+struct RoutineGetOffWork: Codable {
+    let rollCallTime: String
+    let tomorrowDispatchCheckTime: String
+    let getOffTime: String
+    
+    enum CodingKeys: String, CodingKey {
+        case rollCallTime = "roll_call_time"
+        case tomorrowDispatchCheckTime = "tomorrow_dispatch_check_time"
+        case getOffTime = "get_off_time"
+    }
+}
+
+struct StatusInfo: Codable {
+    let statusName: String
+    let completionTime: String
+    
+    enum CodingKeys: String, CodingKey {
+        case statusName = "status_name"
+        case completionTime = "completion_time"
+    }
+}

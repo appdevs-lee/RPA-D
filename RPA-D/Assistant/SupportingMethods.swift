@@ -427,6 +427,35 @@ extension SupportingMethods {
         return formatter.string(from: date)
     }
     
+    func calculateAMorPM(date: String) -> String {
+        var result: String = ""
+        let dateString = date.split(separator: ":")
+        if Int(dateString[0])! < 12 {
+            result = "오전 \(date)"
+            
+        } else {
+            result = "오후 \(date)"
+            
+        }
+        
+        return result
+    }
+    
+    enum TimeIntervalSecond: Int {
+        case halfAnHourAgo = 1800 // 30분 전
+        case aHourAgo = 3600 // 1시간 전
+        case anHourAndAHalfAgo = 5400 // 1시간 30분 전
+    }
+    
+    func calculateDateAsTimeInterval(date: Date, second: TimeIntervalSecond) -> String {
+        var result: String = ""
+        let calculatedDate = self.calculateDate(byValue: -second.rawValue, component: .second, date: date)
+        
+        result = SupportingMethods.shared.convertDate(intoString: calculatedDate, "a HH:mm")
+        
+        return result
+    }
+    
     func calculateDate(byValue value: Int, component: Calendar.Component, date: Date? = nil) -> Date {
         let selectedDate = date != nil ? date : Date()
         

@@ -78,6 +78,12 @@ final class MainViewController: UIViewController {
     var dispatchIsHiddenStatus: [Bool] = []
     var role: Role = .driver
     
+    let mainModel = MainModel()
+    var routine: RoutineItem?
+    var goToWorkData: RoutineGoToWork?
+    var dispatchList: [RoutineDispatch?] = []
+    var getOffWorkData: RoutineGetOffWork?
+    
     init() {
         switch User.shared.role {
         case "운전원":
@@ -224,14 +230,56 @@ extension MainViewController: EssentialViewMethods {
     }
     
     func setData() {
-        self.dispatchIsHiddenStatus = Array(repeating: true, count: 3)
+        self.loadDailyRoutineDataRequest { item in
+            print("routine Item: \(item)")
+            self.routine = item
+            
+            if item.tasks.isEmpty {
+                
+            } else {
+                self.goToWorkData = item.goToWork
+                self.dispatchList = item.tasks
+                self.getOffWorkData = item.getOffWork
+                
+                self.dispatchIsHiddenStatus = Array(repeating: true, count: self.dispatchList.count)
+                
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                    
+                }
+                
+            }
+            
+            
+            
+            if item.goToWork.wakeTime == "" {
+//                let vc = GetUpCheckViewController()
+//                
+//                self.present(vc, animated: false)
+            } else {
+                
+            }
+            
+        }
         
     }
 }
 
 // MARK: - Extension for methods added
 extension MainViewController {
-    
+    func loadDailyRoutineDataRequest(success: ((RoutineItem) -> ())?) {
+        self.mainModel.loadDailyRoutineDataRequest { item in
+            success?(item)
+            
+        } failure: { message in
+            SupportingMethods.shared.checkExpiration {
+                print("loadDailyRoutineDataRequest API Error: \(message)")
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+        }
+
+    }
 }
 
 // MARK: - Extension for selector methods
@@ -266,7 +314,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 2 {
-            return 3
+            return self.dispatchList.count
             
         } else {
             return 1
@@ -287,7 +335,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
             // GoToWorkTableViewCell
             let cell = tableView.dequeueReusableCell(withIdentifier: "GoToWorkTableViewCell", for: indexPath) as! GoToWorkTableViewCell
             
-            cell.setCell()
+            cell.setCell(routine: self.routine)
             
             return cell
             
@@ -312,3 +360,4 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         
     }
 }
+
