@@ -29,6 +29,19 @@ final class GetOffWorkTableViewCell: UITableViewCell {
         return view
     }()
     
+    lazy var getOffWorkTitleLabelButton: UIButton = {
+        let button = UIButton()
+        button.isEnabled = false
+        button.setTitle("퇴근", for: .normal)
+        button.setTitleColor(.useRGB(red: 25, green: 98, blue: 255), for: .normal)
+        button.titleLabel?.font = .useFont(ofSize: 14, weight: .Medium)
+        button.backgroundColor = .useRGB(red: 233, green: 240, blue: 255)
+        button.layer.cornerRadius = 4
+        button.translatesAutoresizingMaskIntoConstraints = false
+        
+        return button
+    }()
+    
     lazy var foldAndOpenButton: UIButton = {
         let button = UIButton()
         button.setImage(.useCustomImage("routine.down"), for: .normal)
@@ -122,6 +135,7 @@ extension GetOffWorkTableViewCell {
         ], to: self)
         
         SupportingMethods.shared.addSubviews([
+            self.getOffWorkTitleLabelButton,
             self.foldAndOpenButton,
             self.getOffWorkTitleButton,
         ], to: self.getOffWorkTitleBaseView)
@@ -156,6 +170,14 @@ extension GetOffWorkTableViewCell {
             self.getOffWorkTitleBaseView.heightAnchor.constraint(equalToConstant: 62),
         ])
         
+        // getOffWorkTitleLabelButton
+        NSLayoutConstraint.activate([
+            self.getOffWorkTitleLabelButton.leadingAnchor.constraint(equalTo: self.getOffWorkTitleBaseView.leadingAnchor, constant: 16),
+            self.getOffWorkTitleLabelButton.centerYAnchor.constraint(equalTo: self.getOffWorkTitleBaseView.centerYAnchor),
+            self.getOffWorkTitleLabelButton.widthAnchor.constraint(equalToConstant: 50),
+            self.getOffWorkTitleLabelButton.heightAnchor.constraint(equalToConstant: 30),
+        ])
+        
         // foldAndOpenButton
         NSLayoutConstraint.activate([
             self.foldAndOpenButton.centerYAnchor.constraint(equalTo: self.getOffWorkTitleBaseView.centerYAnchor),
@@ -184,9 +206,11 @@ extension GetOffWorkTableViewCell {
     func setCell() {
         if self.getOffWorkContentBaseView.isHidden == true {
             self.foldAndOpenButton.setImage(.useCustomImage("routine.down"), for: .normal)
+            self.getOffWorkTitleBaseView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner]
             
         } else {
             self.foldAndOpenButton.setImage(.useCustomImage("routine.up"), for: .normal)
+            self.getOffWorkTitleBaseView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
             
         }
         

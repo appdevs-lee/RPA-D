@@ -49,6 +49,19 @@ final class GoToWorkTableViewCell: UITableViewCell {
         return view
     }()
     
+    lazy var goToWorkTitleLabelButton: UIButton = {
+        let button = UIButton()
+        button.isEnabled = false
+        button.setTitle("출근", for: .normal)
+        button.setTitleColor(.useRGB(red: 25, green: 98, blue: 255), for: .normal)
+        button.titleLabel?.font = .useFont(ofSize: 14, weight: .Medium)
+        button.backgroundColor = .useRGB(red: 233, green: 240, blue: 255)
+        button.layer.cornerRadius = 4
+        button.translatesAutoresizingMaskIntoConstraints = false
+        
+        return button
+    }()
+    
     lazy var foldAndOpenButton: UIButton = {
         let button = UIButton()
         button.setImage(.useCustomImage("routine.down"), for: .normal)
@@ -71,6 +84,13 @@ final class GoToWorkTableViewCell: UITableViewCell {
         view.backgroundColor = .white
         view.layer.cornerRadius = 12
         view.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
+    lazy var wakeWorkView: HourlyWorkView = {
+        let view = HourlyWorkView()
         view.translatesAutoresizingMaskIntoConstraints = false
         
         return view
@@ -144,6 +164,7 @@ extension GoToWorkTableViewCell {
         ], to: self)
         
         SupportingMethods.shared.addSubviews([
+            self.goToWorkTitleLabelButton,
             self.foldAndOpenButton,
             self.goToWorkTitleButton,
         ], to: self.goToWorkTitleBaseView)
@@ -190,6 +211,14 @@ extension GoToWorkTableViewCell {
             self.goToWorkTitleBaseView.heightAnchor.constraint(equalToConstant: 62),
         ])
         
+        // goToWorkTitleLabelButton
+        NSLayoutConstraint.activate([
+            self.goToWorkTitleLabelButton.leadingAnchor.constraint(equalTo: self.goToWorkTitleBaseView.leadingAnchor, constant: 16),
+            self.goToWorkTitleLabelButton.centerYAnchor.constraint(equalTo: self.goToWorkTitleBaseView.centerYAnchor),
+            self.goToWorkTitleLabelButton.widthAnchor.constraint(equalToConstant: 50),
+            self.goToWorkTitleLabelButton.heightAnchor.constraint(equalToConstant: 30),
+        ])
+        
         // foldAndOpenButton
         NSLayoutConstraint.activate([
             self.foldAndOpenButton.centerYAnchor.constraint(equalTo: self.goToWorkTitleBaseView.centerYAnchor),
@@ -228,9 +257,11 @@ extension GoToWorkTableViewCell {
         
         if self.goToWorkContentBaseView.isHidden == true {
             self.foldAndOpenButton.setImage(.useCustomImage("routine.down"), for: .normal)
+            self.goToWorkTitleBaseView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner]
             
         } else {
             self.foldAndOpenButton.setImage(.useCustomImage("routine.up"), for: .normal)
+            self.goToWorkTitleBaseView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
             
         }
         

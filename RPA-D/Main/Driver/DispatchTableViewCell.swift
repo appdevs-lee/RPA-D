@@ -29,6 +29,19 @@ final class DispatchTableViewCell: UITableViewCell {
         return view
     }()
     
+    lazy var dispatchTitleLabelButton: UIButton = {
+        let button = UIButton()
+        button.isEnabled = false
+        button.setTitle("배차", for: .normal)
+        button.setTitleColor(.useRGB(red: 223, green: 52, blue: 52), for: .normal)
+        button.titleLabel?.font = .useFont(ofSize: 14, weight: .Medium)
+        button.backgroundColor = .useRGB(red: 255, green: 245, blue: 245)
+        button.layer.cornerRadius = 4
+        button.translatesAutoresizingMaskIntoConstraints = false
+        
+        return button
+    }()
+    
     lazy var foldAndOpenButton: UIButton = {
         let button = UIButton()
         button.setImage(.useCustomImage("routine.down"), for: .normal)
@@ -124,6 +137,7 @@ extension DispatchTableViewCell {
         ], to: self)
         
         SupportingMethods.shared.addSubviews([
+            self.dispatchTitleLabelButton,
             self.foldAndOpenButton,
             self.dispatchTitleButton,
         ], to: self.dispatchTitleBaseView)
@@ -158,6 +172,14 @@ extension DispatchTableViewCell {
             self.dispatchTitleBaseView.heightAnchor.constraint(equalToConstant: 62),
         ])
         
+        // dispatchTitleLabelButton
+        NSLayoutConstraint.activate([
+            self.dispatchTitleLabelButton.leadingAnchor.constraint(equalTo: self.dispatchTitleBaseView.leadingAnchor, constant: 16),
+            self.dispatchTitleLabelButton.centerYAnchor.constraint(equalTo: self.dispatchTitleBaseView.centerYAnchor),
+            self.dispatchTitleLabelButton.widthAnchor.constraint(equalToConstant: 50),
+            self.dispatchTitleLabelButton.heightAnchor.constraint(equalToConstant: 30),
+        ])
+        
         // foldAndOpenButton
         NSLayoutConstraint.activate([
             self.foldAndOpenButton.centerYAnchor.constraint(equalTo: self.dispatchTitleBaseView.centerYAnchor),
@@ -188,11 +210,14 @@ extension DispatchTableViewCell {
         
         if self.dispatchContentBaseView.isHidden == true {
             self.foldAndOpenButton.setImage(.useCustomImage("routine.down"), for: .normal)
+            self.dispatchTitleBaseView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner]
             
         } else {
             self.foldAndOpenButton.setImage(.useCustomImage("routine.up"), for: .normal)
+            self.dispatchTitleBaseView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
             
         }
+        
     }
 }
 
