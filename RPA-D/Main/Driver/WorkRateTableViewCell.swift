@@ -32,7 +32,7 @@ final class WorkRateTableViewCell: UITableViewCell {
     
     lazy var rateTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "퇴근까지 80% 남았어요"
+        label.text = "퇴근까지 0% 남았어요"
         label.textColor = .useRGB(red: 55, green: 55, blue: 55)
         label.font = .useFont(ofSize: 18, weight: .Medium)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -56,7 +56,7 @@ final class WorkRateTableViewCell: UITableViewCell {
         progressView.trackTintColor = .useRGB(red: 233, green: 232, blue: 233)
         progressView.layer.cornerRadius = 5
         progressView.layer.masksToBounds = true
-        progressView.progress = 0.8
+        progressView.progress = 0
         
         progressView.progressViewStyle = .bar
         progressView.translatesAutoresizingMaskIntoConstraints = false
@@ -83,6 +83,8 @@ final class WorkRateTableViewCell: UITableViewCell {
         
         return label
     }()
+    
+    var rateImageViewLeadingLayoutConstraint: NSLayoutConstraint!
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -178,8 +180,9 @@ extension WorkRateTableViewCell {
         ])
         
         // rateImageView
+        self.rateImageViewLeadingLayoutConstraint = self.rateImageView.leadingAnchor.constraint(equalTo: self.progressView.leadingAnchor, constant: (ReferenceValues.Size.Device.width - 84) * CGFloat(self.progressView.progress) - 32)
         NSLayoutConstraint.activate([
-            self.rateImageView.leadingAnchor.constraint(equalTo: self.progressView.leadingAnchor, constant: (ReferenceValues.Size.Device.width - 84) * CGFloat(self.progressView.progress) - 32),
+            self.rateImageViewLeadingLayoutConstraint,
             self.rateImageView.topAnchor.constraint(equalTo: self.rateTitleLabel.bottomAnchor, constant: 10),
             self.rateImageView.bottomAnchor.constraint(equalTo: self.progressView.topAnchor),
             self.rateImageView.widthAnchor.constraint(equalToConstant: 52),
@@ -209,8 +212,55 @@ extension WorkRateTableViewCell {
 
 // MARK: - Extension for methods added
 extension WorkRateTableViewCell {
-    func setCell() {
+    func setCell(routine: RoutineItem?) {
+        guard let routine = routine else { return }
+        
+        var sumCount = 0
+        if routine.goToWork.wakeTime != "" {
+            sumCount += 1
+            
+        }
+        
+        if routine.goToWork.attendanceTime != "" {
+            sumCount += 1
+            
+        }
+        
+        if !routine.tasks.isEmpty {
+            for task in routine.tasks {
+                for info in task!.statusInfo {
+                    if info.completionTime != "" {
+                        sumCount += 1
+                        
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        
+        if routine.getOffWork.rollCallTime != "" {
+            sumCount += 1
+            
+        }
+        
+        if routine.getOffWork.tomorrowDispatchCheckTime != "" {
+            sumCount += 1
+            
+        }
+        
+        if routine.getOffWork.getOffTime != "" {
+            sumCount += 1
+            
+        }
+        
+        let rate = sumCount / (routine.tasks.count * 5 + 5)
+        self.rateTitleLabel.text = "퇴근까지 \(rate)% 남았어요"
+        self.progressView.progress = Float(rate)
+        self.rateImageViewLeadingLayoutConstraint.constant = (ReferenceValues.Size.Device.width - 84) * CGFloat(self.progressView.progress) - 32
         
     }
+    
 }
 

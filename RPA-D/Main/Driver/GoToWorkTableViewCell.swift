@@ -265,6 +265,7 @@ extension GoToWorkTableViewCell {
         ])
         
     }
+    
 }
 
 // MARK: - Extension for methods added
@@ -273,6 +274,8 @@ extension GoToWorkTableViewCell {
         guard let routine = routine else { return }
         guard let firstDispatch = routine.tasks.first else { return }
         
+        self.dispatchCountLabel.text = "지정된 배차 건수 : \(routine.tasks.count)건"
+        
         let wakeDate = SupportingMethods.shared.convertString(intoDate: firstDispatch!.departureDate, "yyyy-MM-dd HH:mm")
         self.wakeTimeView.setData(time: SupportingMethods.shared.calculateDateAsTimeInterval(date: wakeDate, second: .anHourAndAHalfAgo), selectRoutine: .wake)
         
@@ -280,21 +283,34 @@ extension GoToWorkTableViewCell {
         self.attendanceView.setData(time: SupportingMethods.shared.calculateDateAsTimeInterval(date: attendanceDate, second: .aHourAgo), selectRoutine: .attendance)
         
         if routine.goToWork.wakeTime == "" && routine.goToWork.attendanceTime == "" {
+            // 기상 안누름
             self.wakeTimeView.on(routineType: .attendance)
             self.wakeTimeView.activate(selectRoutine: .wake, routineType: .attendance)
             
             self.attendanceView.on(routineType: .attendance)
             
         } else if routine.goToWork.wakeTime != "" && routine.goToWork.attendanceTime == "" {
-            let wakeTime = SupportingMethods.shared.calculateAMorPM(date: routine.goToWork.wakeTime)
-            self.wakeTimeView.off(time: "\(wakeTime) 완료", selectRoutine: .wake)
+            // 아침점호 및 일일점검 진행 안 함.
+//            let wakeTime = SupportingMethods.shared.calculateAMorPM(date: routine.goToWork.wakeTime)
+            self.wakeTimeView.off(selectRoutine: .wake)
             
             self.attendanceView.on(routineType: .attendance)
             self.attendanceView.activate(selectRoutine: .attendance, routineType: .attendance)
             
         } else {
-            let attendanceTime = SupportingMethods.shared.calculateAMorPM(date: routine.goToWork.attendanceTime)
-            self.attendanceView.off(time: "\(attendanceTime) 완료", selectRoutine: .attendance)
+            // 기상 및 아침점호, 일일점검 완료
+//            let attendanceTime = SupportingMethods.shared.calculateAMorPM(date: routine.goToWork.attendanceTime)
+            self.attendanceView.off(selectRoutine: .attendance)
+            
+        }
+        
+        if self.goToWorkContentBaseView.isHidden == true {
+            self.foldAndOpenButton.setImage(.useCustomImage("routine.down"), for: .normal)
+            self.goToWorkTitleBaseView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner]
+            
+        } else {
+            self.foldAndOpenButton.setImage(.useCustomImage("routine.up"), for: .normal)
+            self.goToWorkTitleBaseView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
             
         }
         
@@ -307,16 +323,6 @@ extension GoToWorkTableViewCell {
     @objc func goToWorkTitleButton(_ sender: UIButton) {
         self.goToWorkContentBaseView.isHidden.toggle()
         NotificationCenter.default.post(name: Notification.Name("WorkReloadData"), object: nil)
-        
-        if self.goToWorkContentBaseView.isHidden == true {
-            self.foldAndOpenButton.setImage(.useCustomImage("routine.down"), for: .normal)
-            self.goToWorkTitleBaseView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner]
-            
-        } else {
-            self.foldAndOpenButton.setImage(.useCustomImage("routine.up"), for: .normal)
-            self.goToWorkTitleBaseView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-            
-        }
         
     }
     

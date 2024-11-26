@@ -24,6 +24,9 @@ enum RoutineText: String {
     case arriveFirstStation = "첫 정류장에 도착해 주세요"
     case goNextStation = "다음 정류장으로 출발해 주세요"
     case dispatchOff = "운행을 종료해 주세요."
+    case rollCall = "저녁 점호를 진행해 주세요"
+    case dispatchCheck = "내일 배차 확인"
+    case getOffWork = "퇴근"
     
     var doneString: String {
         switch self {
@@ -41,6 +44,12 @@ enum RoutineText: String {
             return "다음 정류장으로 출발 완료"
         case .dispatchOff:
             return "운행 종료"
+        case .rollCall:
+            return "저녁 점호 완료"
+        case .dispatchCheck:
+            return "배차 확인 완료"
+        case .getOffWork:
+            return "퇴근 완료"
         }
     }
     
@@ -49,7 +58,7 @@ enum RoutineText: String {
         case .wake:
             return "제 시간 안에\n기상 체크를 완료해 주세요"
         case .attendance:
-            return "제 시간 안에\n아침 점호 및 일일점검을 진행해 주세요"
+            return "제 시간 안에\n아침 업무를 진행해 주세요"
         case .dispatchReady:
             return "제 시간 안에\n운행을 준비해 주세요"
         case .dispatchOn:
@@ -60,6 +69,12 @@ enum RoutineText: String {
             return "제 시간 안에\n운행을 완료해 주세요"
         case .dispatchOff:
             return "운행 종료"
+        case .rollCall:
+            return "퇴근 전에\n저녁 점호를 완료해 주세요"
+        case .dispatchCheck:
+            return "수락 대기중인\n배차를 모두 확인해 주세요"
+        case .getOffWork:
+            return "고생하셨습니다.\n퇴근을 눌러주세요."
         }
     }
     
@@ -68,7 +83,7 @@ enum RoutineText: String {
         case .wake:
             return "기상 체크"
         case .attendance:
-            return "아침 점호 및 일일점검"
+            return "아침 업무를 진행"
         case .dispatchReady:
             return "운행을 준비"
         case .dispatchOn:
@@ -79,6 +94,12 @@ enum RoutineText: String {
             return "운행을 완료"
         case .dispatchOff:
             return "운행 종료"
+        case .rollCall:
+            return "저녁 점호"
+        case .dispatchCheck:
+            return "배차를 모두"
+        case .getOffWork:
+            return "퇴근"
         }
     }
     
@@ -309,11 +330,11 @@ extension HourlyWorkView {
         
     }
     
-    func off(time: String, selectRoutine: RoutineText) {
+    func off(selectRoutine: RoutineText) {
         self.deactivate()
         self.circleView.backgroundColor = .useRGB(red: 196, green: 195, blue: 195)
         
-        self.timeLabel.text = time
+        self.timeLabel.text! += " 완료"
         self.timeLabel.textColor = .useRGB(red: 196, green: 195, blue: 195)
         
         self.contentLabel.text = selectRoutine.doneString

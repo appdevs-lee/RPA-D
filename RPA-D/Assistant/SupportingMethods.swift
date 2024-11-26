@@ -442,7 +442,7 @@ extension SupportingMethods {
     }
     
     enum TimeIntervalSecond: Int {
-        case halfAnHourAgo = 1800 // 30분 전
+        case twentyMintesAgo = 1200 // 30분 전
         case aHourAgo = 3600 // 1시간 전
         case anHourAndAHalfAgo = 5400 // 1시간 30분 전
     }

@@ -10,6 +10,7 @@
 		059082752CE6D2A500E4D204 /* DispatchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 059082742CE6D2A500E4D204 /* DispatchModel.swift */; };
 		05A015542CF40D47004D0844 /* HourlyWorkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05A015532CF40D47004D0844 /* HourlyWorkView.swift */; };
 		05A015582CF497AA004D0844 /* MainModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05A015572CF497AA004D0844 /* MainModel.swift */; };
+		05A0155A2CF58305004D0844 /* StatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05A015592CF58305004D0844 /* StatusView.swift */; };
 		05A227402CEC225C00C07662 /* WorkRateTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05A2273F2CEC225C00C07662 /* WorkRateTableViewCell.swift */; };
 		05A227422CEC228700C07662 /* GoToWorkTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05A227412CEC228700C07662 /* GoToWorkTableViewCell.swift */; };
 		05A227442CEC228C00C07662 /* DispatchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05A227432CEC228C00C07662 /* DispatchTableViewCell.swift */; };
@@ -56,6 +57,7 @@
 		059082742CE6D2A500E4D204 /* DispatchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchModel.swift; sourceTree = "<group>"; };
 		05A015532CF40D47004D0844 /* HourlyWorkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourlyWorkView.swift; sourceTree = "<group>"; };
 		05A015572CF497AA004D0844 /* MainModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainModel.swift; sourceTree = "<group>"; };
+		05A015592CF58305004D0844 /* StatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusView.swift; sourceTree = "<group>"; };
 		05A2273F2CEC225C00C07662 /* WorkRateTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkRateTableViewCell.swift; sourceTree = "<group>"; };
 		05A227412CEC228700C07662 /* GoToWorkTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoToWorkTableViewCell.swift; sourceTree = "<group>"; };
 		05A227432CEC228C00C07662 /* DispatchTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchTableViewCell.swift; sourceTree = "<group>"; };
@@ -119,6 +121,7 @@
 			isa = PBXGroup;
 			children = (
 				05A015532CF40D47004D0844 /* HourlyWorkView.swift */,
+				05A015592CF58305004D0844 /* StatusView.swift */,
 			);
 			path = CustomView;
 			sourceTree = "<group>";
@@ -427,6 +430,7 @@
 				05A227402CEC225C00C07662 /* WorkRateTableViewCell.swift in Sources */,
 				2DE0056A2CE2492E004DE761 /* ProfileViewController.swift in Sources */,
 				2D904EF62CE0B04A005CF538 /* AppDelegate.swift in Sources */,
+				05A0155A2CF58305004D0844 /* StatusView.swift in Sources */,
 				05A015582CF497AA004D0844 /* MainModel.swift in Sources */,
 				2D904F292CE0B326005CF538 /* NetworkMonitor.swift in Sources */,
 				2D904F212CE0B2F2005CF538 /* ViewPagerCollectionViewCell.swift in Sources */,

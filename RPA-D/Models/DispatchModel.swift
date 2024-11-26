@@ -17,6 +17,8 @@ final class DispatchModel {
     private(set) var loadDispatchMonthlyRequest: DataRequest?
     // 배차 수락 및 거부
     private(set) var sendDispatchConnectCheckDataRequest: DataRequest?
+    // 운행 확인
+    private(set) var sendDispatchInfoUpdateRequest: DataRequest?
     
     func loadDispatchDailyListRequest(date: String, success: (([DispatchDailyItem]) -> ())?, failure: ((_ message: String) -> ())?) {
         let url = ServerSetting.server.URL + "/dispatch/daily/list/\(date)"
@@ -193,6 +195,50 @@ final class DispatchModel {
                 
             case .failure(let error):
                 print("sendDispatchConnectCheckDataRequest error: \(error.localizedDescription)")
+                failure?(error.localizedDescription)
+            }
+        }
+    }
+    
+    func sendDispatchInfoUpdateRequest(id: Int, workType: String, type: String, time: String, success: (() -> ())?, failure: ((_ message: String) -> ())?) {
+        let url = ServerSetting.server.URL + "/dispatch/check2"
+        
+        let headers: HTTPHeaders = [
+            "accept": "application/json",
+            "Authorization": ReferenceValues.accessToken
+        ]
+        
+        let parameters: Parameters = [
+            "id": "\(id)",
+            "work_type": workType,
+            "type": type,
+            "time": time,
+        ]
+        
+        self.sendDispatchInfoUpdateRequest = AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
+        
+        self.sendDispatchInfoUpdateRequest?.responseData { (response) in
+            switch response.result {
+            case .success(_):
+                guard let statusCode = response.response?.statusCode else {
+                    print("sendDispatchInfoUpdateRequest failure: statusCode nil")
+                    failure?("statusCodeNil")
+                    
+                    return
+                }
+                
+                guard statusCode >= 200 && statusCode < 300 else {
+                    print("sendDispatchInfoUpdateRequest failure: statusCode(\(statusCode))")
+                    failure?("statusCodeError")
+                    
+                    return
+                }
+                
+                print("sendDispatchInfoUpdateRequest succeeded")
+                success?()
+                
+            case .failure(let error):
+                print("sendDispatchInfoUpdateRequest error: \(error.localizedDescription)")
                 failure?(error.localizedDescription)
             }
         }

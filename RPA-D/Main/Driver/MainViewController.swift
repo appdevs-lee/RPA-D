@@ -9,9 +9,67 @@ import UIKit
 
 final class MainViewController: UIViewController {
     
+    lazy var noRoutineDataBaseView: UIView = {
+        let view = UIView()
+        view.isHidden = true
+        view.backgroundColor = .useRGB(red: 229, green: 229, blue: 229)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
+    lazy var noRoutineDataStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [self.noRoutineDataImageView, self.noRoutineDataTitleLabel, self.noRoutineDataSubTitleLabel])
+        stackView.axis = .vertical
+        stackView.spacing = 4
+        stackView.distribution = .fill
+        stackView.alignment = .center
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        
+        return stackView
+    }()
+    
+    lazy var noRoutineDataImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = .useCustomImage("noRoutineDataImage")
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        
+        return imageView
+    }()
+    
+    lazy var noRoutineDataTitleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "오늘 일정이 없어요"
+        label.textColor = .useRGB(red: 46, green: 45, blue: 45)
+        label.font = .useFont(ofSize: 18, weight: .Bold)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        return label
+    }()
+    
+    lazy var noRoutineDataSubTitleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "좋은 하루 되세요!"
+        label.textColor = .useRGB(red: 148, green: 147, blue: 147)
+        label.font = .useFont(ofSize: 14, weight: .Regular)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        return label
+    }()
+    
     lazy var statusBaseView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
+    lazy var statusView: StatusView = {
+        let view = StatusView()
+        view.statusButton.addTarget(self, action: #selector(statusButton(_:)), for: .touchUpInside)
         view.translatesAutoresizingMaskIntoConstraints = false
         
         return view
@@ -79,6 +137,7 @@ final class MainViewController: UIViewController {
     var role: Role = .driver
     
     let mainModel = MainModel()
+    let dispatchModel = DispatchModel()
     var routine: RoutineItem?
     var goToWorkData: RoutineGoToWork?
     var dispatchList: [RoutineDispatch?] = []
@@ -160,7 +219,16 @@ extension MainViewController: EssentialViewMethods {
         SupportingMethods.shared.addSubviews([
             self.statusBaseView,
             self.tableView,
+            self.noRoutineDataBaseView,
         ], to: self.view)
+        
+        SupportingMethods.shared.addSubviews([
+            self.statusView,
+        ], to: self.statusBaseView)
+        
+        SupportingMethods.shared.addSubviews([
+            self.noRoutineDataStackView,
+        ], to: self.noRoutineDataBaseView)
     }
     
     func setLayouts() {
@@ -174,12 +242,41 @@ extension MainViewController: EssentialViewMethods {
             self.statusBaseView.heightAnchor.constraint(equalToConstant: ReferenceValues.Size.Device.width * 236 / 375),
         ])
         
+        // statusView
+        NSLayoutConstraint.activate([
+            self.statusView.leadingAnchor.constraint(equalTo: self.statusBaseView.leadingAnchor),
+            self.statusView.bottomAnchor.constraint(equalTo: self.statusBaseView.bottomAnchor),
+            self.statusView.topAnchor.constraint(equalTo: self.statusBaseView.topAnchor),
+            self.statusView.trailingAnchor.constraint(equalTo: self.statusBaseView.trailingAnchor),
+        ])
+        
         // tableView
         NSLayoutConstraint.activate([
             self.tableView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
             self.tableView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
             self.tableView.topAnchor.constraint(equalTo: self.statusBaseView.bottomAnchor),
             self.tableView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor),
+        ])
+        
+        // noRoutineDataBaseView
+        NSLayoutConstraint.activate([
+            self.noRoutineDataBaseView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
+            self.noRoutineDataBaseView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
+            self.noRoutineDataBaseView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            self.noRoutineDataBaseView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor),
+        ])
+        
+        // noRoutineDataStackView
+        NSLayoutConstraint.activate([
+            self.noRoutineDataStackView.centerYAnchor.constraint(equalTo: self.noRoutineDataBaseView.centerYAnchor),
+            self.noRoutineDataStackView.leadingAnchor.constraint(equalTo: self.noRoutineDataBaseView.leadingAnchor),
+            self.noRoutineDataStackView.trailingAnchor.constraint(equalTo: self.noRoutineDataBaseView.trailingAnchor),
+        ])
+        
+        // noRoutineDataImageView
+        NSLayoutConstraint.activate([
+            self.noRoutineDataImageView.heightAnchor.constraint(equalToConstant: 80),
+            self.noRoutineDataImageView.widthAnchor.constraint(equalToConstant: 80),
         ])
     }
     
@@ -230,23 +327,29 @@ extension MainViewController: EssentialViewMethods {
     }
     
     func setData() {
+        SupportingMethods.shared.turnCoverView(.on)
         self.loadDailyRoutineDataRequest { item in
             print("routine Item: \(item)")
             self.routine = item
             
             if item.tasks.isEmpty {
+                self.noRoutineDataBaseView.isHidden = false
                 
             } else {
+                self.noRoutineDataBaseView.isHidden = true
+                
                 self.goToWorkData = item.goToWork
                 self.dispatchList = item.tasks
                 self.getOffWorkData = item.getOffWork
                 
                 self.dispatchIsHiddenStatus = Array(repeating: true, count: self.dispatchList.count)
+                self.statusView.setData(status: item.status, routine: item)
                 
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
-                    
+                    SupportingMethods.shared.turnCoverView(.off)
                 }
+                
                 
             }
             
@@ -280,6 +383,21 @@ extension MainViewController {
         }
 
     }
+    
+    func sendDispatchInfoUpdateRequest(id: Int, workType: String, type: String, time: String, success: (() -> ())?) {
+        self.dispatchModel.sendDispatchInfoUpdateRequest(id: id, workType: workType, type: type, time: time) {
+            success?()
+            
+        } failure: { message in
+            SupportingMethods.shared.checkExpiration {
+                print("sendDispatchInfoUpdateRequest API Error: \(message)")
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+            
+        }
+
+    }
 }
 
 // MARK: - Extension for selector methods
@@ -301,6 +419,40 @@ extension MainViewController {
     
     @objc func workReloadData(_ notification: Notification) {
         self.tableView.reloadData()
+        
+    }
+    
+    @objc func statusButton(_ sender: UIButton) {
+        guard let routine = self.routine else { return }
+        
+        switch RoutineStatus(rawValue: routine.status) {
+        case .dispatchReady, .dispatchOn, .arriveFirstStation, .goNextStation, .dispatchOff:
+            SupportingMethods.shared.turnCoverView(.on)
+            self.sendDispatchInfoUpdateRequest(id: routine.info.dispatchId!, workType: routine.info.workType!, type: routine.info.status, time: SupportingMethods.shared.convertDate(intoString: Date(), "HH:mm")) {
+                self.setData()
+                
+            }
+            break
+        case .morningDispatchDocument:
+            // 운행 일보 작성(출발)
+            break
+        case .dispatchRunning:
+            // 운행중
+            break
+        case .eveningDispatchDocument:
+            // 운행 일보 작성(도착)
+            break
+        case .eveningRollCall:
+            // 저녁 점호
+            break
+        case .dispatchCheck:
+            // 배차 확인
+            break
+        case .getOffWork:
+            // 퇴근
+            break
+        default: break
+        }
         
     }
     
@@ -328,7 +480,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
             // WorkRateTableViewCell
             let cell = tableView.dequeueReusableCell(withIdentifier: "WorkRateTableViewCell", for: indexPath) as! WorkRateTableViewCell
             
-            cell.setCell()
+            cell.setCell(routine: self.routine)
             
             return cell
         } else if indexPath.section == 1 {
@@ -343,16 +495,17 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
             // GetOffWorkTableViewCell
             let cell = tableView.dequeueReusableCell(withIdentifier: "GetOffWorkTableViewCell", for: indexPath) as! GetOffWorkTableViewCell
             
-            cell.setCell()
+            cell.setCell(routine: self.routine)
             
             return cell
             
         } else {
             // DispatchTableViewCell
             let cell = tableView.dequeueReusableCell(withIdentifier: "DispatchTableViewCell", for: indexPath) as! DispatchTableViewCell
+            let dispatch = self.routine?.tasks[indexPath.row]
             
             cell.dispatchContentBaseView.isHidden = self.dispatchIsHiddenStatus[indexPath.row]
-            cell.setCell(index: indexPath.row)
+            cell.setCell(index: indexPath.row, dispatch: dispatch)
             
             return cell
             

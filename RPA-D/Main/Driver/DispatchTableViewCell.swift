@@ -77,6 +77,117 @@ final class DispatchTableViewCell: UITableViewCell {
         return view
     }()
     
+    lazy var sequenceLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .useRGB(red: 46, green: 45, blue: 45)
+        label.font = .useFont(ofSize: 18, weight: .Bold)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        return label
+    }()
+    
+    lazy var timeLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .useRGB(red: 101, green: 100, blue: 100)
+        label.font = .useFont(ofSize: 14, weight: .Regular)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        return label
+    }()
+    
+    lazy var dispatchInfoView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .useRGB(red: 248, green: 248, blue: 248)
+        view.layer.cornerRadius = 12
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
+    lazy var departureDateLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .useRGB(red: 148, green: 147, blue: 147)
+        label.font = .useFont(ofSize: 12, weight: .Regular)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        return label
+    }()
+    
+    lazy var departureLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .useRGB(red: 46, green: 45, blue: 45)
+        label.font = .useFont(ofSize: 16, weight: .Medium)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        return label
+    }()
+    
+    lazy var arrivalDateLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .useRGB(red: 148, green: 147, blue: 147)
+        label.font = .useFont(ofSize: 12, weight: .Regular)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        return label
+    }()
+    
+    lazy var arrivalLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .useRGB(red: 46, green: 45, blue: 45)
+        label.font = .useFont(ofSize: 16, weight: .Medium)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        return label
+    }()
+    
+    /*
+     case dispatchReady = "운행을 준비해 주세요"
+     case dispatchOn = "탑승 및 운행을 시작해 주세요"
+     case arriveFirstStation = "첫 정류장에 도착해 주세요"
+     case goNextStation = "다음 정류장으로 출발해 주세요"
+     case dispatchOff = "운행을 종료해 주세요."
+     */
+    
+    // 운행 준비
+    lazy var dispatchReadyView: HourlyWorkView = {
+        let view = HourlyWorkView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
+    // 탑승 및 운행 시작
+    lazy var dispatchOnView: HourlyWorkView = {
+        let view = HourlyWorkView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
+    // 첫 정류장 도착
+    lazy var arriveFirstStationView: HourlyWorkView = {
+        let view = HourlyWorkView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
+    // 다음 정류장으로 출발
+    lazy var goNextStationView: HourlyWorkView = {
+        let view = HourlyWorkView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
+    // 운행 종료
+    lazy var dispatchOffView: HourlyWorkView = {
+        let view = HourlyWorkView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
     var index: Int?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -144,7 +255,22 @@ extension DispatchTableViewCell {
         
         SupportingMethods.shared.addSubviews([
             self.separateView,
+            self.sequenceLabel,
+            self.timeLabel,
+            self.dispatchInfoView,
+            self.dispatchReadyView,
+            self.dispatchOnView,
+            self.arriveFirstStationView,
+            self.goNextStationView,
+            self.dispatchOffView,
         ], to: self.dispatchContentBaseView)
+        
+        SupportingMethods.shared.addSubviews([
+            self.departureDateLabel,
+            self.departureLabel,
+            self.arrivalDateLabel,
+            self.arrivalLabel,
+        ], to: self.dispatchInfoView)
     }
     
     // Set layouts
@@ -190,7 +316,7 @@ extension DispatchTableViewCell {
         
         // dispatchContentBaseView
         NSLayoutConstraint.activate([
-            self.dispatchContentBaseView.heightAnchor.constraint(equalToConstant: 294),
+//            self.dispatchContentBaseView.heightAnchor.constraint(equalToConstant: 294),
         ])
         
         // separateView
@@ -200,13 +326,98 @@ extension DispatchTableViewCell {
             self.separateView.heightAnchor.constraint(equalToConstant: 1),
             self.separateView.topAnchor.constraint(equalTo: self.dispatchContentBaseView.topAnchor),
         ])
+        
+        // sequenceLabel
+        NSLayoutConstraint.activate([
+            self.sequenceLabel.leadingAnchor.constraint(equalTo: self.dispatchContentBaseView.leadingAnchor, constant: 16),
+            self.sequenceLabel.topAnchor.constraint(equalTo: self.dispatchContentBaseView.topAnchor, constant: 16),
+        ])
+        
+        // timeLabel
+        NSLayoutConstraint.activate([
+            self.timeLabel.trailingAnchor.constraint(equalTo: self.dispatchContentBaseView.trailingAnchor, constant: -16),
+            self.timeLabel.centerYAnchor.constraint(equalTo: self.sequenceLabel.centerYAnchor),
+        ])
+        
+        // dispatchInfoView
+        NSLayoutConstraint.activate([
+            self.dispatchInfoView.leadingAnchor.constraint(equalTo: self.dispatchContentBaseView.leadingAnchor, constant: 16),
+            self.dispatchInfoView.trailingAnchor.constraint(equalTo: self.dispatchContentBaseView.trailingAnchor, constant: -16),
+            self.dispatchInfoView.topAnchor.constraint(equalTo: self.sequenceLabel.bottomAnchor, constant: 16),
+        ])
+        
+        // departureDateLabel
+        NSLayoutConstraint.activate([
+            self.departureDateLabel.leadingAnchor.constraint(equalTo: self.dispatchInfoView.leadingAnchor, constant: 16),
+            self.departureDateLabel.trailingAnchor.constraint(equalTo: self.dispatchInfoView.trailingAnchor, constant: -16),
+            self.departureDateLabel.topAnchor.constraint(equalTo: self.dispatchInfoView.topAnchor, constant: 12),
+        ])
+        
+        // departureLabel
+        NSLayoutConstraint.activate([
+            self.departureLabel.leadingAnchor.constraint(equalTo: self.dispatchInfoView.leadingAnchor, constant: 16),
+            self.departureLabel.trailingAnchor.constraint(equalTo: self.dispatchInfoView.trailingAnchor, constant: -16),
+            self.departureLabel.topAnchor.constraint(equalTo: self.departureDateLabel.bottomAnchor, constant: 4),
+        ])
+        
+        // arrivalDateLabel
+        NSLayoutConstraint.activate([
+            self.arrivalDateLabel.leadingAnchor.constraint(equalTo: self.dispatchInfoView.leadingAnchor, constant: 16),
+            self.arrivalDateLabel.trailingAnchor.constraint(equalTo: self.dispatchInfoView.trailingAnchor, constant: -16),
+            self.arrivalDateLabel.topAnchor.constraint(equalTo: self.departureLabel.bottomAnchor, constant: 8),
+        ])
+        
+        // arrivalLabel
+        NSLayoutConstraint.activate([
+            self.arrivalLabel.leadingAnchor.constraint(equalTo: self.dispatchInfoView.leadingAnchor, constant: 16),
+            self.arrivalLabel.trailingAnchor.constraint(equalTo: self.dispatchInfoView.trailingAnchor, constant: -16),
+            self.arrivalLabel.topAnchor.constraint(equalTo: self.arrivalDateLabel.bottomAnchor, constant: 4),
+            self.arrivalLabel.bottomAnchor.constraint(equalTo: self.dispatchInfoView.bottomAnchor, constant: -12),
+        ])
+        
+        // dispatchReadyView
+        NSLayoutConstraint.activate([
+            self.dispatchReadyView.leadingAnchor.constraint(equalTo: self.dispatchContentBaseView.leadingAnchor, constant: 16),
+            self.dispatchReadyView.trailingAnchor.constraint(equalTo: self.dispatchContentBaseView.trailingAnchor, constant: -16),
+            self.dispatchReadyView.topAnchor.constraint(equalTo: self.dispatchInfoView.bottomAnchor, constant: 16),
+        ])
+        
+        // dispatchOnView
+        NSLayoutConstraint.activate([
+            self.dispatchOnView.leadingAnchor.constraint(equalTo: self.dispatchContentBaseView.leadingAnchor, constant: 16),
+            self.dispatchOnView.trailingAnchor.constraint(equalTo: self.dispatchContentBaseView.trailingAnchor, constant: -16),
+            self.dispatchOnView.topAnchor.constraint(equalTo: self.dispatchReadyView.bottomAnchor, constant: 16),
+        ])
+        
+        // arriveFirstStationView
+        NSLayoutConstraint.activate([
+            self.arriveFirstStationView.leadingAnchor.constraint(equalTo: self.dispatchContentBaseView.leadingAnchor, constant: 16),
+            self.arriveFirstStationView.trailingAnchor.constraint(equalTo: self.dispatchContentBaseView.trailingAnchor, constant: -16),
+            self.arriveFirstStationView.topAnchor.constraint(equalTo: self.dispatchOnView.bottomAnchor, constant: 16),
+        ])
+        
+        // goNextStationView
+        NSLayoutConstraint.activate([
+            self.goNextStationView.leadingAnchor.constraint(equalTo: self.dispatchContentBaseView.leadingAnchor, constant: 16),
+            self.goNextStationView.trailingAnchor.constraint(equalTo: self.dispatchContentBaseView.trailingAnchor, constant: -16),
+            self.goNextStationView.topAnchor.constraint(equalTo: self.arriveFirstStationView.bottomAnchor, constant: 16),
+        ])
+        
+        // dispatchOffView
+        NSLayoutConstraint.activate([
+            self.dispatchOffView.leadingAnchor.constraint(equalTo: self.dispatchContentBaseView.leadingAnchor, constant: 16),
+            self.dispatchOffView.trailingAnchor.constraint(equalTo: self.dispatchContentBaseView.trailingAnchor, constant: -16),
+            self.dispatchOffView.topAnchor.constraint(equalTo: self.goNextStationView.bottomAnchor, constant: 16),
+            self.dispatchOffView.bottomAnchor.constraint(equalTo: self.dispatchContentBaseView.bottomAnchor, constant: -16),
+        ])
     }
 }
 
 // MARK: - Extension for methods added
 extension DispatchTableViewCell {
-    func setCell(index: Int) {
+    func setCell(index: Int, dispatch: RoutineDispatch?) {
         self.index = index
+        self.sequenceLabel.text = "\(index + 1)번째 배차"
         
         if self.dispatchContentBaseView.isHidden == true {
             self.foldAndOpenButton.setImage(.useCustomImage("routine.down"), for: .normal)
@@ -216,6 +427,59 @@ extension DispatchTableViewCell {
             self.foldAndOpenButton.setImage(.useCustomImage("routine.up"), for: .normal)
             self.dispatchTitleBaseView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
             
+        }
+        
+        guard let dispatch = dispatch else { return }
+        self.timeLabel.text = "\(dispatch.departureDate.split(separator: " ")[1]) -> \(dispatch.arrivalDate.split(separator: " ")[1])"
+        
+        self.departureDateLabel.text = "\(SupportingMethods.shared.convertString(intoCustomString: dispatch.departureDate, "MM/dd HH:mm")) 출발"
+        self.departureLabel.text = dispatch.departure
+        
+        self.arrivalDateLabel.text = "\(SupportingMethods.shared.convertString(intoCustomString: dispatch.arrivalDate, "MM/dd HH:mm")) 도착"
+        self.arrivalLabel.text = dispatch.arrival
+        
+        let departureDate = SupportingMethods.shared.convertString(intoDate: dispatch.departureDate, "yyyy-MM-dd HH:mm")
+        let arrivalDate = SupportingMethods.shared.convertString(intoDate: dispatch.arrivalDate, "yyyy-MM-dd HH:mm")
+        
+        self.dispatchReadyView.setData(time: SupportingMethods.shared.calculateDateAsTimeInterval(date: departureDate, second: .anHourAndAHalfAgo), selectRoutine: .dispatchReady)
+        self.dispatchOnView.setData(time: SupportingMethods.shared.calculateDateAsTimeInterval(date: departureDate, second: .aHourAgo), selectRoutine: .dispatchOn)
+        self.arriveFirstStationView.setData(time: SupportingMethods.shared.calculateDateAsTimeInterval(date: departureDate, second: .twentyMintesAgo), selectRoutine: .arriveFirstStation)
+        self.goNextStationView.setData(time: SupportingMethods.shared.convertDate(intoString: departureDate, "a HH:mm"), selectRoutine: .goNextStation)
+        self.dispatchOffView.setData(time: SupportingMethods.shared.convertDate(intoString: arrivalDate, "a HH:mm"), selectRoutine: .dispatchOff)
+        
+        self.dispatchReadyView.on(routineType: .dispatch)
+        self.dispatchOnView.on(routineType: .dispatch)
+        self.arriveFirstStationView.on(routineType: .dispatch)
+        self.goNextStationView.on(routineType: .dispatch)
+        self.dispatchOffView.on(routineType: .dispatch)
+        
+        // 운행 전(현재), 운행 준비, 탑승 및 운행 시작, 첫 정류장 도착, 운행 출발, 운행 중, 운행 종료, 운행 완료
+        if dispatch.status == "운행 전" {
+            
+        } else if dispatch.status == "운행 준비" {
+            self.dispatchReadyView.activate(selectRoutine: .dispatchReady, routineType: .dispatch)
+            
+        } else if dispatch.status == "탑승 및 운행 시작" {
+            self.dispatchReadyView.off(selectRoutine: .dispatchReady)
+            self.dispatchOnView.activate(selectRoutine: .dispatchReady, routineType: .dispatch)
+            
+        } else if dispatch.status == "첫 정류장 도착" {
+            self.dispatchReadyView.off(selectRoutine: .dispatchReady)
+            self.dispatchOnView.off(selectRoutine: .dispatchOn)
+            self.arriveFirstStationView.activate(selectRoutine: .arriveFirstStation, routineType: .dispatch)
+            
+        } else if dispatch.status == "운행 출발" {
+            self.dispatchReadyView.off(selectRoutine: .dispatchReady)
+            self.dispatchOnView.off(selectRoutine: .dispatchOn)
+            self.arriveFirstStationView.off(selectRoutine: .arriveFirstStation)
+            self.goNextStationView.activate(selectRoutine: .goNextStation, routineType: .dispatch)
+            
+        } else if dispatch.status == "운행 종료" {
+            self.dispatchReadyView.off(selectRoutine: .dispatchReady)
+            self.dispatchOnView.off(selectRoutine: .dispatchOn)
+            self.arriveFirstStationView.off(selectRoutine: .arriveFirstStation)
+            self.goNextStationView.off(selectRoutine: .goNextStation)
+            self.dispatchOffView.off(selectRoutine: .dispatchOff)
         }
         
     }

@@ -77,6 +77,33 @@ final class GetOffWorkTableViewCell: UITableViewCell {
         return view
     }()
     
+    /*
+     "roll_call_time": "21:30" or "", // 저녁 점호 완료 여부
+     "tomorrow_dispatch_check_time": "", // 배차 확인 완료 여부
+     "get_off_time": "22:00" or "", // 퇴근 시간
+     */
+    
+    lazy var rollCallView: HourlyWorkView = {
+        let view = HourlyWorkView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
+    lazy var dispatchCheckView: HourlyWorkView = {
+        let view = HourlyWorkView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
+    lazy var getOffWorkView: HourlyWorkView = {
+        let view = HourlyWorkView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
@@ -142,6 +169,9 @@ extension GetOffWorkTableViewCell {
         
         SupportingMethods.shared.addSubviews([
             self.separateView,
+            self.rollCallView,
+            self.dispatchCheckView,
+            self.getOffWorkView
         ], to: self.getOffWorkContentBaseView)
     }
     
@@ -188,7 +218,7 @@ extension GetOffWorkTableViewCell {
         
         // goToWorkContentBaseView
         NSLayoutConstraint.activate([
-            self.getOffWorkContentBaseView.heightAnchor.constraint(equalToConstant: 294),
+//            self.getOffWorkContentBaseView.heightAnchor.constraint(equalToConstant: 294),
         ])
         
         // separateView
@@ -198,12 +228,38 @@ extension GetOffWorkTableViewCell {
             self.separateView.heightAnchor.constraint(equalToConstant: 1),
             self.separateView.topAnchor.constraint(equalTo: self.getOffWorkContentBaseView.topAnchor),
         ])
+        
+        // rollCallView
+        NSLayoutConstraint.activate([
+            self.rollCallView.leadingAnchor.constraint(equalTo: self.getOffWorkContentBaseView.leadingAnchor, constant: 16),
+            self.rollCallView.trailingAnchor.constraint(equalTo: self.getOffWorkContentBaseView.trailingAnchor, constant: -16),
+            self.rollCallView.topAnchor.constraint(equalTo: self.separateView.bottomAnchor, constant: 16),
+        ])
+        
+        // dispatchCheckView
+        NSLayoutConstraint.activate([
+            self.dispatchCheckView.leadingAnchor.constraint(equalTo: self.getOffWorkContentBaseView.leadingAnchor, constant: 16),
+            self.dispatchCheckView.trailingAnchor.constraint(equalTo: self.getOffWorkContentBaseView.trailingAnchor, constant: -16),
+            self.dispatchCheckView.topAnchor.constraint(equalTo: self.rollCallView.bottomAnchor, constant: 16),
+        ])
+        
+        // getOffWorkView
+        NSLayoutConstraint.activate([
+            self.getOffWorkView.leadingAnchor.constraint(equalTo: self.getOffWorkContentBaseView.leadingAnchor, constant: 16),
+            self.getOffWorkView.trailingAnchor.constraint(equalTo: self.getOffWorkContentBaseView.trailingAnchor, constant: -16),
+            self.getOffWorkView.topAnchor.constraint(equalTo: self.dispatchCheckView.bottomAnchor, constant: 16),
+            self.getOffWorkView.bottomAnchor.constraint(equalTo: self.getOffWorkContentBaseView.bottomAnchor, constant: -16),
+        ])
+        
     }
 }
 
 // MARK: - Extension for methods added
 extension GetOffWorkTableViewCell {
-    func setCell() {
+    func setCell(routine: RoutineItem?) {
+        guard let routine = routine else { return }
+        guard let lastDispatch = routine.tasks.last else { return }
+        
         if self.getOffWorkContentBaseView.isHidden == true {
             self.foldAndOpenButton.setImage(.useCustomImage("routine.down"), for: .normal)
             self.getOffWorkTitleBaseView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner]
@@ -214,7 +270,41 @@ extension GetOffWorkTableViewCell {
             
         }
         
+        self.rollCallView.setData(time: "저녁 점호", selectRoutine: .rollCall)
+        self.dispatchCheckView.setData(time: "배차 확인", selectRoutine: .dispatchCheck)
+        self.getOffWorkView.setData(time: "퇴근", selectRoutine: .getOffWork)
+        
+        self.rollCallView.on(routineType: .attendance)
+        self.dispatchCheckView.on(routineType: .attendance)
+        self.getOffWorkView.on(routineType: .attendance)
+        
+        if lastDispatch?.statusInfo.last?.completionTime != "" && routine.getOffWork.rollCallTime == "" {
+            // 저녁 점호 진행
+            self.rollCallView.activate(selectRoutine: .rollCall, routineType: .attendance)
+            
+        } else if routine.getOffWork.rollCallTime != "" && routine.getOffWork.tomorrowDispatchCheckTime == "" {
+            // 배차 확인 진행
+            self.rollCallView.off(selectRoutine: .rollCall)
+            self.dispatchCheckView.activate(selectRoutine: .dispatchCheck, routineType: .attendance)
+            
+        } else if routine.getOffWork.tomorrowDispatchCheckTime != "" && routine.getOffWork.getOffTime == "" {
+            // 퇴근 진행
+            self.rollCallView.off(selectRoutine: .rollCall)
+            self.dispatchCheckView.off(selectRoutine: .dispatchCheck)
+            self.getOffWorkView.activate(selectRoutine: .getOffWork, routineType: .attendance)
+            
+        } else if routine.getOffWork.getOffTime != "" {
+            // 퇴근 완료
+            self.rollCallView.timeLabel.text = SupportingMethods.shared.calculateAMorPM(date: routine.getOffWork.rollCallTime)
+            self.rollCallView.off(selectRoutine: .rollCall)
+            self.dispatchCheckView.off(selectRoutine: .dispatchCheck)
+            self.getOffWorkView.timeLabel.text = SupportingMethods.shared.calculateAMorPM(date: routine.getOffWork.getOffTime)
+            self.getOffWorkView.off(selectRoutine: .getOffWork)
+            
+        }
+        
     }
+    
 }
 
 // MARK: - Extension for methods added
