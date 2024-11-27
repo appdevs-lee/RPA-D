@@ -195,6 +195,10 @@ final class MainViewController: UIViewController {
 // MARK: Extension for essential methods
 extension MainViewController: EssentialViewMethods {
     func setViewFoundation() {
+        // Pop Slide
+        if self.navigationController?.viewControllers.first === self  {
+            self.navigationController?.interactivePopGestureRecognizer?.delegate = self
+        }
         
     }
     
@@ -213,6 +217,7 @@ extension MainViewController: EssentialViewMethods {
     func setNotificationCenters() {
         NotificationCenter.default.addObserver(self, selector: #selector(reloadData(_:)), name: Notification.Name("ReloadData"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(workReloadData(_:)), name: Notification.Name("WorkReloadData"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadAllData(_:)), name: Notification.Name("ReloadAllData"), object: nil)
     }
     
     func setSubviews() {
@@ -315,7 +320,7 @@ extension MainViewController: EssentialViewMethods {
             self.navigationItem.leftBarButtonItem = leftBarButtonItem
             
         default:
-            let leftBarButtonItem = UIBarButtonItem(title: "운행", style: .plain, target: self, action: #selector(leftBarButtonItem(_:)))
+            let leftBarButtonItem = UIBarButtonItem(title: "운행", style: .plain, target: self, action: nil)
             leftBarButtonItem.setTitleTextAttributes([
                 .font:UIFont.useFont(ofSize: 20, weight: .Bold),
                 .foregroundColor: UIColor.useRGB(red: 46, green: 45, blue: 45)
@@ -356,10 +361,9 @@ extension MainViewController: EssentialViewMethods {
             
             
             if item.goToWork.wakeTime == "" {
-//                let vc = GetUpCheckViewController()
-//                
-//                self.present(vc, animated: false)
-            } else {
+                let vc = GetUpCheckViewController(routine: item)
+                
+                self.present(vc, animated: false)
                 
             }
             
@@ -402,13 +406,6 @@ extension MainViewController {
 
 // MARK: - Extension for selector methods
 extension MainViewController {
-    // FIXME: 추후 삭제 필수
-    @objc func leftBarButtonItem(_ barButtonItem: UIBarButtonItem) {
-        let vc = GetUpCheckViewController()
-        
-        self.present(vc, animated: true)
-    }
-    
     @objc func reloadData(_ notification: Notification) {
         guard let index = notification.userInfo?["index"] as? Int else { return }
         
@@ -422,14 +419,33 @@ extension MainViewController {
         
     }
     
+    @objc func reloadAllData(_ notification: Notification) {
+        self.setData()
+        
+    }
+    
     @objc func statusButton(_ sender: UIButton) {
         guard let routine = self.routine else { return }
         
         switch RoutineStatus(rawValue: routine.status) {
-        case .dispatchReady, .dispatchOn, .arriveFirstStation, .goNextStation, .dispatchOff:
+        case .dispatchReady, .arriveFirstStation, .goNextStation, .dispatchOff:
             SupportingMethods.shared.turnCoverView(.on)
             self.sendDispatchInfoUpdateRequest(id: routine.info.dispatchId!, workType: routine.info.workType!, type: routine.info.status, time: SupportingMethods.shared.convertDate(intoString: Date(), "HH:mm")) {
                 self.setData()
+                
+            }
+            break
+        case  .dispatchOn:
+            if routine.goToWork.attendanceTime == "" {
+//                let vc = MorningRollCallViewController()
+//                
+//                self.present(vc, animated: true)
+                
+            } else {
+                self.sendDispatchInfoUpdateRequest(id: routine.info.dispatchId!, workType: routine.info.workType!, type: routine.info.status, time: SupportingMethods.shared.convertDate(intoString: Date(), "HH:mm")) {
+                    self.setData()
+                    
+                }
                 
             }
             break
@@ -514,3 +530,16 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
+// MARK: - Extension for UIGestureRecognizerDelegate
+extension MainViewController: UIGestureRecognizerDelegate {
+    // For swipe gesture
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+    
+    // For swipe gesture, prevent working on the root view of navigation controller
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        return self.navigationController!.viewControllers.count > 1 ? true : false
+    }
+    
+}

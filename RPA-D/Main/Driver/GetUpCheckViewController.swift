@@ -21,10 +21,24 @@ final class GetUpCheckViewController: UIViewController {
     
     lazy var timerLabel: UILabel = {
         let label = UILabel()
-        label.text = "30:00"
         label.textColor = .white
-        label.font = .useFont(ofSize: 60, weight: .Bold)
+        label.font = .useFont(ofSize: 24, weight: .Bold)
+        label.numberOfLines = 2
+        label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
+        
+        if !self.routine.tasks.isEmpty {
+            guard let firstDispatch = self.routine.tasks.first else {
+                label.text = "하루를 시작합니다."
+                return label
+            }
+            let date = SupportingMethods.shared.convertString(intoDate: firstDispatch!.departureDate, "yyyy-MM-dd HH:mm")
+            label.text = "점호지 도착 시간\n\(SupportingMethods.shared.calculateDateAsTimeInterval(date: date, second: .aHourAgo))"
+            
+        } else {
+            label.text = "금일 배차가 없습니다!"
+            
+        }
         
         return label
     }()
@@ -54,18 +68,31 @@ final class GetUpCheckViewController: UIViewController {
     
     lazy var getUpButton: UIButton = {
         let button = UIButton()
-        button.setTitle("기상", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.setTitleColor(.useRGB(red: 255, green: 255, blue: 255, alpha: 0.5), for: .highlighted)
         button.titleLabel?.font = .useFont(ofSize: 20, weight: .Bold)
         button.backgroundColor = .useRGB(red: 223, green: 52, blue: 52)
         button.layer.cornerRadius = 38
+        button.addTarget(self, action: #selector(getUpButton(_:)), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
+        
+        if !self.routine.tasks.isEmpty {
+            button.setTitle("기상", for: .normal)
+            
+        } else {
+            button.setTitle("홈", for: .normal)
+            
+        }
         
         return button
     }()
     
-    init() {
+    let dispatchModel = DispatchModel()
+    var routine: RoutineItem
+    
+    init(routine: RoutineItem) {
+        self.routine = routine
+        
         super.init(nibName: nil, bundle: nil)
         
         self.modalPresentationStyle = .fullScreen
@@ -184,11 +211,48 @@ extension GetUpCheckViewController: EssentialViewMethods {
 
 // MARK: - Extension for methods added
 extension GetUpCheckViewController {
+    func sendDispatchInfoUpdateRequest(id: Int, workType: String, type: String, time: String, success: (() -> ())?) {
+        self.dispatchModel.sendDispatchInfoUpdateRequest(id: id, workType: workType, type: type, time: time) {
+            success?()
+            
+        } failure: { message in
+            SupportingMethods.shared.checkExpiration {
+                print("sendDispatchInfoUpdateRequest API Error: \(message)")
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+            
+        }
+
+    }
     
 }
 
 // MARK: - Extension for selector methods
 extension GetUpCheckViewController {
-    
+    @objc func getUpButton(_ sender: UIButton) {
+        if !self.routine.tasks.isEmpty {
+            // 기상
+            guard let firstDispatch = self.routine.tasks.first else { return }
+            guard let dispatchId = firstDispatch?.dispatchId else { return }
+            guard let workType = firstDispatch?.workType else { return }
+            
+            let time = SupportingMethods.shared.convertDate(intoString: Date(), "HH:mm")
+            self.sendDispatchInfoUpdateRequest(id: dispatchId, workType: workType, type: "운행 준비", time: time) {
+                self.dismiss(animated: true) {
+                    SupportingMethods.shared.showAlertNoti(title: "기상이 완료되었습니다!\n아침 점호를 진행해주세요!")
+                    NotificationCenter.default.post(name: Notification.Name("ReloadAllData"), object: nil)
+                    
+                }
+                
+            }
+            
+        } else {
+            // 홈
+            self.dismiss(animated: true)
+            
+        }
+        
+    }
 }
 
