@@ -646,6 +646,21 @@ extension CalendarViewController {
 
     }
     
+    func loadDispatchDailyDetailRequest(id: Int, workType: String, success: ((DispatchDetailItem) -> ())?) {
+        self.dispatchModel.loadDispatchDailyDetailRequest(id: id, workType: workType) { item in
+            success?(item)
+            
+        } failure: { message in
+            SupportingMethods.shared.checkExpiration {
+                print("loadDispatchDailyDetailRequest API Error: \(message)")
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+            
+        }
+
+    }
+    
     func loadDispatchMonthlyRequest(date: String, success: (([Int]) -> ())?) {
         self.dispatchModel.loadDispatchMonthlyRequest(date: date) { dailyDispatchCount in
             success?(dailyDispatchCount)
@@ -861,9 +876,16 @@ extension CalendarViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch self.tense {
         case .past, .today:
-            let vc = DispatchDetailViewController()
+            let item = self.dispatchDailyList[indexPath.row]
+            self.loadDispatchDailyDetailRequest(id: item.id, workType: item.workType) { detailItem in
+                print(item.departureDate)
+                print(detailItem)
+                let vc = DispatchDetailViewController(item: detailItem, departureDate: item.departureDate)
+                
+                self.navigationController?.pushViewController(vc, animated: true)
+                
+            }
             
-            self.navigationController?.pushViewController(vc, animated: true)
         case .future:
             break
         }

@@ -292,8 +292,9 @@ struct DispatchDetailItem: Codable {
     let busId: Int
     let busNum: String
     let stations: [StationInfo]
-    let locations: String
+    let locations: String?
     let references: String
+    let maplink: String
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -303,6 +304,7 @@ struct DispatchDetailItem: Codable {
         case stations
         case locations
         case references
+        case maplink
     }
 }
 

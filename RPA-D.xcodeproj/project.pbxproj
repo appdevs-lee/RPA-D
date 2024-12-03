@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		057C6D9B2CFEE5E80019FA3E /* DispatchDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057C6D9A2CFEE5E80019FA3E /* DispatchDetailView.swift */; };
+		057C6D9D2CFEE5F60019FA3E /* DispatchRunningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057C6D9C2CFEE5F60019FA3E /* DispatchRunningView.swift */; };
+		057C6D9F2CFEEA2D0019FA3E /* StationDetailInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057C6D9E2CFEEA2D0019FA3E /* StationDetailInfoTableViewCell.swift */; };
+		057C6DA12CFEEC190019FA3E /* DispatchDetailIBaseInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057C6DA02CFEEC190019FA3E /* DispatchDetailIBaseInfoTableViewCell.swift */; };
+		057C6DA32CFEF9D50019FA3E /* DispatchDetailReferencesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057C6DA22CFEF9D50019FA3E /* DispatchDetailReferencesTableViewCell.swift */; };
 		059082752CE6D2A500E4D204 /* DispatchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 059082742CE6D2A500E4D204 /* DispatchModel.swift */; };
 		05A015542CF40D47004D0844 /* HourlyWorkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05A015532CF40D47004D0844 /* HourlyWorkView.swift */; };
 		05A015582CF497AA004D0844 /* MainModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05A015572CF497AA004D0844 /* MainModel.swift */; };
@@ -57,6 +62,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		057C6D9A2CFEE5E80019FA3E /* DispatchDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchDetailView.swift; sourceTree = "<group>"; };
+		057C6D9C2CFEE5F60019FA3E /* DispatchRunningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchRunningView.swift; sourceTree = "<group>"; };
+		057C6D9E2CFEEA2D0019FA3E /* StationDetailInfoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationDetailInfoTableViewCell.swift; sourceTree = "<group>"; };
+		057C6DA02CFEEC190019FA3E /* DispatchDetailIBaseInfoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchDetailIBaseInfoTableViewCell.swift; sourceTree = "<group>"; };
+		057C6DA22CFEF9D50019FA3E /* DispatchDetailReferencesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchDetailReferencesTableViewCell.swift; sourceTree = "<group>"; };
 		059082742CE6D2A500E4D204 /* DispatchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchModel.swift; sourceTree = "<group>"; };
 		05A015532CF40D47004D0844 /* HourlyWorkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourlyWorkView.swift; sourceTree = "<group>"; };
 		05A015572CF497AA004D0844 /* MainModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainModel.swift; sourceTree = "<group>"; };
@@ -129,6 +139,11 @@
 				05A015532CF40D47004D0844 /* HourlyWorkView.swift */,
 				05A015592CF58305004D0844 /* StatusView.swift */,
 				2DDE3CAF2CFAEDE70024A799 /* BottomSheetView.swift */,
+				057C6D9A2CFEE5E80019FA3E /* DispatchDetailView.swift */,
+				057C6DA02CFEEC190019FA3E /* DispatchDetailIBaseInfoTableViewCell.swift */,
+				057C6D9E2CFEEA2D0019FA3E /* StationDetailInfoTableViewCell.swift */,
+				057C6DA22CFEF9D50019FA3E /* DispatchDetailReferencesTableViewCell.swift */,
+				057C6D9C2CFEE5F60019FA3E /* DispatchRunningView.swift */,
 			);
 			path = CustomView;
 			sourceTree = "<group>";
@@ -429,6 +444,7 @@
 				2DE005662CE2490C004DE761 /* CalendarViewController.swift in Sources */,
 				05DB9A902CE4499900742317 /* DispatchDocumentTableViewCell.swift in Sources */,
 				2D904F182CE0B2DF005CF538 /* CustomizedNavigationController.swift in Sources */,
+				057C6D9B2CFEE5E80019FA3E /* DispatchDetailView.swift in Sources */,
 				2DE005642CE248F4004DE761 /* MainViewController.swift in Sources */,
 				2D904F342CE0D8E1005CF538 /* LoginModel.swift in Sources */,
 				2D904F272CE0B326005CF538 /* SupportingMethods.swift in Sources */,
@@ -439,19 +455,23 @@
 				2DDE3CB02CFAEDE70024A799 /* BottomSheetView.swift in Sources */,
 				05A227402CEC225C00C07662 /* WorkRateTableViewCell.swift in Sources */,
 				2DE0056A2CE2492E004DE761 /* ProfileViewController.swift in Sources */,
+				057C6DA12CFEEC190019FA3E /* DispatchDetailIBaseInfoTableViewCell.swift in Sources */,
 				2D904EF62CE0B04A005CF538 /* AppDelegate.swift in Sources */,
 				05A0155A2CF58305004D0844 /* StatusView.swift in Sources */,
 				05A015582CF497AA004D0844 /* MainModel.swift in Sources */,
 				2D904F292CE0B326005CF538 /* NetworkMonitor.swift in Sources */,
 				2D904F212CE0B2F2005CF538 /* ViewPagerCollectionViewCell.swift in Sources */,
 				2D904F1F2CE0B2EE005CF538 /* TempateViewPagerViewController.swift in Sources */,
+				057C6D9F2CFEEA2D0019FA3E /* StationDetailInfoTableViewCell.swift in Sources */,
 				05DA9BEB2CF6E5DC0024CADE /* MorningRollCallViewController.swift in Sources */,
 				05A015542CF40D47004D0844 /* HourlyWorkView.swift in Sources */,
 				05A227482CEC229B00C07662 /* GetOffWorkTableViewCell.swift in Sources */,
 				2D904F312CE0D20D005CF538 /* PermissionViewController.swift in Sources */,
+				057C6DA32CFEF9D50019FA3E /* DispatchDetailReferencesTableViewCell.swift in Sources */,
 				05D3FA7C2CE2DD3300AFDC6B /* GetUpCheckViewController.swift in Sources */,
 				2D904F1D2CE0B2EA005CF538 /* TemplateViewController.swift in Sources */,
 				2D904F172CE0B2DD005CF538 /* TemplateTableViewCell.swift in Sources */,
+				057C6D9D2CFEE5F60019FA3E /* DispatchRunningView.swift in Sources */,
 				05DB9A8E2CE448F600742317 /* KindsOfDocumentCollectionViewCell.swift in Sources */,
 				2D904EF82CE0B04A005CF538 /* SceneDelegate.swift in Sources */,
 				05DA9BE92CF6AD800024CADE /* DispatchDetailViewController.swift in Sources */,

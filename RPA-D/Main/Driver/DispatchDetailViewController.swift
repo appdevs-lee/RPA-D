@@ -8,6 +8,18 @@
 import UIKit
 import MapKit
 
+class CustomAnnotation: NSObject, MKAnnotation {
+    var title: String?
+    var subtitle: String?
+    @objc dynamic var coordinate: CLLocationCoordinate2D
+
+    init(title: String, subtitle: String, coordinate: CLLocationCoordinate2D) {
+        self.title = title
+        self.subtitle = subtitle
+        self.coordinate = coordinate
+    }
+}
+
 final class DispatchDetailViewController: UIViewController {
     
     lazy var mapView: MKMapView = {
@@ -19,8 +31,8 @@ final class DispatchDetailViewController: UIViewController {
             mapView.mapType = .standard
         }
         mapView.setUserTrackingMode(.follow, animated: true)
-        mapView.setRegion(MKCoordinateRegion(center: mapView.userLocation.coordinate, latitudinalMeters: 500, longitudinalMeters: 500), animated: true)
-//        mapView.isUserInteractionEnabled = false
+        let center = CLLocationCoordinate2D(latitude: Double(self.item.stations.first!.latitude.trimmingCharacters(in: .whitespaces))!, longitude: Double(self.item.stations.first!.longitude.trimmingCharacters(in: .whitespaces))!)
+        mapView.setRegion(MKCoordinateRegion(center: center, latitudinalMeters: 200, longitudinalMeters: 200), animated: true)
         mapView.delegate = self
         mapView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -57,7 +69,25 @@ final class DispatchDetailViewController: UIViewController {
         return view
     }()
     
+    lazy var forScrollView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
+    lazy var dispatchDetailView: DispatchDetailView = {
+        let view = DispatchDetailView(date: self.departureDate, item: self.item)
+//        view.isUserInteractionEnabled = false
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
     var isRunning: Bool
+    var item: DispatchDetailItem
+    var departureDate: String
+    
     var bottomSheetViewHeightAnchorConstraint: NSLayoutConstraint!
     
     let detailBaseHeight: CGFloat = 115
@@ -66,8 +96,10 @@ final class DispatchDetailViewController: UIViewController {
     let runningBaseHeight: CGFloat = 328
     var runningMaxHeight: CGFloat = 548
     
-    init(isRunning: Bool = false) {
+    init(isRunning: Bool = false, item: DispatchDetailItem, departureDate: String) {
         self.isRunning = isRunning
+        self.item = item
+        self.departureDate = departureDate
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -87,6 +119,7 @@ final class DispatchDetailViewController: UIViewController {
         self.setSubviews()
         self.setLayouts()
         self.setUpNavigationItem()
+        self.setAnnotation()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -120,8 +153,8 @@ extension DispatchDetailViewController: EssentialViewMethods {
     
     func setGestures() {
         let bottomSheetPanGesture: UIPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(panGestureHandler(_:)))
-        self.bottomSheetView.addGestureRecognizer(bottomSheetPanGesture)
-        self.bottomSheetView.isUserInteractionEnabled = true
+        self.forScrollView.addGestureRecognizer(bottomSheetPanGesture)
+        self.forScrollView.isUserInteractionEnabled = true
     }
     
     func setNotificationCenters() {
@@ -135,9 +168,17 @@ extension DispatchDetailViewController: EssentialViewMethods {
             self.kakaoMapButton,
         ], to: self.view)
         
+        if !self.isRunning {
+            self.view.addSubview(self.forScrollView)
+        }
+        
         SupportingMethods.shared.addSubviews([
             self.contentBaseView,
         ], to: self.bottomSheetView)
+        
+        SupportingMethods.shared.addSubviews([
+            self.dispatchDetailView,
+        ], to: self.contentBaseView)
     }
     
     func setLayouts() {
@@ -173,9 +214,29 @@ extension DispatchDetailViewController: EssentialViewMethods {
         NSLayoutConstraint.activate([
             self.contentBaseView.leadingAnchor.constraint(equalTo: self.bottomSheetView.leadingAnchor),
             self.contentBaseView.trailingAnchor.constraint(equalTo: self.bottomSheetView.trailingAnchor),
-            self.contentBaseView.bottomAnchor.constraint(equalTo: self.bottomSheetView.bottomAnchor),
+            self.contentBaseView.bottomAnchor.constraint(equalTo: self.bottomSheetView.bottomAnchor, constant: -10),
             self.contentBaseView.topAnchor.constraint(equalTo: self.bottomSheetView.topAnchor),
         ])
+        
+        // dispatchDetailView
+        NSLayoutConstraint.activate([
+            self.dispatchDetailView.leadingAnchor.constraint(equalTo: self.contentBaseView.leadingAnchor),
+            self.dispatchDetailView.trailingAnchor.constraint(equalTo: self.contentBaseView.trailingAnchor),
+            self.dispatchDetailView.topAnchor.constraint(equalTo: self.contentBaseView.topAnchor),
+            self.dispatchDetailView.bottomAnchor.constraint(equalTo: self.contentBaseView.bottomAnchor),
+        ])
+        
+        if !self.isRunning {
+            // forScrollView
+            NSLayoutConstraint.activate([
+                self.forScrollView.leadingAnchor.constraint(equalTo: self.bottomSheetView.leadingAnchor),
+                self.forScrollView.topAnchor.constraint(equalTo: self.bottomSheetView.topAnchor),
+                self.forScrollView.trailingAnchor.constraint(equalTo: self.bottomSheetView.trailingAnchor),
+                self.forScrollView.heightAnchor.constraint(equalToConstant: self.detailBaseHeight)
+            ])
+            
+        }
+        
     }
     
     func setViewAfterTransition() {
@@ -236,6 +297,22 @@ extension DispatchDetailViewController {
         
     }
     
+    func setAnnotation() {
+        var points: [CLLocationCoordinate2D] = []
+        var annotations: [MKAnnotation] = []
+        for station in self.item.stations {
+            points.append(CLLocationCoordinate2D(latitude: Double(station.latitude.trimmingCharacters(in: .whitespaces))!, longitude: Double(station.longitude.trimmingCharacters(in: .whitespaces))!))
+            annotations.append(CustomAnnotation(title: station.stationName, subtitle: station.stationType, coordinate: CLLocationCoordinate2D(latitude: Double(station.latitude.trimmingCharacters(in: .whitespaces))!, longitude: Double(station.longitude.trimmingCharacters(in: .whitespaces))!)))
+            
+        }
+        
+        let lineDraw = MKPolyline(coordinates: points, count:points.count)
+        self.mapView.addOverlay(lineDraw)
+        
+        self.mapView.addAnnotations(annotations)
+        
+    }
+    
 }
 
 // MARK: - Extension for selector methods
@@ -251,6 +328,7 @@ extension DispatchDetailViewController {
         
         if gesture.state == .ended {
             if self.detailMaxHeight < height || self.detailMaxHeight - 200 < height {
+//                self.dispatchDetailView.isUserInteractionEnabled = true
                 UIView.transition(with: self.bottomSheetView, duration: 0.5) {
                     self.bottomSheetViewHeightAnchorConstraint.constant = self.isRunning ? self.runningMaxHeight : self.detailMaxHeight
                     self.view.layoutIfNeeded()
@@ -258,6 +336,7 @@ extension DispatchDetailViewController {
                 }
                 
             } else {
+//                self.dispatchDetailView.isUserInteractionEnabled = false
                 UIView.transition(with: self.bottomSheetView, duration: 0.5) {
                     self.bottomSheetViewHeightAnchorConstraint.constant = self.isRunning ? self.runningBaseHeight : self.detailBaseHeight
                     self.view.layoutIfNeeded()
@@ -281,6 +360,10 @@ extension DispatchDetailViewController {
     
     @objc func kakaoMapButton(_ sender: UIButton) {
         print("kakaoMapButton")
+        if self.item.maplink != "" {
+            guard let url = URL(string: self.item.maplink) else { return }
+            UIApplication.shared.open(url)
+        }
         
     }
     
@@ -288,15 +371,15 @@ extension DispatchDetailViewController {
 
 // MARK: - Extension for MKMapViewDelegate
 extension DispatchDetailViewController: MKMapViewDelegate {
-//    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-//        guard let polyLine = overlay as? MKPolyline else { return MKOverlayRenderer() }
-//        
-//        let renderer = MKPolylineRenderer(polyline: polyLine)
-//        
-//        renderer.strokeColor = .red
-//        renderer.lineWidth = 5.0
-//        renderer.alpha = 1.0
-//        
-//        return renderer
-//    }
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        guard let polyLine = overlay as? MKPolyline else { return MKOverlayRenderer() }
+        
+        let renderer = MKPolylineRenderer(polyline: polyLine)
+        
+        renderer.strokeColor = .red
+        renderer.lineWidth = 5.0
+        renderer.alpha = 1.0
+        
+        return renderer
+    }
 }
