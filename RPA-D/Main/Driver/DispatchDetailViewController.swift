@@ -20,13 +20,51 @@ final class DispatchDetailViewController: UIViewController {
         }
         mapView.setUserTrackingMode(.follow, animated: true)
         mapView.setRegion(MKCoordinateRegion(center: mapView.userLocation.coordinate, latitudinalMeters: 500, longitudinalMeters: 500), animated: true)
+//        mapView.isUserInteractionEnabled = false
         mapView.delegate = self
         mapView.translatesAutoresizingMaskIntoConstraints = false
         
         return mapView
     }()
     
+    lazy var bottomSheetView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.layer.cornerRadius = 24
+        view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
+    lazy var kakaoMapButton: UIButton = {
+        let button = UIButton()
+        button.setImage(.useCustomImage("kakaoMap"), for: .normal)
+        button.setImage(.useCustomImage("highlightedKakaoMap"), for: .highlighted)
+        button.addTarget(self, action: #selector(kakaoMapButton(_:)), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        
+        return button
+    }()
+    
+    lazy var contentBaseView: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 24
+        view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        view.backgroundColor = .white
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
     var isRunning: Bool
+    var bottomSheetViewHeightAnchorConstraint: NSLayoutConstraint!
+    
+    let detailBaseHeight: CGFloat = 115
+    var detailMaxHeight: CGFloat = 609
+    
+    let runningBaseHeight: CGFloat = 328
+    var runningMaxHeight: CGFloat = 548
     
     init(isRunning: Bool = false) {
         self.isRunning = isRunning
@@ -81,7 +119,9 @@ extension DispatchDetailViewController: EssentialViewMethods {
     }
     
     func setGestures() {
-        
+        let bottomSheetPanGesture: UIPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(panGestureHandler(_:)))
+        self.bottomSheetView.addGestureRecognizer(bottomSheetPanGesture)
+        self.bottomSheetView.isUserInteractionEnabled = true
     }
     
     func setNotificationCenters() {
@@ -91,7 +131,13 @@ extension DispatchDetailViewController: EssentialViewMethods {
     func setSubviews() {
         SupportingMethods.shared.addSubviews([
             self.mapView,
+            self.bottomSheetView,
+            self.kakaoMapButton,
         ], to: self.view)
+        
+        SupportingMethods.shared.addSubviews([
+            self.contentBaseView,
+        ], to: self.bottomSheetView)
     }
     
     func setLayouts() {
@@ -102,13 +148,39 @@ extension DispatchDetailViewController: EssentialViewMethods {
             self.mapView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
             self.mapView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
             self.mapView.topAnchor.constraint(equalTo: self.isRunning ? self.view.topAnchor : safeArea.topAnchor),
-            self.mapView.heightAnchor.constraint(equalToConstant: ReferenceValues.Size.Device.width * 486 / 375)
+//            self.mapView.heightAnchor.constraint(equalToConstant: ReferenceValues.Size.Device.width * 486 / 375)
+            self.mapView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor),
+        ])
+        
+        // bottomSheetView
+        self.bottomSheetViewHeightAnchorConstraint = self.bottomSheetView.heightAnchor.constraint(equalToConstant: self.isRunning ? self.runningBaseHeight : detailBaseHeight)
+        NSLayoutConstraint.activate([
+            self.bottomSheetView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
+            self.bottomSheetView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
+            self.bottomSheetView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor),
+            self.bottomSheetViewHeightAnchorConstraint,
+        ])
+        
+        // kakaoMapButton
+        NSLayoutConstraint.activate([
+            self.kakaoMapButton.trailingAnchor.constraint(equalTo: self.bottomSheetView.trailingAnchor),
+            self.kakaoMapButton.bottomAnchor.constraint(equalTo: self.bottomSheetView.topAnchor),
+            self.kakaoMapButton.heightAnchor.constraint(equalToConstant: 62),
+            self.kakaoMapButton.widthAnchor.constraint(equalToConstant: 62),
+        ])
+        
+        // contentBaseView
+        NSLayoutConstraint.activate([
+            self.contentBaseView.leadingAnchor.constraint(equalTo: self.bottomSheetView.leadingAnchor),
+            self.contentBaseView.trailingAnchor.constraint(equalTo: self.bottomSheetView.trailingAnchor),
+            self.contentBaseView.bottomAnchor.constraint(equalTo: self.bottomSheetView.bottomAnchor),
+            self.contentBaseView.topAnchor.constraint(equalTo: self.bottomSheetView.topAnchor),
         ])
     }
     
     func setViewAfterTransition() {
         //self.navigationController?.setNavigationBarHidden(false, animated: true)
-        //self.tabBarController?.tabBar.isHidden = false
+        self.tabBarController?.tabBar.isHidden = true
     }
     
     func setUpNavigationItem() {
@@ -170,6 +242,45 @@ extension DispatchDetailViewController {
 extension DispatchDetailViewController {
     @objc func leftBarButtonItem(_ barButtonItem: UIBarButtonItem) {
         self.navigationController?.popViewController(animated: true)
+        
+    }
+    
+    @objc func panGestureHandler(_ gesture: UIPanGestureRecognizer) {
+        let translation = gesture.translation(in: self.bottomSheetView)
+        let height: CGFloat = self.bottomSheetView.frame.size.height
+        
+        if gesture.state == .ended {
+            if self.detailMaxHeight < height || self.detailMaxHeight - 200 < height {
+                UIView.transition(with: self.bottomSheetView, duration: 0.5) {
+                    self.bottomSheetViewHeightAnchorConstraint.constant = self.isRunning ? self.runningMaxHeight : self.detailMaxHeight
+                    self.view.layoutIfNeeded()
+                    
+                }
+                
+            } else {
+                UIView.transition(with: self.bottomSheetView, duration: 0.5) {
+                    self.bottomSheetViewHeightAnchorConstraint.constant = self.isRunning ? self.runningBaseHeight : self.detailBaseHeight
+                    self.view.layoutIfNeeded()
+                    
+                }
+                
+            }
+            
+            
+        } else {
+            self.bottomSheetViewHeightAnchorConstraint.constant = height - translation.y
+            UIView.animate(withDuration: 0) {
+                self.bottomSheetView.layoutIfNeeded()
+                
+            }
+            gesture.setTranslation(.zero, in: self.view)
+            
+        }
+        
+    }
+    
+    @objc func kakaoMapButton(_ sender: UIButton) {
+        print("kakaoMapButton")
         
     }
     

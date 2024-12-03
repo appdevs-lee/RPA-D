@@ -118,6 +118,10 @@ extension ReferenceValues {
             static let height: CGFloat = ReferenceValues.keyWindow.screen.bounds.height
         }
         
+        struct StatusBar {
+            static let height: CGFloat = ReferenceValues.keyWindow.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+        }
+        
         struct SafeAreaInsets {
             static let top: CGFloat = ReferenceValues.keyWindow.safeAreaInsets.top
             static let bottom: CGFloat = ReferenceValues.keyWindow.safeAreaInsets.bottom

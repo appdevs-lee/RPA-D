@@ -482,8 +482,8 @@ extension CalendarViewController: EssentialViewMethods {
     }
     
     func setViewAfterTransition() {
-        //self.navigationController?.setNavigationBarHidden(false, animated: true)
-        //self.tabBarController?.tabBar.isHidden = false
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
+        self.tabBarController?.tabBar.isHidden = false
     }
     
     func setUpNavigationItem() {

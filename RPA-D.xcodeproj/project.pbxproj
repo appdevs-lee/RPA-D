@@ -47,6 +47,7 @@
 		2D904F342CE0D8E1005CF538 /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D904F332CE0D8E1005CF538 /* LoginModel.swift */; };
 		2D904F372CE0DCA7005CF538 /* PretendardVariable.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2D904F362CE0DCA5005CF538 /* PretendardVariable.ttf */; };
 		2D904F392CE0DE48005CF538 /* PermissionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D904F382CE0DE48005CF538 /* PermissionTableViewCell.swift */; };
+		2DDE3CB02CFAEDE70024A799 /* BottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDE3CAF2CFAEDE70024A799 /* BottomSheetView.swift */; };
 		2DE005642CE248F4004DE761 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE005632CE248F4004DE761 /* MainViewController.swift */; };
 		2DE005662CE2490C004DE761 /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE005652CE2490C004DE761 /* CalendarViewController.swift */; };
 		2DE005682CE2491C004DE761 /* OfficeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE005672CE2491C004DE761 /* OfficeViewController.swift */; };
@@ -99,6 +100,7 @@
 		2D904F362CE0DCA5005CF538 /* PretendardVariable.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = PretendardVariable.ttf; sourceTree = "<group>"; };
 		2D904F382CE0DE48005CF538 /* PermissionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionTableViewCell.swift; sourceTree = "<group>"; };
 		2D904F3A2CE0E441005CF538 /* RPA-D.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "RPA-D.entitlements"; sourceTree = "<group>"; };
+		2DDE3CAF2CFAEDE70024A799 /* BottomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetView.swift; sourceTree = "<group>"; };
 		2DE005632CE248F4004DE761 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		2DE005652CE2490C004DE761 /* CalendarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewController.swift; sourceTree = "<group>"; };
 		2DE005672CE2491C004DE761 /* OfficeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfficeViewController.swift; sourceTree = "<group>"; };
@@ -126,6 +128,7 @@
 			children = (
 				05A015532CF40D47004D0844 /* HourlyWorkView.swift */,
 				05A015592CF58305004D0844 /* StatusView.swift */,
+				2DDE3CAF2CFAEDE70024A799 /* BottomSheetView.swift */,
 			);
 			path = CustomView;
 			sourceTree = "<group>";
@@ -433,6 +436,7 @@
 				2D904F392CE0DE48005CF538 /* PermissionTableViewCell.swift in Sources */,
 				2D904F162CE0B2DA005CF538 /* TemplateView.swift in Sources */,
 				2D904F282CE0B326005CF538 /* ServerSetting.swift in Sources */,
+				2DDE3CB02CFAEDE70024A799 /* BottomSheetView.swift in Sources */,
 				05A227402CEC225C00C07662 /* WorkRateTableViewCell.swift in Sources */,
 				2DE0056A2CE2492E004DE761 /* ProfileViewController.swift in Sources */,
 				2D904EF62CE0B04A005CF538 /* AppDelegate.swift in Sources */,

@@ -320,6 +320,16 @@ extension SupportingMethods {
         return topVC
     }
     
+    // MARK: Get NavigationBar Height
+    func getNavigationBarHeight(_ vc: UIViewController?) -> CGFloat {
+        if let naviVC = vc?.navigationController {
+            return naviVC.navigationBar.frame.height
+            
+        }
+        
+        return 0
+    }
+    
     // MARK: Determine app state
     enum AppState {
         case terminate
