@@ -290,7 +290,6 @@ extension MainViewController: EssentialViewMethods {
         self.tabBarController?.tabBar.isHidden = false
     }
     
-    
     func setUpNavigationItem() {
         self.view.backgroundColor = .white
         
@@ -437,15 +436,21 @@ extension MainViewController {
             break
         case  .dispatchOn:
             if routine.goToWork.attendanceTime == "" {
+                // 아침점호 진행
 //                let vc = MorningRollCallViewController()
 //                
 //                self.present(vc, animated: true)
                 
             } else {
-                self.sendDispatchInfoUpdateRequest(id: routine.info.dispatchId!, workType: routine.info.workType!, type: routine.info.status, time: SupportingMethods.shared.convertDate(intoString: Date(), "HH:mm")) {
-                    self.setData()
-                    
-                }
+                let vc = AlertPopViewController(.normalTwoButton(messageTitle: "운행을 시작하시겠습니까?", messageContent: "확인을 누르고, 계기판 KM를 작성해주세요.", leftButtonTitle: "아니오", leftAction: { }, rightButtonTitle: "네", rightAction: {
+                    self.sendDispatchInfoUpdateRequest(id: routine.info.dispatchId!, workType: routine.info.workType!, type: routine.info.status, time: SupportingMethods.shared.convertDate(intoString: Date(), "HH:mm")) {
+                        // 운행 일보 작성 화면 표시
+                        self.setData()
+                        
+                    }
+                }))
+                
+                self.present(vc, animated: true)
                 
             }
             break

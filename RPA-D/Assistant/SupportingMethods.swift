@@ -658,8 +658,8 @@ extension UIFont {
 extension UITextField {
     func setPlaceholder(placeholder: String) {
         self.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: [
-            NSAttributedString.Key.foregroundColor:UIColor.useRGB(red: 153, green: 153, blue: 153),
-            .font:UIFont.useFont(ofSize: 14, weight: .Medium)
+            NSAttributedString.Key.foregroundColor:UIColor.useRGB(red: 148, green: 147, blue: 147),
+            .font:UIFont.useFont(ofSize: 14, weight: .Regular)
         ])
     }
     
@@ -684,7 +684,7 @@ extension UITextField {
     }
     
     func addLeftPadding() {
-        let view = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: self.frame.height))
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: 12, height: self.frame.height))
         
         self.leftView = view
         self.leftViewMode = ViewMode.always
