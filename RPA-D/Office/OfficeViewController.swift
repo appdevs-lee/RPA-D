@@ -76,6 +76,7 @@ extension OfficeViewController: EssentialViewMethods {
         //self.navigationController?.setNavigationBarHidden(false, animated: true)
         //self.tabBarController?.tabBar.isHidden = false
     }
+    
 }
 
 // MARK: - Extension for methods added

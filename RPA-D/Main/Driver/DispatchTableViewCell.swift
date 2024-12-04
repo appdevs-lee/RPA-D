@@ -474,6 +474,12 @@ extension DispatchTableViewCell {
             self.arriveFirstStationView.off(selectRoutine: .arriveFirstStation)
             self.goNextStationView.activate(selectRoutine: .goNextStation, routineType: .dispatch)
             
+        } else if dispatch.status == "운행 중" {
+            self.dispatchReadyView.off(selectRoutine: .dispatchReady)
+            self.dispatchOnView.off(selectRoutine: .dispatchOn)
+            self.arriveFirstStationView.off(selectRoutine: .arriveFirstStation)
+            self.goNextStationView.activate(selectRoutine: .goNextStation, routineType: .dispatch)
+            
         } else if dispatch.status == "운행 종료" {
             self.dispatchReadyView.off(selectRoutine: .dispatchReady)
             self.dispatchOnView.off(selectRoutine: .dispatchOn)

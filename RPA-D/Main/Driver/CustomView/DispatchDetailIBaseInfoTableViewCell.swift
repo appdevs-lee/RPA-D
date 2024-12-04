@@ -30,6 +30,7 @@ final class DispatchDetailIBaseInfoTableViewCell: UITableViewCell {
     lazy var moreInfoBaseView: UIView = {
         let view = UIView()
         view.backgroundColor = .useRGB(red: 248, green: 248, blue: 248)
+        view.backgroundColor = .clear
         view.translatesAutoresizingMaskIntoConstraints = false
         
         return view

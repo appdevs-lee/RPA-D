@@ -78,7 +78,13 @@ final class DispatchDetailViewController: UIViewController {
     
     lazy var dispatchDetailView: DispatchDetailView = {
         let view = DispatchDetailView(date: self.departureDate, item: self.item)
-//        view.isUserInteractionEnabled = false
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+
+    lazy var dispatchRunningView: DispatchRunningView = {
+        let view = DispatchRunningView(item: self.item)
         view.translatesAutoresizingMaskIntoConstraints = false
         
         return view
@@ -169,16 +175,23 @@ extension DispatchDetailViewController: EssentialViewMethods {
         ], to: self.view)
         
         if !self.isRunning {
-            self.view.addSubview(self.forScrollView)
+            SupportingMethods.shared.addSubviews([
+                self.forScrollView,
+            ], to: self.view)
+            
+            SupportingMethods.shared.addSubviews([
+                self.dispatchDetailView,
+            ], to: self.contentBaseView)
+        } else {
+            SupportingMethods.shared.addSubviews([
+                self.dispatchRunningView,
+            ], to: self.contentBaseView)
         }
         
         SupportingMethods.shared.addSubviews([
             self.contentBaseView,
         ], to: self.bottomSheetView)
         
-        SupportingMethods.shared.addSubviews([
-            self.dispatchDetailView,
-        ], to: self.contentBaseView)
     }
     
     func setLayouts() {
@@ -218,15 +231,15 @@ extension DispatchDetailViewController: EssentialViewMethods {
             self.contentBaseView.topAnchor.constraint(equalTo: self.bottomSheetView.topAnchor),
         ])
         
-        // dispatchDetailView
-        NSLayoutConstraint.activate([
-            self.dispatchDetailView.leadingAnchor.constraint(equalTo: self.contentBaseView.leadingAnchor),
-            self.dispatchDetailView.trailingAnchor.constraint(equalTo: self.contentBaseView.trailingAnchor),
-            self.dispatchDetailView.topAnchor.constraint(equalTo: self.contentBaseView.topAnchor),
-            self.dispatchDetailView.bottomAnchor.constraint(equalTo: self.contentBaseView.bottomAnchor),
-        ])
-        
         if !self.isRunning {
+            // dispatchDetailView
+            NSLayoutConstraint.activate([
+                self.dispatchDetailView.leadingAnchor.constraint(equalTo: self.contentBaseView.leadingAnchor),
+                self.dispatchDetailView.trailingAnchor.constraint(equalTo: self.contentBaseView.trailingAnchor),
+                self.dispatchDetailView.topAnchor.constraint(equalTo: self.contentBaseView.topAnchor),
+                self.dispatchDetailView.bottomAnchor.constraint(equalTo: self.contentBaseView.bottomAnchor),
+            ])
+            
             // forScrollView
             NSLayoutConstraint.activate([
                 self.forScrollView.leadingAnchor.constraint(equalTo: self.bottomSheetView.leadingAnchor),
@@ -235,6 +248,14 @@ extension DispatchDetailViewController: EssentialViewMethods {
                 self.forScrollView.heightAnchor.constraint(equalToConstant: self.detailBaseHeight)
             ])
             
+        } else {
+            // dispatchRunningView
+            NSLayoutConstraint.activate([
+                self.dispatchRunningView.leadingAnchor.constraint(equalTo: self.contentBaseView.leadingAnchor),
+                self.dispatchRunningView.trailingAnchor.constraint(equalTo: self.contentBaseView.trailingAnchor),
+                self.dispatchRunningView.topAnchor.constraint(equalTo: self.contentBaseView.topAnchor),
+                self.dispatchRunningView.bottomAnchor.constraint(equalTo: self.contentBaseView.bottomAnchor),
+            ])
         }
         
     }

@@ -19,6 +19,12 @@ final class DispatchModel {
     private(set) var sendDispatchConnectCheckDataRequest: DataRequest?
     // 운행 확인
     private(set) var sendDispatchInfoUpdateRequest: DataRequest?
+    // 운행 일보 Patch
+    private(set) var updateDrivingHistoryRequest: DataRequest?
+    // 아침 점호 전송
+    private(set) var sendMorningRollCallDataRequest: DataRequest?   
+    // 일일 점검 전송
+    private(set) var sendVehicleCheckDataRequest: DataRequest?
     
     func loadDispatchDailyListRequest(date: String, success: (([DispatchDailyItem]) -> ())?, failure: ((_ message: String) -> ())?) {
         let url = ServerSetting.server.URL + "/dispatch/daily/list/\(date)"
@@ -239,6 +245,147 @@ final class DispatchModel {
                 
             case .failure(let error):
                 print("sendDispatchInfoUpdateRequest error: \(error.localizedDescription)")
+                failure?(error.localizedDescription)
+            }
+        }
+    }
+    
+    func updateDrivingHistoryRequest(id: Int, workType: String, departureKM: String = "", arrivalKM: String = "", passengerNum: Int = 0, success: (() -> ())?, failure: ((_ message: String) -> ())?) {
+        let url = ServerSetting.server.URL + "/dispatch/driving-history"
+        
+        let headers: HTTPHeaders = [
+            "accept": "application/json",
+            "Authorization": ReferenceValues.accessToken
+        ]
+        
+        let parameters: Parameters = [
+            "id": "\(id)",
+            "work_type": workType,
+            "departure_km": departureKM,
+            "arrival_km": arrivalKM,
+            "passenger_num": "\(passengerNum)",
+        ]
+        
+        self.updateDrivingHistoryRequest = AF.request(url, method: .patch , parameters: parameters, encoding: URLEncoding.default, headers: headers)
+        
+        self.updateDrivingHistoryRequest?.responseData { (response) in
+            switch response.result {
+            case .success(_):
+                guard let statusCode = response.response?.statusCode else {
+                    print("updateDrivingHistoryRequest failure: statusCode nil")
+                    failure?("statusCodeNil")
+                    
+                    return
+                }
+                
+                guard statusCode >= 200 && statusCode < 300 else {
+                    print("updateDrivingHistoryRequest failure: statusCode(\(statusCode))")
+                    failure?("statusCodeError")
+                    
+                    return
+                }
+                
+                print("updateDrivingHistoryRequest succeeded")
+                success?()
+                
+            case .failure(let error):
+                print("updateDrivingHistoryRequest error: \(error.localizedDescription)")
+                failure?(error.localizedDescription)
+            }
+        }
+    }
+    
+    func sendMorningRollCallDataRequest(arrivalTime: String, healthStatus: Bool, cleanStatus: Bool, routeKnowStatus: Bool, alcohol: Double, success: (() -> ())?, failure: ((_ message: String) -> ())?) {
+        let url = ServerSetting.server.URL + "/dispatch/checklist/morning/\(SupportingMethods.shared.convertDate(intoString: Date()))"
+        
+        let headers: HTTPHeaders = [
+            "accept": "application/json",
+            "Authorization": ReferenceValues.accessToken
+        ]
+        
+        let parameters: Parameters = [
+            "arrival_time": String(arrivalTime.split(separator: " ")[1]),
+            "health_condition": healthStatus ? "양호" : "이상",
+            "cleanliness_condition": cleanStatus ? "양호" : "이상",
+            "route_familiarity": routeKnowStatus ? "양호" : "이상",
+            "alcohol_test": "\(alcohol)",
+        ]
+        
+        self.sendMorningRollCallDataRequest = AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
+        
+        self.sendMorningRollCallDataRequest?.responseData { (response) in
+            switch response.result {
+            case .success(_):
+                guard let statusCode = response.response?.statusCode else {
+                    print("sendMorningRollCallDataRequest failure: statusCode nil")
+                    failure?("statusCodeNil")
+                    
+                    return
+                }
+                
+                guard statusCode >= 200 && statusCode < 300 else {
+                    print("sendMorningRollCallDataRequest failure: statusCode(\(statusCode))")
+                    failure?("statusCodeError")
+                    
+                    return
+                }
+                
+                print("sendMorningRollCallDataRequest succeeded")
+                success?()
+                
+            case .failure(let error):
+                print("sendMorningRollCallDataRequest error: \(error.localizedDescription)")
+                failure?(error.localizedDescription)
+            }
+        }
+    }
+
+    func sendVehicleCheckDataRequest(busId: Int, success: (() -> ())?, failure: ((_ message: String) -> ())?) {
+        let url = ServerSetting.server.URL + "/vehicle/checklist/daily/\(SupportingMethods.shared.convertDate(intoString: Date()))"
+        
+        let headers: HTTPHeaders = [
+            "accept": "application/json",
+            "Authorization": ReferenceValues.accessToken
+        ]
+        
+        let parameters: Parameters = [
+            "bus_id": "\(busId)",
+            "oil_engine_condition": "",
+            "oil_power_clutch_condition": "",
+            "coolant_washer_condition": "",
+            "external_body_condition": "",
+            "lighting_device_condition": "",
+            "blackbox_condition": "",
+            "tire_condition": "",
+            "interior_condition": "",
+            "safety_belt_slide_condition": "",
+            "uniform_worn_condition": "",
+        ]
+        
+        self.sendVehicleCheckDataRequest = AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
+        
+        self.sendVehicleCheckDataRequest?.responseData { (response) in
+            switch response.result {
+            case .success(_):
+                guard let statusCode = response.response?.statusCode else {
+                    print("sendVehicleCheckDataRequest failure: statusCode nil")
+                    failure?("statusCodeNil")
+                    
+                    return
+                }
+                
+                guard statusCode >= 200 && statusCode < 300 else {
+                    print("sendVehicleCheckDataRequest failure: statusCode(\(statusCode))")
+                    failure?("statusCodeError")
+                    
+                    return
+                }
+                
+                print("sendVehicleCheckDataRequest succeeded")
+                success?()
+                
+            case .failure(let error):
+                print("sendVehicleCheckDataRequest error: \(error.localizedDescription)")
                 failure?(error.localizedDescription)
             }
         }

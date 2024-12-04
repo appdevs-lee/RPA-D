@@ -133,6 +133,24 @@ final class MainViewController: UIViewController {
         return tableView
     }()
     
+    lazy var backgroundView: UIView = {
+        let view = UIView()
+        view.isHidden = true
+        view.backgroundColor = .useRGB(red: 0, green: 0, blue: 0, alpha: 0.5)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
+    lazy var dispatchNoteView: DispatchNoteView = {
+        let view = DispatchNoteView()
+        view.isHidden = true
+        view.sendButton.addTarget(self, action: #selector(dispatchNoteSendButton(_:)), for: .touchUpInside)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
     var dispatchIsHiddenStatus: [Bool] = []
     var role: Role = .driver
     
@@ -142,6 +160,8 @@ final class MainViewController: UIViewController {
     var goToWorkData: RoutineGoToWork?
     var dispatchList: [RoutineDispatch?] = []
     var getOffWorkData: RoutineGetOffWork?
+    
+    var dispatchNoteViewBottomAnchorConstraint: NSLayoutConstraint!
     
     init() {
         switch User.shared.role {
@@ -187,6 +207,11 @@ final class MainViewController: UIViewController {
     //        return .portrait
     //    }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+        
+    }
+    
     deinit {
         print("----------------------------------- MainViewController is disposed -----------------------------------")
     }
@@ -218,6 +243,8 @@ extension MainViewController: EssentialViewMethods {
         NotificationCenter.default.addObserver(self, selector: #selector(reloadData(_:)), name: Notification.Name("ReloadData"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(workReloadData(_:)), name: Notification.Name("WorkReloadData"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(reloadAllData(_:)), name: Notification.Name("ReloadAllData"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     func setSubviews() {
@@ -225,6 +252,8 @@ extension MainViewController: EssentialViewMethods {
             self.statusBaseView,
             self.tableView,
             self.noRoutineDataBaseView,
+            self.backgroundView,
+            self.dispatchNoteView,
         ], to: self.view)
         
         SupportingMethods.shared.addSubviews([
@@ -282,6 +311,22 @@ extension MainViewController: EssentialViewMethods {
         NSLayoutConstraint.activate([
             self.noRoutineDataImageView.heightAnchor.constraint(equalToConstant: 80),
             self.noRoutineDataImageView.widthAnchor.constraint(equalToConstant: 80),
+        ])
+        
+        // backgroundView
+        NSLayoutConstraint.activate([
+            self.backgroundView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            self.backgroundView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            self.backgroundView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            self.backgroundView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+        ])
+        
+        // dispatchNoteView
+        self.dispatchNoteViewBottomAnchorConstraint = self.dispatchNoteView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+        NSLayoutConstraint.activate([
+            self.dispatchNoteView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
+            self.dispatchNoteView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
+            self.dispatchNoteViewBottomAnchorConstraint,
         ])
     }
     
@@ -354,10 +399,7 @@ extension MainViewController: EssentialViewMethods {
                     SupportingMethods.shared.turnCoverView(.off)
                 }
                 
-                
             }
-            
-            
             
             if item.goToWork.wakeTime == "" {
                 let vc = GetUpCheckViewController(routine: item)
@@ -401,6 +443,37 @@ extension MainViewController {
         }
 
     }
+    
+    func loadDispatchDailyDetailRequest(id: Int, workType: String, success: ((DispatchDetailItem) -> ())?) {
+        self.dispatchModel.loadDispatchDailyDetailRequest(id: id, workType: workType) { item in
+            success?(item)
+            
+        } failure: { message in
+            SupportingMethods.shared.checkExpiration {
+                print("loadDispatchDailyDetailRequest API Error: \(message)")
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+            
+        }
+
+    }
+    
+    func updateDrivingHistoryRequest(id: Int, workType: String, departureKM: String = "", arrivalKM: String = "", passengerNum: Int = 0, success: (() -> ())?) {
+        self.dispatchModel.updateDrivingHistoryRequest(id: id, workType: workType, departureKM: departureKM, arrivalKM: arrivalKM, passengerNum: passengerNum) {
+            success?()
+            
+        } failure: { message in
+            SupportingMethods.shared.checkExpiration {
+                print("updateDrivingHistoryRequest API Error: \(message)")
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+            
+        }
+
+    }
+    
 }
 
 // MARK: - Extension for selector methods
@@ -427,24 +500,52 @@ extension MainViewController {
         guard let routine = self.routine else { return }
         
         switch RoutineStatus(rawValue: routine.status) {
-        case .dispatchReady, .arriveFirstStation, .goNextStation, .dispatchOff:
+        case .dispatchReady, .dispatchOff:
+            // 운행 준비, 운행 종료
             SupportingMethods.shared.turnCoverView(.on)
             self.sendDispatchInfoUpdateRequest(id: routine.info.dispatchId!, workType: routine.info.workType!, type: routine.info.status, time: SupportingMethods.shared.convertDate(intoString: Date(), "HH:mm")) {
                 self.setData()
                 
             }
             break
+        case .arriveFirstStation:
+            // 첫 정류장 도착
+            SupportingMethods.shared.turnCoverView(.on)
+            self.sendDispatchInfoUpdateRequest(id: routine.info.dispatchId!, workType: routine.info.workType!, type: routine.info.status, time: SupportingMethods.shared.convertDate(intoString: Date(), "HH:mm")) {
+                self.setData()
+                
+            }
+            break
+        case .goNextStation:
+            // 다음 정류장으로 출발(운행 출발)
+            SupportingMethods.shared.turnCoverView(.on)
+            self.sendDispatchInfoUpdateRequest(id: routine.info.dispatchId!, workType: routine.info.workType!, type: routine.info.status, time: SupportingMethods.shared.convertDate(intoString: Date(), "HH:mm")) {
+                self.setData()
+                self.loadDispatchDailyDetailRequest(id: routine.info.dispatchId!, workType: routine.info.workType!) { detailItem in
+                    let vc = DispatchDetailViewController(isRunning: true, item: detailItem, departureDate: routine.info.departureTime)
+                    
+                    self.navigationController?.pushViewController(vc, animated: true)
+                    
+                }
+                
+            }
+            break
         case  .dispatchOn:
             if routine.goToWork.attendanceTime == "" {
                 // 아침점호 진행
-//                let vc = MorningRollCallViewController()
-//                
-//                self.present(vc, animated: true)
+                guard let firstDispatch = routine.tasks.first else { return }
+                guard let busId = firstDispatch?.busId else { return }
+                let vc = MorningRollCallViewController(busId: busId)
+                
+                self.present(vc, animated: true)
                 
             } else {
                 let vc = AlertPopViewController(.normalTwoButton(messageTitle: "운행을 시작하시겠습니까?", messageContent: "확인을 누르고, 계기판 KM를 작성해주세요.", leftButtonTitle: "아니오", leftAction: { }, rightButtonTitle: "네", rightAction: {
                     self.sendDispatchInfoUpdateRequest(id: routine.info.dispatchId!, workType: routine.info.workType!, type: routine.info.status, time: SupportingMethods.shared.convertDate(intoString: Date(), "HH:mm")) {
                         // 운행 일보 작성 화면 표시
+                        self.backgroundView.isHidden = false
+                        self.dispatchNoteView.isHidden = false
+                        self.dispatchNoteView.dashboardTextField.becomeFirstResponder()
                         self.setData()
                         
                     }
@@ -453,26 +554,88 @@ extension MainViewController {
                 self.present(vc, animated: true)
                 
             }
+            
             break
         case .morningDispatchDocument:
             // 운행 일보 작성(출발)
+            self.backgroundView.isHidden = false
+            self.dispatchNoteView.isHidden = false
+            self.dispatchNoteView.dashboardTextField.becomeFirstResponder()
             break
+            
         case .dispatchRunning:
             // 운행중
+            self.loadDispatchDailyDetailRequest(id: routine.info.dispatchId!, workType: routine.info.workType!) { detailItem in
+                let vc = DispatchDetailViewController(isRunning: true, item: detailItem, departureDate: routine.info.departureTime)
+                
+                self.navigationController?.pushViewController(vc, animated: true)
+                
+            }
             break
+            
         case .eveningDispatchDocument:
             // 운행 일보 작성(도착)
+            self.backgroundView.isHidden = false
+            self.dispatchNoteView.isHidden = false
+            self.dispatchNoteView.dashboardTextField.becomeFirstResponder()
             break
+            
         case .eveningRollCall:
             // 저녁 점호
             break
+            
         case .dispatchCheck:
             // 배차 확인
             break
+            
         case .getOffWork:
             // 퇴근
             break
+            
         default: break
+            
+        }
+        
+    }
+    
+    @objc func keyboardWillShow(_ notification: Notification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
+            let duration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double {
+            
+            UIView.animate(withDuration: duration) {
+                self.dispatchNoteViewBottomAnchorConstraint.constant = -keyboardSize.height
+                
+                self.view.layoutIfNeeded()
+                
+            } completion: { finished in
+                
+            }
+        }
+    }
+    
+    @objc func keyboardWillHide(_ notification: Notification) {
+        if let duration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double {
+            
+            UIView.animate(withDuration: duration) {
+                self.backgroundView.isHidden = true
+                self.dispatchNoteView.isHidden = true
+                self.dispatchNoteViewBottomAnchorConstraint.constant = 0
+                
+                self.view.layoutIfNeeded()
+                
+            } completion: { finished in
+                
+            }
+        }
+    }
+    
+    @objc func dispatchNoteSendButton(_ sender: UIButton) {
+        self.updateDrivingHistoryRequest(id: self.routine!.info.dispatchId!, workType: self.routine!.info.workType!) {
+            self.dispatchNoteView.dashboardTextField.resignFirstResponder()
+            self.backgroundView.isHidden = true
+            self.dispatchNoteView.isHidden = true
+            self.setData()
+            
         }
         
     }

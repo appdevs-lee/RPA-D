@@ -300,6 +300,7 @@ extension GoToWorkTableViewCell {
         } else {
             // 기상 및 아침점호, 일일점검 완료
 //            let attendanceTime = SupportingMethods.shared.calculateAMorPM(date: routine.goToWork.attendanceTime)
+            self.wakeTimeView.off(selectRoutine: .wake)
             self.attendanceView.off(selectRoutine: .attendance)
             
         }

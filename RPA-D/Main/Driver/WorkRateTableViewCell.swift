@@ -255,8 +255,8 @@ extension WorkRateTableViewCell {
             
         }
         
-        let rate = sumCount / (routine.tasks.count * 5 + 5)
-        self.rateTitleLabel.text = "퇴근까지 \(rate)% 남았어요"
+        let rate = Double(sumCount) / Double((routine.tasks.count * 5 + 5))
+        self.rateTitleLabel.text = "퇴근까지 \(Int(rate * 100))% 남았어요"
         self.progressView.progress = Float(rate)
         self.rateImageViewLeadingLayoutConstraint.constant = (ReferenceValues.Size.Device.width - 84) * CGFloat(self.progressView.progress) - 32
         

@@ -12,7 +12,7 @@ enum RoutineStatus: String {
     case arriveFirstStation = "첫 정류장 도착"
     case dispatchReady = "운행 준비"
     case goNextStation = "운행 출발"
-    case dispatchRunning = "운행중"
+    case dispatchRunning = "운행 중"
     case eveningDispatchDocument = "운행 일보 작성(도착)"
     case dispatchOff = "운행 종료"
     case eveningRollCall = "저녁 점호"
@@ -294,6 +294,8 @@ extension StatusView {
                 self.subTitleLabel.text = "운행모드로 돌아가\n운행을 완료해 주세요"
                 self.statusImageView.image = .useCustomImage(RoutineStatus.dispatchRunning.imageName)
                 self.statusButton.setTitle(RoutineStatus.dispatchRunning.buttonTitle, for: .normal)
+                
+                SupportingMethods.shared.showAlertNoti(title: "현재 진행중인 배차가 있습니다. 운행모드로 돌아가주세요.")
                 
             case .eveningDispatchDocument:
                 // 운행 일보 작성

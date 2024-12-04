@@ -12,6 +12,9 @@
 		057C6D9F2CFEEA2D0019FA3E /* StationDetailInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057C6D9E2CFEEA2D0019FA3E /* StationDetailInfoTableViewCell.swift */; };
 		057C6DA12CFEEC190019FA3E /* DispatchDetailIBaseInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057C6DA02CFEEC190019FA3E /* DispatchDetailIBaseInfoTableViewCell.swift */; };
 		057C6DA32CFEF9D50019FA3E /* DispatchDetailReferencesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057C6DA22CFEF9D50019FA3E /* DispatchDetailReferencesTableViewCell.swift */; };
+		0582805F2D0025D900898A4A /* DispatchRunningTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0582805E2D0025D900898A4A /* DispatchRunningTableViewCell.swift */; };
+		058280612D002D1F00898A4A /* PushButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058280602D002D1F00898A4A /* PushButtonView.swift */; };
+		058280632D0035D000898A4A /* MorningRollCallTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058280622D0035D000898A4A /* MorningRollCallTableViewCell.swift */; };
 		059082752CE6D2A500E4D204 /* DispatchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 059082742CE6D2A500E4D204 /* DispatchModel.swift */; };
 		05A015542CF40D47004D0844 /* HourlyWorkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05A015532CF40D47004D0844 /* HourlyWorkView.swift */; };
 		05A015582CF497AA004D0844 /* MainModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05A015572CF497AA004D0844 /* MainModel.swift */; };
@@ -68,6 +71,9 @@
 		057C6D9E2CFEEA2D0019FA3E /* StationDetailInfoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationDetailInfoTableViewCell.swift; sourceTree = "<group>"; };
 		057C6DA02CFEEC190019FA3E /* DispatchDetailIBaseInfoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchDetailIBaseInfoTableViewCell.swift; sourceTree = "<group>"; };
 		057C6DA22CFEF9D50019FA3E /* DispatchDetailReferencesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchDetailReferencesTableViewCell.swift; sourceTree = "<group>"; };
+		0582805E2D0025D900898A4A /* DispatchRunningTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchRunningTableViewCell.swift; sourceTree = "<group>"; };
+		058280602D002D1F00898A4A /* PushButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushButtonView.swift; sourceTree = "<group>"; };
+		058280622D0035D000898A4A /* MorningRollCallTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorningRollCallTableViewCell.swift; sourceTree = "<group>"; };
 		059082742CE6D2A500E4D204 /* DispatchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchModel.swift; sourceTree = "<group>"; };
 		05A015532CF40D47004D0844 /* HourlyWorkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourlyWorkView.swift; sourceTree = "<group>"; };
 		05A015572CF497AA004D0844 /* MainModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainModel.swift; sourceTree = "<group>"; };
@@ -146,7 +152,9 @@
 				057C6D9E2CFEEA2D0019FA3E /* StationDetailInfoTableViewCell.swift */,
 				057C6DA22CFEF9D50019FA3E /* DispatchDetailReferencesTableViewCell.swift */,
 				057C6D9C2CFEE5F60019FA3E /* DispatchRunningView.swift */,
+				0582805E2D0025D900898A4A /* DispatchRunningTableViewCell.swift */,
 				2DC362C52CFF58A900859D1D /* DispatchNoteView.swift */,
+				058280602D002D1F00898A4A /* PushButtonView.swift */,
 			);
 			path = CustomView;
 			sourceTree = "<group>";
@@ -157,6 +165,7 @@
 				05A015522CF40D34004D0844 /* CustomView */,
 				05D3FA7B2CE2DD3300AFDC6B /* GetUpCheckViewController.swift */,
 				05DA9BEA2CF6E5DC0024CADE /* MorningRollCallViewController.swift */,
+				058280622D0035D000898A4A /* MorningRollCallTableViewCell.swift */,
 				2DE005632CE248F4004DE761 /* MainViewController.swift */,
 				05A2273F2CEC225C00C07662 /* WorkRateTableViewCell.swift */,
 				05A227412CEC228700C07662 /* GoToWorkTableViewCell.swift */,
@@ -449,6 +458,7 @@
 				05DB9A902CE4499900742317 /* DispatchDocumentTableViewCell.swift in Sources */,
 				2D904F182CE0B2DF005CF538 /* CustomizedNavigationController.swift in Sources */,
 				057C6D9B2CFEE5E80019FA3E /* DispatchDetailView.swift in Sources */,
+				0582805F2D0025D900898A4A /* DispatchRunningTableViewCell.swift in Sources */,
 				2DE005642CE248F4004DE761 /* MainViewController.swift in Sources */,
 				2D904F342CE0D8E1005CF538 /* LoginModel.swift in Sources */,
 				2D904F272CE0B326005CF538 /* SupportingMethods.swift in Sources */,
@@ -457,6 +467,7 @@
 				2D904F162CE0B2DA005CF538 /* TemplateView.swift in Sources */,
 				2D904F282CE0B326005CF538 /* ServerSetting.swift in Sources */,
 				2DDE3CB02CFAEDE70024A799 /* BottomSheetView.swift in Sources */,
+				058280632D0035D000898A4A /* MorningRollCallTableViewCell.swift in Sources */,
 				05A227402CEC225C00C07662 /* WorkRateTableViewCell.swift in Sources */,
 				2DE0056A2CE2492E004DE761 /* ProfileViewController.swift in Sources */,
 				057C6DA12CFEEC190019FA3E /* DispatchDetailIBaseInfoTableViewCell.swift in Sources */,
@@ -472,6 +483,7 @@
 				05A227482CEC229B00C07662 /* GetOffWorkTableViewCell.swift in Sources */,
 				2D904F312CE0D20D005CF538 /* PermissionViewController.swift in Sources */,
 				057C6DA32CFEF9D50019FA3E /* DispatchDetailReferencesTableViewCell.swift in Sources */,
+				058280612D002D1F00898A4A /* PushButtonView.swift in Sources */,
 				05D3FA7C2CE2DD3300AFDC6B /* GetUpCheckViewController.swift in Sources */,
 				2D904F1D2CE0B2EA005CF538 /* TemplateViewController.swift in Sources */,
 				2D904F172CE0B2DD005CF538 /* TemplateTableViewCell.swift in Sources */,
