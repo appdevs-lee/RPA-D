@@ -252,6 +252,10 @@ extension GetUpCheckViewController {
             self.dismiss(animated: true)
             
         }
+        // FIXME: 삭제 및 주석 풀기
+//        let vc = DailyInspectionViewController()
+//        
+//        self.present(vc, animated: true)
         
     }
 }
