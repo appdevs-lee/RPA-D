@@ -791,6 +791,14 @@ extension UIView {
     }
 }
 
+extension Int {
+    func formatterStyle(_ numberStyle: NumberFormatter.Style) -> String? {
+        let numberFommater: NumberFormatter = NumberFormatter()
+        numberFommater.numberStyle = numberStyle
+        return numberFommater.string(for: self)
+    }
+}
+
 extension UILabel {
     func asColor(targetString: String, color: UIColor) {
         let fullText = text ?? ""

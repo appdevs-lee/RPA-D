@@ -178,6 +178,16 @@ extension MorningRollCallTableViewCell {
             
         }
         
+        if index == 2 {
+            self.goodButton.setTitle("숙지", for: .normal)
+            self.badButton.setTitle("미흡", for: .normal)
+            
+        } else {
+            self.goodButton.setTitle("양호", for: .normal)
+            self.badButton.setTitle("이상", for: .normal)
+            
+        }
+        
     }
 }
 

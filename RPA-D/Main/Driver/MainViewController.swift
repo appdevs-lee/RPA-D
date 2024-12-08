@@ -243,6 +243,8 @@ extension MainViewController: EssentialViewMethods {
         NotificationCenter.default.addObserver(self, selector: #selector(reloadData(_:)), name: Notification.Name("ReloadData"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(workReloadData(_:)), name: Notification.Name("WorkReloadData"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(reloadAllData(_:)), name: Notification.Name("ReloadAllData"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(openDailyInspection(_:)), name: Notification.Name("OpenDailyInspection"), object: nil)
+        
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
@@ -364,7 +366,7 @@ extension MainViewController: EssentialViewMethods {
             self.navigationItem.leftBarButtonItem = leftBarButtonItem
             
         default:
-            let leftBarButtonItem = UIBarButtonItem(title: "운행", style: .plain, target: self, action: nil)
+            let leftBarButtonItem = UIBarButtonItem(title: "운행", style: .plain, target: self, action: #selector(openTestView(_:)))
             leftBarButtonItem.setTitleTextAttributes([
                 .font:UIFont.useFont(ofSize: 20, weight: .Bold),
                 .foregroundColor: UIColor.useRGB(red: 46, green: 45, blue: 45)
@@ -474,10 +476,85 @@ extension MainViewController {
 
     }
     
+    func loadMorningRollCallDataRequest(success: ((Bool) -> ())?) {
+        self.dispatchModel.loadMorningRollCallDataRequest { item in
+            success?(item.submitCheck)
+            
+        } failure: { message in
+            SupportingMethods.shared.checkExpiration {
+                print("loadMorningRollCallDataRequest API Error: \(message)")
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+            
+        }
+
+    }
+    
+    func loadDispatchDailyListRequest(success: (([DispatchDailyItem]) -> ())?) {
+        let checkHour = String(SupportingMethods.shared.convertDate(intoString: Date(), "yyyy-MM-dd HH:mm").split(separator: " ")[1].split(separator: ":")[0])
+        var date = ""
+        if Int(checkHour)! < 04 {
+            // 오늘 기준 새벽 4시 전이면, 당일 날짜 체크
+            date = SupportingMethods.shared.convertDate(intoString: Date())
+            
+        } else {
+            // 오늘 기준 새벽 4시 이후면, 다음 날 날짜 체크
+            date = SupportingMethods.shared.convertDate(intoString: Date(timeIntervalSinceNow: 86400))
+            
+        }
+        
+        self.dispatchModel.loadDispatchDailyListRequest(date: date) { dispatchList in
+            success?(dispatchList)
+            
+        } failure: { message in
+            SupportingMethods.shared.checkExpiration {
+                print("loadDispatchDailyListRequest API Error: \(message)")
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+            
+        }
+
+    }
+    
 }
 
 // MARK: - Extension for selector methods
 extension MainViewController {
+    // FIXME: 삭제 해야함.
+    @objc func openTestView(_ barButtonItem: UIBarButtonItem) {
+        SupportingMethods.shared.turnCoverView(.on)
+        self.loadDispatchDailyListRequest { dispatchList in
+            SupportingMethods.shared.turnCoverView(.off)
+            if dispatchList.isEmpty {
+                // 배차 수락 건너뛰기.
+                // 내일 배차 없음.
+                print("내일 배차 없음.")
+                
+            } else {
+                let checkList = dispatchList.filter({ $0.connectCheck == "" })
+                if checkList.isEmpty {
+                    // 배차 수락 전부 진행함.
+                    print("전부 수락함.")
+                    
+                } else {
+                    // 배차 수락 안 한 건 있음.
+                    let vc = CustomizedNavigationController(rootViewController: DispatchCheckListViewController(dispatchList: checkList))
+                    
+                    self.present(vc, animated: true) {
+                        print("수락 안한 배차 개수: \(checkList.count)")
+                        
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    
     @objc func reloadData(_ notification: Notification) {
         guard let index = notification.userInfo?["index"] as? Int else { return }
         
@@ -494,6 +571,14 @@ extension MainViewController {
     @objc func reloadAllData(_ notification: Notification) {
         self.setData()
         
+    }
+    
+    @objc func openDailyInspection(_ notification: Notification) {
+        guard let firstDispatch = self.routine?.tasks.first else { return }
+        guard let busId = firstDispatch?.busId else { return }
+        let vc = DailyInspectionViewController(busId: busId)
+        
+        self.present(vc, animated: false)
     }
     
     @objc func statusButton(_ sender: UIButton) {
@@ -533,11 +618,23 @@ extension MainViewController {
         case  .dispatchOn:
             if routine.goToWork.attendanceTime == "" {
                 // 아침점호 진행
-                guard let firstDispatch = routine.tasks.first else { return }
-                guard let busId = firstDispatch?.busId else { return }
-                let vc = MorningRollCallViewController(busId: busId)
-                
-                self.present(vc, animated: true)
+                SupportingMethods.shared.turnCoverView(.on)
+                self.loadMorningRollCallDataRequest { submitCheck in
+                    if submitCheck {
+                        guard let firstDispatch = self.routine?.tasks.first else { return }
+                        guard let busId = firstDispatch?.busId else { return }
+                        let vc = DailyInspectionViewController(busId: busId)
+                        
+                        self.present(vc, animated: false)
+                        
+                    } else {
+                        let vc = MorningRollCallViewController()
+                        
+                        self.present(vc, animated: true)
+                        
+                    }
+                    
+                }
                 
             } else {
                 let vc = AlertPopViewController(.normalTwoButton(messageTitle: "운행을 시작하시겠습니까?", messageContent: "확인을 누르고, 계기판 KM를 작성해주세요.", leftButtonTitle: "아니오", leftAction: { }, rightButtonTitle: "네", rightAction: {
@@ -575,9 +672,12 @@ extension MainViewController {
             
         case .eveningDispatchDocument:
             // 운행 일보 작성(도착)
-            self.backgroundView.isHidden = false
-            self.dispatchNoteView.isHidden = false
-            self.dispatchNoteView.dashboardTextField.becomeFirstResponder()
+            self.loadDispatchDailyDetailRequest(id: routine.info.dispatchId!, workType: routine.info.workType!) { detailItem in
+                let vc = DispatchDetailViewController(isRunning: true, item: detailItem, departureDate: routine.info.departureTime)
+                
+                self.navigationController?.pushViewController(vc, animated: true)
+                
+            }
             break
             
         case .eveningRollCall:
@@ -586,6 +686,34 @@ extension MainViewController {
             
         case .dispatchCheck:
             // 배차 확인
+            SupportingMethods.shared.turnCoverView(.on)
+            self.loadDispatchDailyListRequest { dispatchList in
+                SupportingMethods.shared.turnCoverView(.off)
+                if dispatchList.isEmpty {
+                    // 배차 수락 건너뛰기.
+                    // 내일 배차 없음.
+                    print("내일 배차 없음.")
+                    
+                } else {
+                    let checkList = dispatchList.filter({ $0.connectCheck == "" })
+                    if checkList.isEmpty {
+                        // 배차 수락 전부 진행함.
+                        print("전부 수락함.")
+                        
+                    } else {
+                        // 배차 수락 안 한 건 있음.
+                        let vc = CustomizedNavigationController(rootViewController: DispatchCheckListViewController(dispatchList: checkList))
+                        
+                        self.present(vc, animated: true) {
+                            print("수락 안한 배차 개수: \(checkList.count)")
+                            
+                        }
+                        
+                    }
+                    
+                }
+                
+            }
             break
             
         case .getOffWork:

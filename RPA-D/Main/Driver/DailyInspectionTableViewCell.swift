@@ -101,6 +101,9 @@ final class DailyInspectionTableViewCell: UITableViewCell {
         return button
     }()
     
+    var index: Int = 0
+    var inspection: Inspection?
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
@@ -232,9 +235,38 @@ extension DailyInspectionTableViewCell {
 
 // MARK: - Extension for methods added
 extension DailyInspectionTableViewCell {
-    func setCell(inspection: String) {
-        self.titleLabel.text = inspection
-        self.buttonTitleLabel.text = inspection
+    func setCell(inspection: Inspection, index: Int) {
+        self.index = index
+        self.inspection = inspection
+        
+        self.titleLabel.text = inspection.title
+        self.buttonTitleLabel.text = inspection.title
+        
+        self.statusButton.setImage(.useCustomImage(inspection.status == nil ? "status.todo" : inspection.status! ? "status.done.good" : "status.done.bad"), for: .normal)
+        
+        guard let status = inspection.status else {
+            self.goodButton.backgroundColor = .white
+            self.goodButton.setTitleColor(.useRGB(red: 148, green: 147, blue: 147), for: .normal)
+            
+            self.badButton.backgroundColor = .white
+            self.badButton.setTitleColor(.useRGB(red: 148, green: 147, blue: 147), for: .normal)
+            return
+        }
+        if status {
+            // 양호 선택
+            self.goodButton.backgroundColor = .useRGB(red: 223, green: 52, blue: 52)
+            self.goodButton.setTitleColor(.white, for: .normal)
+            
+            self.badButton.backgroundColor = .white
+            self.badButton.setTitleColor(.useRGB(red: 148, green: 147, blue: 147), for: .normal)
+        } else {
+            // 이상 선택
+            self.badButton.backgroundColor = .useRGB(red: 223, green: 52, blue: 52)
+            self.badButton.setTitleColor(.white, for: .normal)
+            
+            self.goodButton.backgroundColor = .white
+            self.goodButton.setTitleColor(.useRGB(red: 148, green: 147, blue: 147), for: .normal)
+        }
         
     }
     
@@ -243,10 +275,12 @@ extension DailyInspectionTableViewCell {
 // MARK: - Extension for methods added
 extension DailyInspectionTableViewCell {
     @objc func goodButton(_ sender: UIButton) {
+        NotificationCenter.default.post(name: Notification.Name("InspectionReloadData"), object: nil, userInfo: ["status": true, "index": self.index])
         
     }
     
     @objc func badButton(_ sender: UIButton) {
+        NotificationCenter.default.post(name: Notification.Name("InspectionReloadData"), object: nil, userInfo: ["status": false, "index": self.index])
         
     }
 }

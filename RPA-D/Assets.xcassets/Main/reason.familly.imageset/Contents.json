@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "status.done.png",
+      "filename" : "reason.familly.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "status.done@2x.png",
+      "filename" : "reason.familly@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "status.done@3x.png",
+      "filename" : "reason.familly@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

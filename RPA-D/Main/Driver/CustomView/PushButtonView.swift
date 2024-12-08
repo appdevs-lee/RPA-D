@@ -9,6 +9,16 @@ import UIKit
 
 class PushButtonView: UIView {
     
+    lazy var backgroundView: UIView = {
+        let view = UIView()
+        view.alpha = 0.0
+        view.backgroundColor = .useRGB(red: 223, green: 52, blue: 52)
+        view.layer.cornerRadius = 37
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
     lazy var baseView: UIView = {
         let view = UIView()
         view.backgroundColor = .useRGB(red: 248, green: 248, blue: 248)
@@ -36,9 +46,13 @@ class PushButtonView: UIView {
         return button
     }()
     
+    var backgroundViewWidthAnchorConstraint: NSLayoutConstraint!
+    var arriveButtonLeadingConstraint: NSLayoutConstraint!
+    
     init() {
         super.init(frame: CGRect(x: 0, y: 0, width: 0, height: 48))
         
+        self.setGestures()
         self.setSubViews()
         self.setLayouts()
     }
@@ -50,12 +64,19 @@ class PushButtonView: UIView {
 }
 
 extension PushButtonView {
+    func setGestures() {
+        let arriveButtonPanGesture: UIPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(panGestureHandler(_:)))
+        self.arriveButton.addGestureRecognizer(arriveButtonPanGesture)
+        self.arriveButton.isUserInteractionEnabled = true
+    }
+    
     func setSubViews() {
         SupportingMethods.shared.addSubviews([
             self.baseView,
         ], to: self)
         
         SupportingMethods.shared.addSubviews([
+            self.backgroundView,
             self.guideLabel,
             self.arriveButton,
         ], to: self.baseView)
@@ -63,6 +84,7 @@ extension PushButtonView {
     }
     
     func setLayouts() {
+        
         // baseView
         NSLayoutConstraint.activate([
             self.baseView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
@@ -72,6 +94,16 @@ extension PushButtonView {
             self.baseView.heightAnchor.constraint(equalToConstant: 74),
         ])
         
+        // backgroundView
+        self.backgroundViewWidthAnchorConstraint = self.backgroundView.widthAnchor.constraint(equalToConstant: 86)
+        NSLayoutConstraint.activate([
+            self.backgroundView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            self.backgroundView.topAnchor.constraint(equalTo: self.topAnchor),
+            self.backgroundView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            self.backgroundView.heightAnchor.constraint(equalToConstant: 74),
+            self.backgroundViewWidthAnchorConstraint,
+        ])
+        
         // guideLabel
         NSLayoutConstraint.activate([
             self.guideLabel.centerYAnchor.constraint(equalTo: self.baseView.centerYAnchor),
@@ -79,8 +111,9 @@ extension PushButtonView {
         ])
         
         // arriveButton
+        self.arriveButtonLeadingConstraint = self.arriveButton.leadingAnchor.constraint(equalTo: self.baseView.leadingAnchor, constant: 12)
         NSLayoutConstraint.activate([
-            self.arriveButton.trailingAnchor.constraint(equalTo: self.baseView.trailingAnchor, constant: -13),
+            self.arriveButtonLeadingConstraint,
             self.arriveButton.centerYAnchor.constraint(equalTo: self.baseView.centerYAnchor),
             self.arriveButton.heightAnchor.constraint(equalToConstant: 60),
             self.arriveButton.widthAnchor.constraint(equalToConstant: 60),
@@ -95,5 +128,37 @@ extension PushButtonView {
 
 // MARK: - Extension for selector added
 extension PushButtonView {
-    
+    @objc func panGestureHandler(_ gesture: UIPanGestureRecognizer) {
+        let translation = gesture.translation(in: self.arriveButton)
+        let width: CGFloat = self.baseView.frame.size.width
+        
+        if gesture.state == .ended {
+            if self.arriveButtonLeadingConstraint.constant > ((ReferenceValues.Size.Device.width - 40) / 2) {
+                print("정류장 도착 함수 실행")
+                NotificationCenter.default.post(name: Notification.Name("StationCheck"), object: nil)
+                
+            }
+            
+            self.arriveButtonLeadingConstraint.constant = 12
+            self.backgroundViewWidthAnchorConstraint.constant = 86
+            self.backgroundView.alpha = 0.0
+            
+        } else {
+            print(width)
+            if self.arriveButtonLeadingConstraint.constant < (width - 84) && self.arriveButtonLeadingConstraint.constant >= 12 {
+                self.backgroundView.alpha = 1.0
+                
+                self.arriveButtonLeadingConstraint.constant += translation.x
+                self.backgroundViewWidthAnchorConstraint.constant += translation.x
+                print(self.arriveButtonLeadingConstraint.constant)
+                UIView.animate(withDuration: 0) {
+                    self.baseView.layoutIfNeeded()
+                    
+                }
+                gesture.setTranslation(.zero, in: self.baseView)
+                
+            }
+            
+        }
+    }
 }

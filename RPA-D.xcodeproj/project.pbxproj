@@ -31,6 +31,13 @@
 		05DA9BEB2CF6E5DC0024CADE /* MorningRollCallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DA9BEA2CF6E5DC0024CADE /* MorningRollCallViewController.swift */; };
 		05DB9A8E2CE448F600742317 /* KindsOfDocumentCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DB9A8D2CE448F600742317 /* KindsOfDocumentCollectionViewCell.swift */; };
 		05DB9A902CE4499900742317 /* DispatchDocumentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DB9A8F2CE4499900742317 /* DispatchDocumentTableViewCell.swift */; };
+		2D7C5BCF2D049D3400C381CE /* DispatchCheckListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7C5BCE2D049D3400C381CE /* DispatchCheckListViewController.swift */; };
+		2D7C5BD12D04BF4700C381CE /* RefusalReasonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7C5BD02D04BF4700C381CE /* RefusalReasonViewController.swift */; };
+		2D7C5BD32D04CDEA00C381CE /* RefusalSubmitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7C5BD22D04CDEA00C381CE /* RefusalSubmitViewController.swift */; };
+		2D7C5BD52D04D36600C381CE /* RefusalReasonCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7C5BD42D04D36600C381CE /* RefusalReasonCollectionViewCell.swift */; };
+		2D7C5BDB2D0602BE00C381CE /* DispatchPeopleCountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7C5BDA2D0602BE00C381CE /* DispatchPeopleCountView.swift */; };
+		2D7C5BDD2D060D7500C381CE /* DispatchOffView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7C5BDC2D060D7500C381CE /* DispatchOffView.swift */; };
+		2D7C5BDF2D0615A400C381CE /* DispatchOffTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7C5BDE2D0615A400C381CE /* DispatchOffTableViewCell.swift */; };
 		2D904EF62CE0B04A005CF538 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D904EF52CE0B04A005CF538 /* AppDelegate.swift */; };
 		2D904EF82CE0B04A005CF538 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D904EF72CE0B04A005CF538 /* SceneDelegate.swift */; };
 		2D904EFF2CE0B04C005CF538 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D904EFE2CE0B04C005CF538 /* Assets.xcassets */; };
@@ -92,6 +99,13 @@
 		05DA9BEA2CF6E5DC0024CADE /* MorningRollCallViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorningRollCallViewController.swift; sourceTree = "<group>"; };
 		05DB9A8D2CE448F600742317 /* KindsOfDocumentCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KindsOfDocumentCollectionViewCell.swift; sourceTree = "<group>"; };
 		05DB9A8F2CE4499900742317 /* DispatchDocumentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchDocumentTableViewCell.swift; sourceTree = "<group>"; };
+		2D7C5BCE2D049D3400C381CE /* DispatchCheckListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchCheckListViewController.swift; sourceTree = "<group>"; };
+		2D7C5BD02D04BF4700C381CE /* RefusalReasonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefusalReasonViewController.swift; sourceTree = "<group>"; };
+		2D7C5BD22D04CDEA00C381CE /* RefusalSubmitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefusalSubmitViewController.swift; sourceTree = "<group>"; };
+		2D7C5BD42D04D36600C381CE /* RefusalReasonCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefusalReasonCollectionViewCell.swift; sourceTree = "<group>"; };
+		2D7C5BDA2D0602BE00C381CE /* DispatchPeopleCountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchPeopleCountView.swift; sourceTree = "<group>"; };
+		2D7C5BDC2D060D7500C381CE /* DispatchOffView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchOffView.swift; sourceTree = "<group>"; };
+		2D7C5BDE2D0615A400C381CE /* DispatchOffTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchOffTableViewCell.swift; sourceTree = "<group>"; };
 		2D904EF22CE0B04A005CF538 /* RPA-D.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RPA-D.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D904EF52CE0B04A005CF538 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2D904EF72CE0B04A005CF538 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -158,7 +172,10 @@
 				057C6D9C2CFEE5F60019FA3E /* DispatchRunningView.swift */,
 				0582805E2D0025D900898A4A /* DispatchRunningTableViewCell.swift */,
 				2DC362C52CFF58A900859D1D /* DispatchNoteView.swift */,
+				2D7C5BDA2D0602BE00C381CE /* DispatchPeopleCountView.swift */,
 				058280602D002D1F00898A4A /* PushButtonView.swift */,
+				2D7C5BDC2D060D7500C381CE /* DispatchOffView.swift */,
+				2D7C5BDE2D0615A400C381CE /* DispatchOffTableViewCell.swift */,
 			);
 			path = CustomView;
 			sourceTree = "<group>";
@@ -178,6 +195,10 @@
 				05A227432CEC228C00C07662 /* DispatchTableViewCell.swift */,
 				05A227472CEC229B00C07662 /* GetOffWorkTableViewCell.swift */,
 				05DA9BE82CF6AD800024CADE /* DispatchDetailViewController.swift */,
+				2D7C5BCE2D049D3400C381CE /* DispatchCheckListViewController.swift */,
+				2D7C5BD02D04BF4700C381CE /* RefusalReasonViewController.swift */,
+				2D7C5BD42D04D36600C381CE /* RefusalReasonCollectionViewCell.swift */,
+				2D7C5BD22D04CDEA00C381CE /* RefusalSubmitViewController.swift */,
 			);
 			path = Driver;
 			sourceTree = "<group>";
@@ -458,6 +479,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2D7C5BD12D04BF4700C381CE /* RefusalReasonViewController.swift in Sources */,
 				2DE005682CE2491C004DE761 /* OfficeViewController.swift in Sources */,
 				2DE005662CE2490C004DE761 /* CalendarViewController.swift in Sources */,
 				2DC362C62CFF58A900859D1D /* DispatchNoteView.swift in Sources */,
@@ -476,6 +498,7 @@
 				058280632D0035D000898A4A /* MorningRollCallTableViewCell.swift in Sources */,
 				05A227402CEC225C00C07662 /* WorkRateTableViewCell.swift in Sources */,
 				2DE0056A2CE2492E004DE761 /* ProfileViewController.swift in Sources */,
+				2D7C5BD32D04CDEA00C381CE /* RefusalSubmitViewController.swift in Sources */,
 				057C6DA12CFEEC190019FA3E /* DispatchDetailIBaseInfoTableViewCell.swift in Sources */,
 				2D904EF62CE0B04A005CF538 /* AppDelegate.swift in Sources */,
 				05A0155A2CF58305004D0844 /* StatusView.swift in Sources */,
@@ -487,13 +510,17 @@
 				056D9ACC2D02E122006357B8 /* DailyInspectionTableViewCell.swift in Sources */,
 				05DA9BEB2CF6E5DC0024CADE /* MorningRollCallViewController.swift in Sources */,
 				05A015542CF40D47004D0844 /* HourlyWorkView.swift in Sources */,
+				2D7C5BD52D04D36600C381CE /* RefusalReasonCollectionViewCell.swift in Sources */,
 				05A227482CEC229B00C07662 /* GetOffWorkTableViewCell.swift in Sources */,
 				2D904F312CE0D20D005CF538 /* PermissionViewController.swift in Sources */,
 				057C6DA32CFEF9D50019FA3E /* DispatchDetailReferencesTableViewCell.swift in Sources */,
 				058280612D002D1F00898A4A /* PushButtonView.swift in Sources */,
 				05D3FA7C2CE2DD3300AFDC6B /* GetUpCheckViewController.swift in Sources */,
+				2D7C5BDD2D060D7500C381CE /* DispatchOffView.swift in Sources */,
 				2D904F1D2CE0B2EA005CF538 /* TemplateViewController.swift in Sources */,
+				2D7C5BDF2D0615A400C381CE /* DispatchOffTableViewCell.swift in Sources */,
 				2D904F172CE0B2DD005CF538 /* TemplateTableViewCell.swift in Sources */,
+				2D7C5BDB2D0602BE00C381CE /* DispatchPeopleCountView.swift in Sources */,
 				057C6D9D2CFEE5F60019FA3E /* DispatchRunningView.swift in Sources */,
 				05DB9A8E2CE448F600742317 /* KindsOfDocumentCollectionViewCell.swift in Sources */,
 				2D904EF82CE0B04A005CF538 /* SceneDelegate.swift in Sources */,
@@ -507,6 +534,7 @@
 				2D904F2C2CE0B3C2005CF538 /* SplashViewController.swift in Sources */,
 				2D904F202CE0B2F0005CF538 /* TemplateCollectionViewCell.swift in Sources */,
 				2D904F192CE0B2E1005CF538 /* CustomizedTabBarController.swift in Sources */,
+				2D7C5BCF2D049D3400C381CE /* DispatchCheckListViewController.swift in Sources */,
 				056D9ACA2D02E0A9006357B8 /* DailyInspectionViewController.swift in Sources */,
 				2D904F1B2CE0B2E5005CF538 /* AlertPopViewController.swift in Sources */,
 				2D904F1A2CE0B2E3005CF538 /* BottomSheetViewController.swift in Sources */,
@@ -663,6 +691,7 @@
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "운행 경로 저장 및 안내, 정류장 확인을 위해 해당 권한을 사용합니다.";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "운행 경로 저장 및 안내, 정류장 확인을 위해 해당 권한을 사용합니다.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "운행 경로 저장 및 안내, 정류장 확인을 위해 해당 권한을 사용합니다.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "보고용 사진을 가져오기 위해 앨범에 접근합니다.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -700,6 +729,7 @@
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "운행 경로 저장 및 안내, 정류장 확인을 위해 해당 권한을 사용합니다.";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "운행 경로 저장 및 안내, 정류장 확인을 위해 해당 권한을 사용합니다.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "운행 경로 저장 및 안내, 정류장 확인을 위해 해당 권한을 사용합니다.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "보고용 사진을 가져오기 위해 앨범에 접근합니다.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;

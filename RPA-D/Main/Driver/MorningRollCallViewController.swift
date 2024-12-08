@@ -130,7 +130,6 @@ final class MorningRollCallViewController: UIViewController {
         return button
     }()
     
-    var busId: Int
     var nextButtonBottomAnchorConstraint: NSLayoutConstraint!
     var rollCallList: [(title: String, status: Bool)] = [ // true: 양호, false: 이상
         ("건강 상태", true),
@@ -140,9 +139,7 @@ final class MorningRollCallViewController: UIViewController {
     
     let dispatchModel = DispatchModel()
     
-    init(busId: Int) {
-        self.busId = busId
-        
+    init() {
         super.init(nibName: nil, bundle: nil)
         
         self.modalPresentationStyle = .fullScreen
@@ -337,33 +334,14 @@ extension MorningRollCallViewController {
 
     }
     
-    func sendVehicleCheckDataRequest(busId: Int, success: (() -> ())?) {
-        self.dispatchModel.sendVehicleCheckDataRequest(busId: busId) {
-            success?()
-            
-        } failure: { message in
-            SupportingMethods.shared.checkExpiration {
-                print("sendVehicleCheckDataRequest API Error: \(message)")
-                SupportingMethods.shared.turnCoverView(.off)
-                
-            }
-            
-        }
-
-    }
 }
 
 // MARK: - Extension for selector methods
 extension MorningRollCallViewController {
     @objc func nextButton(_ sender: UIButton) {
         self.sendMorningRollCallDataRequest(arrivalTime: self.arrivalTimeLabel.text!, healthStatus: self.rollCallList[0].status, cleanStatus: self.rollCallList[1].status, routeKnowStatus: self.rollCallList[2].status, alcohol: Double(self.alcoholMeasurementTextField.text!)!) {
-            self.sendVehicleCheckDataRequest(busId: self.busId) {
-                self.dismiss(animated: true) {
-                    SupportingMethods.shared.turnCoverView(.off)
-                    NotificationCenter.default.post(name: Notification.Name("ReloadAllData"), object: nil)
-                    
-                }
-                
+            self.dismiss(animated: false) {
+                NotificationCenter.default.post(name: Notification.Name("OpenDailyInspection"), object: nil)
             }
         }
     }

@@ -253,7 +253,7 @@ extension GetUpCheckViewController {
             
         }
         // FIXME: 삭제 및 주석 풀기
-//        let vc = DailyInspectionViewController()
+//        let vc = DispatchCheckListViewController()
 //        
 //        self.present(vc, animated: true)
         

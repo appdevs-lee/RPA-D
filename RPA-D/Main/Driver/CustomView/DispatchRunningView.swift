@@ -20,7 +20,7 @@ class DispatchRunningView: UIView {
         tableView.dataSource = self
         tableView.sectionHeaderTopPadding = 0
         tableView.separatorStyle = .none
-        tableView.isUserInteractionEnabled = false
+//        tableView.isUserInteractionEnabled = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
         
         return tableView
@@ -34,7 +34,9 @@ class DispatchRunningView: UIView {
         return view
     }()
     
+    let dispatchModel = DispatchModel()
     var item: DispatchDetailItem
+    var currentStation: StationInfo?
     
     init(item: DispatchDetailItem) {
         self.item = item
@@ -43,6 +45,7 @@ class DispatchRunningView: UIView {
         
         self.setSubViews()
         self.setLayouts()
+        self.setData()
     }
     
     required init?(coder: NSCoder) {
@@ -77,10 +80,61 @@ extension DispatchRunningView {
         ])
     }
     
+    func setData() {
+        var currentIndex: Int = 0
+        for index in 0..<self.item.stations.count {
+            if self.item.stations[index].arrivalTime == "" {
+                self.currentStation = self.item.stations[index]
+                currentIndex = index
+                break
+                
+            }
+            
+        }
+        
+        self.tableView.reloadData()
+        print(currentIndex)
+        self.tableView.scrollToRow(at: IndexPath(row: currentIndex, section: 0), at: .bottom, animated: true)
+        
+    }
+    
 }
 
 // MARK: - Extension for methods added
 extension DispatchRunningView {
+    func sendStationCheckDataRequest(success: ((_ isLastStation: Bool) -> ())?) {
+        var currentStation: StationInfo!
+        var isLastStation: Bool = false
+        
+        for station in self.item.stations {
+            if station.arrivalTime == "" {
+                currentStation = station
+                break
+            }
+            
+        }
+        
+        if self.item.stations.last?.id == currentStation.id {
+            isLastStation = true
+            
+        } else {
+            isLastStation = false
+            
+        }
+        
+        self.dispatchModel.sendStationCheckDataRequest(dispatchId: self.item.id, stationId: currentStation.id, arriveTime: SupportingMethods.shared.convertDate(intoString: Date(), "HH:mm"), isLastStation: isLastStation) {
+            success?(isLastStation)
+            
+        } failure: { message in
+            SupportingMethods.shared.checkExpiration {
+                print("sendStationCheckDataRequest API Error: \(message)")
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+            
+        }
+
+    }
     
 }
 
@@ -102,39 +156,15 @@ extension DispatchRunningView: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "DispatchRunningTableViewCell", for: indexPath) as! DispatchRunningTableViewCell
-        let stationsList = self.item.stations
         let station = self.item.stations[indexPath.row]
         
-        if indexPath.row == 0 {
-            if station.arrivalTime != "" {
-                cell.setCell(station: station, status: false)
-                
-            } else {
-                cell.setCell(station: station, status: true)
-                
-            }
-            
-            
-        } else if indexPath.row == stationsList.count - 1 {
-            if stationsList[indexPath.row - 1].arrivalTime != "" && station.arrivalTime == "" {
-                cell.setCell(station: station, status: true)
-                
-            } else {
-                cell.setCell(station: station, status: false)
-                
-            }
+        if station.id == self.currentStation?.id {
+            cell.setCell(station: station, status: true)
             
         } else {
-            if stationsList[indexPath.row - 1].arrivalTime != "" && stationsList[indexPath.row + 1].arrivalTime == "" {
-                // 현재 가는 정류장
-                cell.setCell(station: station, status: true)
-                
-            } else {
-                cell.setCell(station: station, status: false)
-                
-            }
+            cell.setCell(station: station, status: false)
+            
         }
-        
         
         return cell
     }

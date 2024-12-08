@@ -90,11 +90,51 @@ final class DispatchDetailViewController: UIViewController {
         return view
     }()
     
+    lazy var backgroundView: UIView = {
+        let view = UIView()
+        view.isHidden = true
+        view.backgroundColor = .useRGB(red: 0, green: 0, blue: 0, alpha: 0.5)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
+    lazy var dispatchNoteView: DispatchNoteView = {
+        let view = DispatchNoteView()
+        view.isHidden = true
+        view.sendButton.addTarget(self, action: #selector(dispatchNoteSendButton(_:)), for: .touchUpInside)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
+    lazy var peopleCountView: DispatchPeopleCountView = {
+        let view = DispatchPeopleCountView()
+        view.isHidden = true
+        view.previousButton.addTarget(self, action: #selector(previousButton(_:)), for: .touchUpInside)
+        view.nextButton.addTarget(self, action: #selector(nextButton(_:)), for: .touchUpInside)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
+    lazy var dispatchOffView: DispatchOffView = {
+        let view = DispatchOffView(item: self.item)
+        view.isHidden = true
+        view.dispatchOffButton.addTarget(self, action: #selector(dispatchOffButton(_:)), for: .touchUpInside)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
     var isRunning: Bool
+    let dispatchModel = DispatchModel()
     var item: DispatchDetailItem
     var departureDate: String
     
     var bottomSheetViewHeightAnchorConstraint: NSLayoutConstraint!
+    var dispatchNoteViewBottomAnchorConstraint: NSLayoutConstraint!
+    var peopleCountViewBottomAnchorConstraint: NSLayoutConstraint!
     
     let detailBaseHeight: CGFloat = 115
     var detailMaxHeight: CGFloat = 609
@@ -126,6 +166,7 @@ final class DispatchDetailViewController: UIViewController {
         self.setLayouts()
         self.setUpNavigationItem()
         self.setAnnotation()
+        self.setData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -164,7 +205,10 @@ extension DispatchDetailViewController: EssentialViewMethods {
     }
     
     func setNotificationCenters() {
+        NotificationCenter.default.addObserver(self, selector: #selector(stationCheck(_:)), name: Notification.Name("StationCheck"), object: nil)
         
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     func setSubviews() {
@@ -172,6 +216,10 @@ extension DispatchDetailViewController: EssentialViewMethods {
             self.mapView,
             self.bottomSheetView,
             self.kakaoMapButton,
+            self.backgroundView,
+            self.dispatchNoteView,
+            self.peopleCountView,
+            self.dispatchOffView,
         ], to: self.view)
         
         if !self.isRunning {
@@ -258,6 +306,38 @@ extension DispatchDetailViewController: EssentialViewMethods {
             ])
         }
         
+        // backgroundView
+        NSLayoutConstraint.activate([
+            self.backgroundView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            self.backgroundView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            self.backgroundView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            self.backgroundView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+        ])
+        
+        // dispatchNoteView
+        self.dispatchNoteViewBottomAnchorConstraint = self.dispatchNoteView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+        NSLayoutConstraint.activate([
+            self.dispatchNoteView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
+            self.dispatchNoteView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
+            self.dispatchNoteViewBottomAnchorConstraint,
+        ])
+        
+        // peopleCountView
+        self.peopleCountViewBottomAnchorConstraint = self.peopleCountView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+        NSLayoutConstraint.activate([
+            self.peopleCountView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
+            self.peopleCountView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
+            self.peopleCountViewBottomAnchorConstraint,
+        ])
+        
+        // dispatchOffView
+        NSLayoutConstraint.activate([
+            self.dispatchOffView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            self.dispatchOffView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            self.dispatchOffView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            self.dispatchOffView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+        ])
+        
     }
     
     func setViewAfterTransition() {
@@ -293,6 +373,29 @@ extension DispatchDetailViewController: EssentialViewMethods {
             
         }
     }
+    
+    func setData() {
+        if self.isRunning {
+            if self.item.stations.filter({ $0.arrivalTime == "" }).isEmpty {
+                // 정류장 처리는 완료
+                // 운행 일보 체크
+                self.loadDrivingHistoryRequest { item in
+                    if item.arrivalKM == "" {
+                        // 운행일보 on
+                        self.backgroundView.isHidden = false
+                        self.dispatchNoteView.isHidden = false
+                        self.dispatchNoteView.dashboardTextField.becomeFirstResponder()
+                        
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    
 }
 
 // MARK: - Extension for methods added
@@ -332,6 +435,66 @@ extension DispatchDetailViewController {
         
         self.mapView.addAnnotations(annotations)
         
+    }
+    
+    func reloadData() {
+        SupportingMethods.shared.turnCoverView(.on)
+        self.loadDispatchDailyDetailRequest { item in
+            if self.isRunning {
+                self.dispatchRunningView.item = item
+                self.dispatchRunningView.setData()
+                
+            }
+            SupportingMethods.shared.turnCoverView(.off)
+            
+        }
+        
+    }
+    
+    // MARK: API
+    func loadDispatchDailyDetailRequest(success: ((DispatchDetailItem) -> ())?) {
+        self.dispatchModel.loadDispatchDailyDetailRequest(id: self.item.id, workType: self.item.workType) { item in
+            success?(item)
+            
+        } failure: { message in
+            SupportingMethods.shared.checkExpiration {
+                print("loadDispatchDailyDetailRequest API Error: \(message)")
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+            
+        }
+
+    }
+    
+    func updateDrivingHistoryRequest(id: Int, workType: String, arrivalKM: String = "", passengerNum: Int = 0, success: (() -> ())?) {
+        self.dispatchModel.updateDrivingHistoryRequest(id: id, workType: workType, arrivalKM: arrivalKM, passengerNum: passengerNum) {
+            success?()
+            
+        } failure: { message in
+            SupportingMethods.shared.checkExpiration {
+                print("updateDrivingHistoryRequest API Error: \(message)")
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+            
+        }
+
+    }
+    
+    func loadDrivingHistoryRequest(success: ((DrivingHistoryItem) -> ())?) {
+        self.dispatchModel.loadDrivingHistoryRequest(id: self.item.id, workType: self.item.workType) { item in
+            success?(item)
+            
+        } failure: { message in
+            SupportingMethods.shared.checkExpiration {
+                print("loadDrivingHistoryRequest API Error: \(message)")
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+            
+        }
+
     }
     
 }
@@ -385,6 +548,99 @@ extension DispatchDetailViewController {
             guard let url = URL(string: self.item.maplink) else { return }
             UIApplication.shared.open(url)
         }
+        
+    }
+    
+    @objc func stationCheck(_ notification: Notification) {
+        self.dispatchRunningView.sendStationCheckDataRequest { isLastStation in
+            if isLastStation {
+                self.backgroundView.isHidden = false
+                self.dispatchNoteView.isHidden = false
+                self.dispatchNoteView.dashboardTextField.becomeFirstResponder()
+                
+            } else {
+                self.reloadData()
+                
+            }
+            
+        }
+        
+    }
+    
+    @objc func keyboardWillShow(_ notification: Notification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
+            let duration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double {
+            
+            UIView.animate(withDuration: duration) {
+                self.dispatchNoteViewBottomAnchorConstraint.constant = -keyboardSize.height
+                self.peopleCountViewBottomAnchorConstraint.constant = -keyboardSize.height
+                
+                self.view.layoutIfNeeded()
+                
+            } completion: { finished in
+                
+            }
+        }
+    }
+    
+    @objc func keyboardWillHide(_ notification: Notification) {
+        if let duration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double {
+            
+            UIView.animate(withDuration: duration) {
+                self.backgroundView.isHidden = true
+                self.dispatchNoteView.isHidden = true
+                self.dispatchNoteViewBottomAnchorConstraint.constant = 0
+                self.peopleCountViewBottomAnchorConstraint.constant = 0
+                
+                self.view.layoutIfNeeded()
+                
+            } completion: { finished in
+                
+            }
+        }
+    }
+    
+    @objc func dispatchNoteSendButton(_ sender: UIButton) {
+        self.updateDrivingHistoryRequest(id: self.item.id, workType: self.item.workType) {
+            self.dispatchNoteView.dashboardTextField.resignFirstResponder()
+            self.backgroundView.isHidden = true
+            self.dispatchNoteView.isHidden = true
+            self.setData()
+            
+            self.backgroundView.isHidden = false
+            self.peopleCountView.isHidden = false
+            self.peopleCountView.peopleCountTextField.becomeFirstResponder()
+            
+        }
+        
+    }
+    
+    @objc func previousButton(_ sender: UIButton) {
+        self.peopleCountView.isHidden = true
+        
+        self.backgroundView.isHidden = false
+        self.dispatchNoteView.isHidden = false
+        self.dispatchNoteView.dashboardTextField.becomeFirstResponder()
+    }
+    
+    @objc func nextButton(_ sender: UIButton) {
+        self.updateDrivingHistoryRequest(id: self.item.id, workType: self.item.workType, passengerNum: Int(self.peopleCountView.peopleCountTextField.text ?? "0")!) {
+            //FIXME: 운행일보 요약본 보여주기
+            self.peopleCountView.peopleCountTextField.resignFirstResponder()
+            SupportingMethods.shared.turnCoverView(.on)
+            self.loadDrivingHistoryRequest { item in
+                self.dispatchOffView.setData(item: item)
+                self.dispatchOffView.isHidden = false
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+            
+        }
+    }
+    
+    @objc func dispatchOffButton(_ sender: UIButton) {
+        self.navigationController?.popViewController(animated: true)
+        NotificationCenter.default.post(name: Notification.Name("ReloadAllData"), object: nil)
         
     }
     

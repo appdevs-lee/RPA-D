@@ -19,10 +19,16 @@ final class DispatchModel {
     private(set) var sendDispatchConnectCheckDataRequest: DataRequest?
     // 운행 확인
     private(set) var sendDispatchInfoUpdateRequest: DataRequest?
+    // 운행 일보 가져오기
+    private(set) var loadDrivingHistoryRequest: DataRequest?
     // 운행 일보 Patch
     private(set) var updateDrivingHistoryRequest: DataRequest?
+    // 정류장 도착 Post
+    private(set) var sendStationCheckDataRequest: DataRequest?
     // 아침 점호 전송
     private(set) var sendMorningRollCallDataRequest: DataRequest?   
+    // 아침 점호 정보
+    private(set) var loadMorningRollCallDataRequest: DataRequest?
     // 일일 점검 전송
     private(set) var sendVehicleCheckDataRequest: DataRequest?
     
@@ -162,7 +168,7 @@ final class DispatchModel {
         
     }
     
-    func sendDispatchConnectCheckDataRequest(id: Int, workType: String, check: String, refusal: String = "", success: (() -> ())?, failure: ((_ message: String) -> ())?) {
+    func sendDispatchConnectCheckDataRequest(id: Int, workType: String, check: String, refusal: String = "", imageData: UIImage? = nil, success: (() -> ())?, failure: ((_ message: String) -> ())?) {
         let url = ServerSetting.server.URL + "/dispatch/connect/check"
         
         let headers: HTTPHeaders = [
@@ -170,14 +176,31 @@ final class DispatchModel {
             "Authorization": ReferenceValues.accessToken
         ]
         
-        let parameters: Parameters = [
-            "check": check, // 0 = 거부, 1 = 수락
-            "refusal": refusal,
-            "regularly_id": workType != "일반" ? "\(id)" : "",
-            "order_id": workType != "일반" ? "" : "\(id)",
-        ]
-        
-        self.sendDispatchConnectCheckDataRequest = AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
+        if check == "0" {
+            // 거부
+            self.sendDispatchConnectCheckDataRequest = AF.upload(multipartFormData: { multipartForData in
+                if let imageData = imageData {
+                    multipartForData.append(imageData.jpegData(compressionQuality: 0.1)!, withName: "image", fileName: "files", mimeType: "image/jpeg")
+                }
+                multipartForData.append(check.data(using: .utf8)!, withName: "check")
+                multipartForData.append(refusal.data(using: .utf8)!, withName: "refusal")
+                multipartForData.append((workType != "일반" ? "\(id)" : "").data(using: .utf8)!, withName: "regularly_id")
+                multipartForData.append((workType != "일반" ? "" : "\(id)").data(using: .utf8)!, withName: "order_id")
+            }, to: url, headers: headers).uploadProgress(queue: .main, closure: { progress in
+                print("Upload Progress: \(progress.fractionCompleted)")
+            })
+        } else {
+            // 수락
+            let parameters: Parameters = [
+                "check": check, // 0 = 거부, 1 = 수락
+                "refusal": refusal,
+                "regularly_id": workType != "일반" ? "\(id)" : "",
+                "order_id": workType != "일반" ? "" : "\(id)",
+            ]
+            
+            self.sendDispatchConnectCheckDataRequest = AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
+            
+        }
         
         self.sendDispatchConnectCheckDataRequest?.responseData { (response) in
             switch response.result {
@@ -250,6 +273,54 @@ final class DispatchModel {
         }
     }
     
+    func loadDrivingHistoryRequest(id: Int, workType: String, success: ((DrivingHistoryItem) -> ())?, failure: ((_ message: String) -> ())?) {
+        let url = ServerSetting.server.URL + "/dispatch/driving-history"
+        
+        let headers: HTTPHeaders = [
+            "accept":"application/json",
+            "Authorization": ReferenceValues.accessToken
+        ]
+        
+        var parameters: Parameters = [
+            "id": id,
+            "work_type": workType,
+        ]
+        
+        self.loadDrivingHistoryRequest = AF.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default, headers: headers)
+        
+        self.loadDrivingHistoryRequest?.responseData { (response) in
+            switch response.result {
+            case .success(let data):
+                guard let statusCode = response.response?.statusCode else {
+                    print("loadDrivingHistoryRequest failure: statusCode nil")
+                    failure?("statusCodeNil")
+                    
+                    return
+                }
+                
+                guard statusCode >= 200 && statusCode < 300 else {
+                    print("loadDrivingHistoryRequest failure: statusCode(\(statusCode))")
+                    failure?("statusCodeError")
+                    
+                    return
+                }
+                
+                if let decodedData = try? JSONDecoder().decode(DrivingHistory.self, from: data) {
+                    print("loadDrivingHistoryRequest succeeded")
+                    success?(decodedData.data)
+                    
+                } else {
+                    print("loadDrivingHistoryRequest failure: API 성공, Parsing 실패")
+                    failure?("API 성공, Parsing 실패")
+                }
+                
+            case .failure(let error):
+                print("loadDrivingHistoryRequest error: \(error.localizedDescription)")
+                failure?(error.localizedDescription)
+            }
+        }
+    }
+    
     func updateDrivingHistoryRequest(id: Int, workType: String, departureKM: String = "", arrivalKM: String = "", passengerNum: Int = 0, success: (() -> ())?, failure: ((_ message: String) -> ())?) {
         let url = ServerSetting.server.URL + "/dispatch/driving-history"
         
@@ -258,13 +329,19 @@ final class DispatchModel {
             "Authorization": ReferenceValues.accessToken
         ]
         
-        let parameters: Parameters = [
+        var parameters: Parameters = [
             "id": "\(id)",
             "work_type": workType,
-            "departure_km": departureKM,
-            "arrival_km": arrivalKM,
             "passenger_num": "\(passengerNum)",
         ]
+        
+        if departureKM != "" && arrivalKM == "" {
+            parameters.updateValue(departureKM, forKey: "departure_km")
+            
+        } else if departureKM == "" && arrivalKM != "" {
+            parameters.updateValue(arrivalKM, forKey: "arrival_km")
+            
+        }
         
         self.updateDrivingHistoryRequest = AF.request(url, method: .patch , parameters: parameters, encoding: URLEncoding.default, headers: headers)
         
@@ -290,6 +367,50 @@ final class DispatchModel {
                 
             case .failure(let error):
                 print("updateDrivingHistoryRequest error: \(error.localizedDescription)")
+                failure?(error.localizedDescription)
+            }
+        }
+    }
+    
+    func sendStationCheckDataRequest(dispatchId: Int, stationId: Int, arriveTime: String, isLastStation: Bool, success: (() -> ())?, failure: ((_ message: String) -> ())?) {
+        let url = ServerSetting.server.URL + "/dispatch/station/check"
+        
+        let headers: HTTPHeaders = [
+            "accept":"application/json",
+            "Authorization": ReferenceValues.accessToken
+        ]
+        
+        var parameters: Parameters = [
+            "regularly_connect_id": dispatchId,
+            "station_id": stationId,
+            "arrival_time": arriveTime,
+            "is_last_station": isLastStation ? "true" : "false"
+        ]
+        
+        self.sendStationCheckDataRequest = AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
+        
+        self.sendStationCheckDataRequest?.responseData { (response) in
+            switch response.result {
+            case .success(_):
+                guard let statusCode = response.response?.statusCode else {
+                    print("sendStationCheckDataRequest failure: statusCode nil")
+                    failure?("statusCodeNil")
+                    
+                    return
+                }
+                
+                guard statusCode >= 200 && statusCode < 300 else {
+                    print("sendStationCheckDataRequest failure: statusCode(\(statusCode))")
+                    failure?("statusCodeError")
+                    
+                    return
+                }
+                
+                print("sendStationCheckDataRequest succeeded")
+                success?()
+                
+            case .failure(let error):
+                print("sendStationCheckDataRequest error: \(error.localizedDescription)")
                 failure?(error.localizedDescription)
             }
         }
@@ -339,8 +460,51 @@ final class DispatchModel {
             }
         }
     }
+    
+    func loadMorningRollCallDataRequest(success: ((MorningRollCallItem) -> ())?, failure: ((_ message: String) -> ())?) {
+        let url = ServerSetting.server.URL + "/dispatch/checklist/morning/\(SupportingMethods.shared.convertDate(intoString: Date()))"
+        
+        let headers: HTTPHeaders = [
+            "accept":"application/json",
+            "Authorization": ReferenceValues.accessToken
+        ]
+        
+        self.loadMorningRollCallDataRequest = AF.request(url, method: .get, parameters: nil, encoding: URLEncoding.default, headers: headers)
+        
+        self.loadMorningRollCallDataRequest?.responseData { (response) in
+            switch response.result {
+            case .success(let data):
+                guard let statusCode = response.response?.statusCode else {
+                    print("loadMorningRollCallDataRequest failure: statusCode nil")
+                    failure?("statusCodeNil")
+                    
+                    return
+                }
+                
+                guard statusCode >= 200 && statusCode < 300 else {
+                    print("loadMorningRollCallDataRequest failure: statusCode(\(statusCode))")
+                    failure?("statusCodeError")
+                    
+                    return
+                }
+                
+                if let decodedData = try? JSONDecoder().decode(MorningRollCall.self, from: data) {
+                    print("loadMorningRollCallDataRequest succeeded")
+                    success?(decodedData.data)
+                    
+                } else {
+                    print("loadMorningRollCallDataRequest failure: API 성공, Parsing 실패")
+                    failure?("API 성공, Parsing 실패")
+                }
+                
+            case .failure(let error):
+                print("loadMorningRollCallDataRequest error: \(error.localizedDescription)")
+                failure?(error.localizedDescription)
+            }
+        }
+    }
 
-    func sendVehicleCheckDataRequest(busId: Int, success: (() -> ())?, failure: ((_ message: String) -> ())?) {
+    func sendVehicleCheckDataRequest(busId: Int, inspectionList: [Inspection], success: (() -> ())?, failure: ((_ message: String) -> ())?) {
         let url = ServerSetting.server.URL + "/vehicle/checklist/daily/\(SupportingMethods.shared.convertDate(intoString: Date()))"
         
         let headers: HTTPHeaders = [
@@ -350,16 +514,16 @@ final class DispatchModel {
         
         let parameters: Parameters = [
             "bus_id": "\(busId)",
-            "oil_engine_condition": "",
-            "oil_power_clutch_condition": "",
-            "coolant_washer_condition": "",
-            "external_body_condition": "",
-            "lighting_device_condition": "",
-            "blackbox_condition": "",
-            "tire_condition": "",
-            "interior_condition": "",
-            "safety_belt_slide_condition": "",
-            "uniform_worn_condition": "",
+            "oil_engine_condition": inspectionList[0].status! ? "양호" : "이상",
+            "oil_power_clutch_condition": inspectionList[1].status! ? "양호" : "이상",
+            "coolant_washer_condition": inspectionList[2].status! ? "양호" : "이상",
+            "external_body_condition": inspectionList[3].status! ? "양호" : "이상",
+            "lighting_device_condition": inspectionList[4].status! ? "양호" : "이상",
+            "blackbox_condition": inspectionList[5].status! ? "양호" : "이상",
+            "tire_condition": inspectionList[6].status! ? "양호" : "이상",
+            "interior_condition": inspectionList[7].status! ? "양호" : "이상",
+            "safety_belt_slide_condition": inspectionList[8].status! ? "양호" : "이상",
+            "uniform_worn_condition": inspectionList[9].status! ? "양호" : "이상",
         ]
         
         self.sendVehicleCheckDataRequest = AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
@@ -411,6 +575,7 @@ struct DispatchDailyItem: Codable {
     let status: String
     let isVehicleChecked: String
     let maplink: String?
+    let references: String
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -425,6 +590,7 @@ struct DispatchDailyItem: Codable {
         case status
         case isVehicleChecked = "is_vehicle_checked"
         case maplink
+        case references
     }
 }
 
@@ -503,4 +669,35 @@ struct DispatchMonthlyItem: Codable {
         return dailyDispatchCount
     }
     
+}
+
+// MARK: 아침 점호
+struct MorningRollCall: Codable {
+    let data: MorningRollCallItem
+    
+}
+
+struct MorningRollCallItem: Codable {
+    let submitCheck: Bool
+    
+    enum CodingKeys: String, CodingKey {
+        case submitCheck = "submit_check"
+    }
+}
+
+// MARK: 운행 일보
+struct DrivingHistory: Codable {
+    let data: DrivingHistoryItem
+}
+
+struct DrivingHistoryItem: Codable {
+    let departureKM: String
+    let arrivalKM: String
+    let passengerNum: String
+    
+    enum CodingKeys: String, CodingKey {
+        case departureKM = "departure_km"
+        case arrivalKM = "arrival_km"
+        case passengerNum = "passenger_num"
+    }
 }
