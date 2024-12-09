@@ -199,15 +199,20 @@ extension DispatchOffView {
     }
     
     func setData(item: DrivingHistoryItem) {
-        if item.arrivalKM != "" {
-            self.noteDataList[0].figure = "\(Int(item.arrivalKM)! - Int(item.departureKM)!)KM"
-            self.noteDataList[1].figure = "\(Int(item.departureKM)!.formatterStyle(.decimal)!)"
-            self.noteDataList[2].figure = "\(Int(item.arrivalKM)!.formatterStyle(.decimal)!)"
-            self.noteDataList[3].figure = "\(item.passengerNum)명"
+        self.loadDrivingHistoryRequest { item in
+            if item.arrivalKM != "" {
+                let distance = Int(item.arrivalKM)! - Int(item.departureKM)!
+                self.noteDataList[0].figure = "\(distance.formatterStyle(.decimal)!)KM"
+                self.noteDataList[1].figure = "\(Int(item.departureKM)!.formatterStyle(.decimal)!)"
+                self.noteDataList[2].figure = "\(Int(item.arrivalKM)!.formatterStyle(.decimal)!)"
+                self.noteDataList[3].figure = "\(item.passengerNum)명"
+                
+            }
+            
+            self.tableView.reloadData()
             
         }
         
-        self.tableView.reloadData()
     }
 }
 

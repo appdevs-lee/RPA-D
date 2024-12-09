@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		050295A92D06849600BE3CB7 /* EveningRollCallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050295A82D06849600BE3CB7 /* EveningRollCallViewController.swift */; };
 		056D9ACA2D02E0A9006357B8 /* DailyInspectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 056D9AC92D02E0A9006357B8 /* DailyInspectionViewController.swift */; };
 		056D9ACC2D02E122006357B8 /* DailyInspectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 056D9ACB2D02E122006357B8 /* DailyInspectionTableViewCell.swift */; };
 		057C6D9B2CFEE5E80019FA3E /* DispatchDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057C6D9A2CFEE5E80019FA3E /* DispatchDetailView.swift */; };
@@ -75,6 +76,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		050295A82D06849600BE3CB7 /* EveningRollCallViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EveningRollCallViewController.swift; sourceTree = "<group>"; };
 		056D9AC92D02E0A9006357B8 /* DailyInspectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyInspectionViewController.swift; sourceTree = "<group>"; };
 		056D9ACB2D02E122006357B8 /* DailyInspectionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyInspectionTableViewCell.swift; sourceTree = "<group>"; };
 		057C6D9A2CFEE5E80019FA3E /* DispatchDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchDetailView.swift; sourceTree = "<group>"; };
@@ -189,6 +191,7 @@
 				058280622D0035D000898A4A /* MorningRollCallTableViewCell.swift */,
 				056D9AC92D02E0A9006357B8 /* DailyInspectionViewController.swift */,
 				056D9ACB2D02E122006357B8 /* DailyInspectionTableViewCell.swift */,
+				050295A82D06849600BE3CB7 /* EveningRollCallViewController.swift */,
 				2DE005632CE248F4004DE761 /* MainViewController.swift */,
 				05A2273F2CEC225C00C07662 /* WorkRateTableViewCell.swift */,
 				05A227412CEC228700C07662 /* GoToWorkTableViewCell.swift */,
@@ -510,6 +513,7 @@
 				056D9ACC2D02E122006357B8 /* DailyInspectionTableViewCell.swift in Sources */,
 				05DA9BEB2CF6E5DC0024CADE /* MorningRollCallViewController.swift in Sources */,
 				05A015542CF40D47004D0844 /* HourlyWorkView.swift in Sources */,
+				050295A92D06849600BE3CB7 /* EveningRollCallViewController.swift in Sources */,
 				2D7C5BD52D04D36600C381CE /* RefusalReasonCollectionViewCell.swift in Sources */,
 				05A227482CEC229B00C07662 /* GetOffWorkTableViewCell.swift in Sources */,
 				2D904F312CE0D20D005CF538 /* PermissionViewController.swift in Sources */,

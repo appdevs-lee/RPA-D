@@ -243,7 +243,19 @@ extension StatusView {
             self.statusButton.backgroundColor = .useRGB(red: 248, green: 248, blue: 248)
             self.statusButton.setTitleColor(.useRGB(red: 148, green: 147, blue: 147), for: .normal)
             
+        } else if status == "" {
+            self.titleLabel.text = "오늘 하루 고생하셨습니다."
+            self.subTitleLabel.text = "안전 귀가하세요! \(User.shared.name) 님"
+            self.statusImageView.image = .useCustomImage(RoutineStatus.getOffWork.imageName)
+            self.statusButton.setTitle("퇴근 완료", for: .normal)
+            self.statusButton.isEnabled = false
+            self.statusButton.backgroundColor = .useRGB(red: 248, green: 248, blue: 248)
+            self.statusButton.setTitleColor(.useRGB(red: 148, green: 147, blue: 147), for: .normal)
+            
         } else {
+            self.statusButton.backgroundColor = .useRGB(red: 223, green: 52, blue: 52)
+            self.statusButton.setTitleColor(.white, for: .normal)
+            
             switch RoutineStatus(rawValue: status) {
             case .dispatchReady:
                 self.titleLabel.text = RoutineStatus.dispatchReady.title
@@ -327,10 +339,10 @@ extension StatusView {
                 
             case .getOffWork:
                 // 퇴근
-                self.titleLabel.text = RoutineStatus.dispatchCheck.title
+                self.titleLabel.text = RoutineStatus.getOffWork.title
                 self.subTitleLabel.text = "퇴근 기록을 위해 버튼을 눌러 주세요."
-                self.statusImageView.image = .useCustomImage(RoutineStatus.dispatchCheck.imageName)
-                self.statusButton.setTitle(RoutineStatus.dispatchCheck.buttonTitle, for: .normal)
+                self.statusImageView.image = .useCustomImage(RoutineStatus.getOffWork.imageName)
+                self.statusButton.setTitle(RoutineStatus.getOffWork.buttonTitle, for: .normal)
                 
             default: break
                 

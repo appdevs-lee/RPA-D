@@ -470,6 +470,7 @@ extension DispatchCheckListViewController: EssentialViewMethods {
         if self.dispatchList.isEmpty {
             // 해당 뷰 dismiss
             self.dismiss(animated: true)
+            NotificationCenter.default.post(name: Notification.Name("ReloadAllData"), object: nil)
             
         } else {
             guard let firstDispatch = self.dispatchList.first else { return }

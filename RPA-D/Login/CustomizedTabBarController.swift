@@ -125,6 +125,7 @@ extension CustomizedTabBarController: UITabBarControllerDelegate {
         
         if tabBarController.selectedIndex == 0 {
             print("운행")
+            NotificationCenter.default.post(name: Notification.Name("ReloadAllData"), object: nil)
             
         }
         

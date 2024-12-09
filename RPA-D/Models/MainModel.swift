@@ -11,6 +11,8 @@ import Alamofire
 final class MainModel {
     // 하루 일과 정보
     private(set) var loadDailyRoutineDataRequest: DataRequest?
+    // 퇴근
+    private(set) var sendGetOffWorkDataRequest: DataRequest?
     
     func loadDailyRoutineDataRequest(success: ((RoutineItem) -> ())?, failure: ((_ message: String) -> ())?) {
         let checkHour = String(SupportingMethods.shared.convertDate(intoString: Date(), "yyyy-MM-dd HH:mm").split(separator: " ")[1].split(separator: ":")[0])
@@ -64,6 +66,62 @@ final class MainModel {
             }
         }
     }
+    
+    func sendGetOffWorkDataRequest(statusType: String, success: (() -> ())?, failure: ((_ message: String) -> ())?) {
+        let url = ServerSetting.server.URL + "/dispatch/daily/routine/get-off-work"
+        
+        let headers: HTTPHeaders = [
+            "accept": "application/json",
+            "Authorization": ReferenceValues.accessToken
+        ]
+        
+        let checkHour = String(SupportingMethods.shared.convertDate(intoString: Date(), "yyyy-MM-dd HH:mm").split(separator: " ")[1].split(separator: ":")[0])
+        var date = ""
+        if Int(checkHour)! < 04 {
+            date = SupportingMethods.shared.convertDate(intoString: Date(timeIntervalSinceNow: -86400))
+            
+        } else {
+            date = SupportingMethods.shared.convertDate(intoString: Date())
+            
+        }
+        
+        let parameters: Parameters = [
+            "date": date,
+            "status_type": statusType
+        ]
+        
+        self.sendGetOffWorkDataRequest = AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
+        
+        self.sendGetOffWorkDataRequest?.responseData { (response) in
+            switch response.result {
+            case .success(let data):
+                guard let statusCode = response.response?.statusCode else {
+                    print("sendGetOffWorkDataRequest failure: statusCode nil")
+                    failure?("statusCodeNil")
+                    
+                    return
+                }
+                
+                guard statusCode >= 200 && statusCode < 300 else {
+                    print("sendGetOffWorkDataRequest failure: statusCode(\(statusCode))")
+                    failure?("statusCodeError")
+                    
+                    return
+                }
+                
+                print("sendGetOffWorkDataRequest succeeded")
+                success?()
+                
+            case .failure(let error):
+                print("sendGetOffWorkDataRequest error: \(error.localizedDescription)")
+                failure?(error.localizedDescription)
+                
+            }
+            
+        }
+        
+    }
+    
 }
 
 struct Routine: Codable {

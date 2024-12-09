@@ -103,7 +103,7 @@ extension DispatchRunningView {
 // MARK: - Extension for methods added
 extension DispatchRunningView {
     func sendStationCheckDataRequest(success: ((_ isLastStation: Bool) -> ())?) {
-        var currentStation: StationInfo!
+        var currentStation: StationInfo?
         var isLastStation: Bool = false
         
         for station in self.item.stations {
@@ -114,6 +114,7 @@ extension DispatchRunningView {
             
         }
         
+        guard let currentStation = currentStation else { return }
         if self.item.stations.last?.id == currentStation.id {
             isLastStation = true
             

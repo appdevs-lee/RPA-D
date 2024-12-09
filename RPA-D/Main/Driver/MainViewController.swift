@@ -160,6 +160,7 @@ final class MainViewController: UIViewController {
     var goToWorkData: RoutineGoToWork?
     var dispatchList: [RoutineDispatch?] = []
     var getOffWorkData: RoutineGetOffWork?
+    var isLeftDispatchCheck: Bool = false
     
     var dispatchNoteViewBottomAnchorConstraint: NSLayoutConstraint!
     
@@ -366,7 +367,7 @@ extension MainViewController: EssentialViewMethods {
             self.navigationItem.leftBarButtonItem = leftBarButtonItem
             
         default:
-            let leftBarButtonItem = UIBarButtonItem(title: "운행", style: .plain, target: self, action: #selector(openTestView(_:)))
+            let leftBarButtonItem = UIBarButtonItem(title: "운행", style: .plain, target: self, action: nil)
             leftBarButtonItem.setTitleTextAttributes([
                 .font:UIFont.useFont(ofSize: 20, weight: .Bold),
                 .foregroundColor: UIColor.useRGB(red: 46, green: 45, blue: 45)
@@ -377,42 +378,87 @@ extension MainViewController: EssentialViewMethods {
         
     }
     
-    func setData() {
+    func setData(status: String? = nil) {
         SupportingMethods.shared.turnCoverView(.on)
         self.loadDailyRoutineDataRequest { item in
-            print("routine Item: \(item)")
-            self.routine = item
-            
-            if item.tasks.isEmpty {
-                self.noRoutineDataBaseView.isHidden = false
-                
-            } else {
-                self.noRoutineDataBaseView.isHidden = true
-                
-                self.goToWorkData = item.goToWork
-                self.dispatchList = item.tasks
-                self.getOffWorkData = item.getOffWork
-                
-                self.dispatchIsHiddenStatus = Array(repeating: true, count: self.dispatchList.count)
-                self.statusView.setData(status: item.status, routine: item)
-                
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                    SupportingMethods.shared.turnCoverView(.off)
+            self.continueCheckDispatchCheckData { isLeftDispatchCheck in
+                if !isLeftDispatchCheck {
+                    print("routine Item: \(item)")
+                    self.routine = item
+                    
+                    if item.tasks.isEmpty {
+                        self.noRoutineDataBaseView.isHidden = false
+                        
+                    } else {
+                        self.noRoutineDataBaseView.isHidden = true
+                        
+                        self.goToWorkData = item.goToWork
+                        self.dispatchList = item.tasks
+                        self.getOffWorkData = item.getOffWork
+                        
+                        self.dispatchIsHiddenStatus = Array(repeating: true, count: self.dispatchList.count)
+                        self.statusView.setData(status: item.status, routine: item)
+                        
+                        DispatchQueue.main.async {
+                            self.tableView.reloadData()
+                            SupportingMethods.shared.turnCoverView(.off)
+                        }
+                        
+                    }
+                    
+                    if item.goToWork.wakeTime == "" {
+                        let vc = GetUpCheckViewController(routine: item)
+                        
+                        self.present(vc, animated: false)
+                        
+                    }
+                    
                 }
-                
-            }
-            
-            if item.goToWork.wakeTime == "" {
-                let vc = GetUpCheckViewController(routine: item)
-                
-                self.present(vc, animated: false)
                 
             }
             
         }
         
     }
+    
+    func continueCheckDispatchCheckData(completionHandler: ((_ isLeftDispatchCheck: Bool) -> ())? = nil) {
+        SupportingMethods.shared.turnCoverView(.on)
+        self.loadDispatchDailyListRequest { dispatchList in
+            SupportingMethods.shared.turnCoverView(.off)
+            if dispatchList.isEmpty {
+                // 배차 수락 건너뛰기.
+                // 내일 배차 없음.
+                print("내일 배차 없음.")
+                self.isLeftDispatchCheck = false
+                completionHandler?(false)
+                
+            } else {
+                let checkList = dispatchList.filter({ $0.connectCheck == "" })
+                if checkList.isEmpty {
+                    // 배차 수락 전부 진행함.
+                    print("전부 수락함.")
+                    self.isLeftDispatchCheck = false
+                    completionHandler?(false)
+                    
+                } else {
+                    // 배차 수락 안 한 건 있음.
+                    let vc = CustomizedNavigationController(rootViewController: DispatchCheckListViewController(dispatchList: checkList))
+                    
+                    self.present(vc, animated: true) {
+                        print("수락 안한 배차 개수: \(checkList.count)")
+                        self.isLeftDispatchCheck = true
+                        completionHandler?(true)
+                        
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    
 }
 
 // MARK: - Extension for methods added
@@ -461,8 +507,8 @@ extension MainViewController {
 
     }
     
-    func updateDrivingHistoryRequest(id: Int, workType: String, departureKM: String = "", arrivalKM: String = "", passengerNum: Int = 0, success: (() -> ())?) {
-        self.dispatchModel.updateDrivingHistoryRequest(id: id, workType: workType, departureKM: departureKM, arrivalKM: arrivalKM, passengerNum: passengerNum) {
+    func updateDrivingHistoryRequest(id: Int, workType: String, departureKM: String, passengerNum: Int = 0, success: (() -> ())?) {
+        self.dispatchModel.updateDrivingHistoryRequest(id: id, workType: workType, departureKM: departureKM, passengerNum: passengerNum) {
             success?()
             
         } failure: { message in
@@ -518,43 +564,25 @@ extension MainViewController {
 
     }
     
-}
-
-// MARK: - Extension for selector methods
-extension MainViewController {
-    // FIXME: 삭제 해야함.
-    @objc func openTestView(_ barButtonItem: UIBarButtonItem) {
-        SupportingMethods.shared.turnCoverView(.on)
-        self.loadDispatchDailyListRequest { dispatchList in
-            SupportingMethods.shared.turnCoverView(.off)
-            if dispatchList.isEmpty {
-                // 배차 수락 건너뛰기.
-                // 내일 배차 없음.
-                print("내일 배차 없음.")
-                
-            } else {
-                let checkList = dispatchList.filter({ $0.connectCheck == "" })
-                if checkList.isEmpty {
-                    // 배차 수락 전부 진행함.
-                    print("전부 수락함.")
-                    
-                } else {
-                    // 배차 수락 안 한 건 있음.
-                    let vc = CustomizedNavigationController(rootViewController: DispatchCheckListViewController(dispatchList: checkList))
-                    
-                    self.present(vc, animated: true) {
-                        print("수락 안한 배차 개수: \(checkList.count)")
-                        
-                    }
-                    
-                }
+    func sendGetOffWorkDataRequest(statusType: String, success: (() -> ())?) {
+        self.mainModel.sendGetOffWorkDataRequest(statusType: statusType) {
+            success?()
+            
+        } failure: { message in
+            SupportingMethods.shared.checkExpiration {
+                print("loadDispatchDailyListRequest API Error: \(message)")
+                SupportingMethods.shared.turnCoverView(.off)
                 
             }
             
         }
-        
+
     }
     
+}
+
+// MARK: - Extension for selector methods
+extension MainViewController {
     @objc func reloadData(_ notification: Notification) {
         guard let index = notification.userInfo?["index"] as? Int else { return }
         
@@ -682,6 +710,9 @@ extension MainViewController {
             
         case .eveningRollCall:
             // 저녁 점호
+            let vc = EveningRollCallViewController()
+            
+            self.present(vc, animated: true)
             break
             
         case .dispatchCheck:
@@ -692,13 +723,19 @@ extension MainViewController {
                 if dispatchList.isEmpty {
                     // 배차 수락 건너뛰기.
                     // 내일 배차 없음.
-                    print("내일 배차 없음.")
+                    self.sendGetOffWorkDataRequest(statusType: "배차 확인") {
+                        self.setData()
+                        
+                    }
                     
                 } else {
                     let checkList = dispatchList.filter({ $0.connectCheck == "" })
                     if checkList.isEmpty {
                         // 배차 수락 전부 진행함.
-                        print("전부 수락함.")
+                        self.sendGetOffWorkDataRequest(statusType: "배차 확인") {
+                            self.setData()
+                            
+                        }
                         
                     } else {
                         // 배차 수락 안 한 건 있음.
@@ -718,6 +755,10 @@ extension MainViewController {
             
         case .getOffWork:
             // 퇴근
+            self.sendGetOffWorkDataRequest(statusType: "퇴근") {
+                self.setData()
+                
+            }
             break
             
         default: break
@@ -758,7 +799,7 @@ extension MainViewController {
     }
     
     @objc func dispatchNoteSendButton(_ sender: UIButton) {
-        self.updateDrivingHistoryRequest(id: self.routine!.info.dispatchId!, workType: self.routine!.info.workType!) {
+        self.updateDrivingHistoryRequest(id: self.routine!.info.dispatchId!, workType: self.routine!.info.workType!, departureKM: self.dispatchNoteView.dashboardTextField.text!) {
             self.dispatchNoteView.dashboardTextField.resignFirstResponder()
             self.backgroundView.isHidden = true
             self.dispatchNoteView.isHidden = true

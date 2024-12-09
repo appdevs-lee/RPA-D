@@ -29,6 +29,10 @@ final class DispatchModel {
     private(set) var sendMorningRollCallDataRequest: DataRequest?   
     // 아침 점호 정보
     private(set) var loadMorningRollCallDataRequest: DataRequest?
+    // 저녁 점호 전송
+    private(set) var sendEveningRollCallDataRequest: DataRequest?
+    // 저녁 점호 정보
+    private(set) var loadEveningRollCallDataRequest: DataRequest?
     // 일일 점검 전송
     private(set) var sendVehicleCheckDataRequest: DataRequest?
     
@@ -499,6 +503,62 @@ final class DispatchModel {
                 
             case .failure(let error):
                 print("loadMorningRollCallDataRequest error: \(error.localizedDescription)")
+                failure?(error.localizedDescription)
+            }
+        }
+    }
+    
+    func sendEveningRollCallDataRequest(dashboard: String, fuel: String, urea: String, gauge: String, specialNotes: String, success: (() -> ())?, failure: ((_ message: String) -> ())?) {
+        let checkHour = String(SupportingMethods.shared.convertDate(intoString: Date(), "yyyy-MM-dd HH:mm").split(separator: " ")[1].split(separator: ":")[0])
+        var date = ""
+        if Int(checkHour)! < 04 {
+            date = SupportingMethods.shared.convertDate(intoString: Date(timeIntervalSinceNow: -86400))
+            
+        } else {
+            date = SupportingMethods.shared.convertDate(intoString: Date())
+            
+        }
+        
+        let url = ServerSetting.server.URL + "/dispatch/checklist/evening/\(date)"
+        
+        let headers: HTTPHeaders = [
+            "accept": "application/json",
+            "Authorization": ReferenceValues.accessToken
+        ]
+        
+        let parameters: Parameters = [
+            "battery_condition": "양호",
+            "drive_distance": dashboard,
+            "fuel_quantity": fuel,
+            "urea_solution_quantity": urea,
+            "suit_gauge": gauge,
+            "special_notes": specialNotes,
+        ]
+        
+        self.sendEveningRollCallDataRequest = AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
+        
+        self.sendEveningRollCallDataRequest?.responseData { (response) in
+            switch response.result {
+            case .success(let data):
+                guard let statusCode = response.response?.statusCode else {
+                    print("sendEveningRollCallDataRequest failure: statusCode nil")
+                    failure?("statusCodeNil")
+                    
+                    return
+                }
+                
+                guard statusCode >= 200 && statusCode < 300 else {
+                    print("sendEveningRollCallDataRequest failure: statusCode(\(statusCode))")
+                    failure?("statusCodeError")
+                    
+                    return
+                }
+                
+                print("sendEveningRollCallDataRequest succeeded")
+                success?()
+                
+            case .failure(let error):
+                print("sendEveningRollCallDataRequest error: \(error.localizedDescription)")
                 failure?(error.localizedDescription)
             }
         }

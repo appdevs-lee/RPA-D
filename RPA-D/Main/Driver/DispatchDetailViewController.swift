@@ -497,6 +497,22 @@ extension DispatchDetailViewController {
 
     }
     
+    
+    func sendDispatchInfoUpdateRequest(id: Int, workType: String, type: String, time: String, success: (() -> ())?) {
+        self.dispatchModel.sendDispatchInfoUpdateRequest(id: id, workType: workType, type: type, time: time) {
+            success?()
+            
+        } failure: { message in
+            SupportingMethods.shared.checkExpiration {
+                print("sendDispatchInfoUpdateRequest API Error: \(message)")
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+            
+        }
+
+    }
+    
 }
 
 // MARK: - Extension for selector methods
@@ -601,7 +617,7 @@ extension DispatchDetailViewController {
     }
     
     @objc func dispatchNoteSendButton(_ sender: UIButton) {
-        self.updateDrivingHistoryRequest(id: self.item.id, workType: self.item.workType) {
+        self.updateDrivingHistoryRequest(id: self.item.id, workType: self.item.workType, arrivalKM: self.dispatchNoteView.dashboardTextField.text!) {
             self.dispatchNoteView.dashboardTextField.resignFirstResponder()
             self.backgroundView.isHidden = true
             self.dispatchNoteView.isHidden = true
@@ -639,8 +655,11 @@ extension DispatchDetailViewController {
     }
     
     @objc func dispatchOffButton(_ sender: UIButton) {
-        self.navigationController?.popViewController(animated: true)
-        NotificationCenter.default.post(name: Notification.Name("ReloadAllData"), object: nil)
+        self.sendDispatchInfoUpdateRequest(id: self.item.id, workType: self.item.workType, type: "운행 종료", time: SupportingMethods.shared.convertDate(intoString: Date(), "HH:mm")) {
+            self.navigationController?.popViewController(animated: true)
+            NotificationCenter.default.post(name: Notification.Name("ReloadAllData"), object: nil)
+            
+        }
         
     }
     
