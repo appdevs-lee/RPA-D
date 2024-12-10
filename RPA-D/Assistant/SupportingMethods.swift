@@ -509,7 +509,7 @@ extension SupportingMethods {
             return "\(days)일 전"
             
         } else { // 1주일(7일) 이상
-            let dateFormatter = self.makeDateFormatter("yy.MM.dd")
+            let dateFormatter = self.makeDateFormatter("yyyy.MM.dd")
             return dateFormatter.string(from: targetDate)
         }
     }

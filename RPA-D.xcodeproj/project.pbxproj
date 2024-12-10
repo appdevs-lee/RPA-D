@@ -14,6 +14,7 @@
 		05763DB32D08176B00385325 /* PhoneBookCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05763DB22D08176B00385325 /* PhoneBookCollectionViewCell.swift */; };
 		05763DB52D08225A00385325 /* MemberModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05763DB42D08225A00385325 /* MemberModel.swift */; };
 		05763DB82D0826E700385325 /* NotificationListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05763DB72D0826E700385325 /* NotificationListViewController.swift */; };
+		05763DBA2D08293300385325 /* NotificationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05763DB92D08293300385325 /* NotificationTableViewCell.swift */; };
 		057C6D9B2CFEE5E80019FA3E /* DispatchDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057C6D9A2CFEE5E80019FA3E /* DispatchDetailView.swift */; };
 		057C6D9D2CFEE5F60019FA3E /* DispatchRunningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057C6D9C2CFEE5F60019FA3E /* DispatchRunningView.swift */; };
 		057C6D9F2CFEEA2D0019FA3E /* StationDetailInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057C6D9E2CFEEA2D0019FA3E /* StationDetailInfoTableViewCell.swift */; };
@@ -87,6 +88,7 @@
 		05763DB22D08176B00385325 /* PhoneBookCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneBookCollectionViewCell.swift; sourceTree = "<group>"; };
 		05763DB42D08225A00385325 /* MemberModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberModel.swift; sourceTree = "<group>"; };
 		05763DB72D0826E700385325 /* NotificationListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationListViewController.swift; sourceTree = "<group>"; };
+		05763DB92D08293300385325 /* NotificationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationTableViewCell.swift; sourceTree = "<group>"; };
 		057C6D9A2CFEE5E80019FA3E /* DispatchDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchDetailView.swift; sourceTree = "<group>"; };
 		057C6D9C2CFEE5F60019FA3E /* DispatchRunningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchRunningView.swift; sourceTree = "<group>"; };
 		057C6D9E2CFEEA2D0019FA3E /* StationDetailInfoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationDetailInfoTableViewCell.swift; sourceTree = "<group>"; };
@@ -173,6 +175,7 @@
 			isa = PBXGroup;
 			children = (
 				05763DB72D0826E700385325 /* NotificationListViewController.swift */,
+				05763DB92D08293300385325 /* NotificationTableViewCell.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -556,6 +559,7 @@
 				05D3FA802CE2EE1500AFDC6B /* User.swift in Sources */,
 				059082752CE6D2A500E4D204 /* DispatchModel.swift in Sources */,
 				2D904F1E2CE0B2EC005CF538 /* TemplateHeaderFooterView.swift in Sources */,
+				05763DBA2D08293300385325 /* NotificationTableViewCell.swift in Sources */,
 				05763DB52D08225A00385325 /* MemberModel.swift in Sources */,
 				2DF135132CE7C1F200EAA052 /* ManagerMainViewController.swift in Sources */,
 				2D904F2A2CE0B326005CF538 /* ReferenceValues.swift in Sources */,

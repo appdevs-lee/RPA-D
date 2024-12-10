@@ -493,6 +493,21 @@ extension MainViewController {
 
     }
     
+    func sendStationCheckDataRequest(dispatchId: Int, stationId: Int, success: (() -> ())?) {
+        self.dispatchModel.sendStationCheckDataRequest(dispatchId: dispatchId, stationId: stationId, arriveTime: SupportingMethods.shared.convertDate(intoString: Date(), "HH:mm"), isLastStation: false) {
+            success?()
+            
+        } failure: { message in
+            SupportingMethods.shared.checkExpiration {
+                print("sendStationCheckDataRequest API Error: \(message)")
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+            
+        }
+
+    }
+    
     func loadDispatchDailyDetailRequest(id: Int, workType: String, success: ((DispatchDetailItem) -> ())?) {
         self.dispatchModel.loadDispatchDailyDetailRequest(id: id, workType: workType) { item in
             success?(item)
@@ -633,7 +648,13 @@ extension MainViewController {
             // 첫 정류장 도착
             SupportingMethods.shared.turnCoverView(.on)
             self.sendDispatchInfoUpdateRequest(id: routine.info.dispatchId!, workType: routine.info.workType!, type: routine.info.status, time: SupportingMethods.shared.convertDate(intoString: Date(), "HH:mm")) {
-                self.setData()
+                self.loadDispatchDailyDetailRequest(id: routine.info.dispatchId!, workType: routine.info.workType!) { item in
+                    self.sendStationCheckDataRequest(dispatchId: routine.info.dispatchId!, stationId: item.stations.first!.id) {
+                        self.setData()
+                        
+                    }
+                    
+                }
                 
             }
             break
