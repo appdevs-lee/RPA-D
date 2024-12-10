@@ -565,6 +565,7 @@ extension CalendarViewController {
             }
             
             if self.tense == .today {
+                self.dispatchDailyList = []
                 for item in itemList {
                     if item.status != "운행 완료" {
                         self.dispatchDailyList.append(item)

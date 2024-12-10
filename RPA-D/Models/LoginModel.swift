@@ -54,6 +54,7 @@ final class LoginModel {
                             
                             User.shared.name = decodedData.data.authenticatedUser.name
                             User.shared.role = decodedData.data.authenticatedUser.role
+                            User.shared.position = decodedData.data.authenticatedUser.position
                             
                             success?(decodedData.data)
                         } else {
@@ -123,6 +124,7 @@ final class LoginModel {
                     
                     User.shared.name = decodedData.data.authenticatedUser.name
                     User.shared.role = decodedData.data.authenticatedUser.role
+                    User.shared.position = decodedData.data.authenticatedUser.position
                     success?(decodedData.data)
                     
                 } else {

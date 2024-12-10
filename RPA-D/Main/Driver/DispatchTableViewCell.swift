@@ -461,7 +461,7 @@ extension DispatchTableViewCell {
             
         } else if dispatch.status == "탑승 및 운행 시작" {
             self.dispatchReadyView.off(selectRoutine: .dispatchReady)
-            self.dispatchOnView.activate(selectRoutine: .dispatchReady, routineType: .dispatch)
+            self.dispatchOnView.activate(selectRoutine: .dispatchOn, routineType: .dispatch)
             
         } else if dispatch.status == "첫 정류장 도착" {
             self.dispatchReadyView.off(selectRoutine: .dispatchReady)

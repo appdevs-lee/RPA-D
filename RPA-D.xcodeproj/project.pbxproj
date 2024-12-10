@@ -10,6 +10,10 @@
 		050295A92D06849600BE3CB7 /* EveningRollCallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050295A82D06849600BE3CB7 /* EveningRollCallViewController.swift */; };
 		056D9ACA2D02E0A9006357B8 /* DailyInspectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 056D9AC92D02E0A9006357B8 /* DailyInspectionViewController.swift */; };
 		056D9ACC2D02E122006357B8 /* DailyInspectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 056D9ACB2D02E122006357B8 /* DailyInspectionTableViewCell.swift */; };
+		05763DB12D07DF3400385325 /* OtherTasksCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05763DB02D07DF3400385325 /* OtherTasksCollectionViewCell.swift */; };
+		05763DB32D08176B00385325 /* PhoneBookCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05763DB22D08176B00385325 /* PhoneBookCollectionViewCell.swift */; };
+		05763DB52D08225A00385325 /* MemberModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05763DB42D08225A00385325 /* MemberModel.swift */; };
+		05763DB82D0826E700385325 /* NotificationListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05763DB72D0826E700385325 /* NotificationListViewController.swift */; };
 		057C6D9B2CFEE5E80019FA3E /* DispatchDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057C6D9A2CFEE5E80019FA3E /* DispatchDetailView.swift */; };
 		057C6D9D2CFEE5F60019FA3E /* DispatchRunningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057C6D9C2CFEE5F60019FA3E /* DispatchRunningView.swift */; };
 		057C6D9F2CFEEA2D0019FA3E /* StationDetailInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057C6D9E2CFEEA2D0019FA3E /* StationDetailInfoTableViewCell.swift */; };
@@ -79,6 +83,10 @@
 		050295A82D06849600BE3CB7 /* EveningRollCallViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EveningRollCallViewController.swift; sourceTree = "<group>"; };
 		056D9AC92D02E0A9006357B8 /* DailyInspectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyInspectionViewController.swift; sourceTree = "<group>"; };
 		056D9ACB2D02E122006357B8 /* DailyInspectionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyInspectionTableViewCell.swift; sourceTree = "<group>"; };
+		05763DB02D07DF3400385325 /* OtherTasksCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherTasksCollectionViewCell.swift; sourceTree = "<group>"; };
+		05763DB22D08176B00385325 /* PhoneBookCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneBookCollectionViewCell.swift; sourceTree = "<group>"; };
+		05763DB42D08225A00385325 /* MemberModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberModel.swift; sourceTree = "<group>"; };
+		05763DB72D0826E700385325 /* NotificationListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationListViewController.swift; sourceTree = "<group>"; };
 		057C6D9A2CFEE5E80019FA3E /* DispatchDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchDetailView.swift; sourceTree = "<group>"; };
 		057C6D9C2CFEE5F60019FA3E /* DispatchRunningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchRunningView.swift; sourceTree = "<group>"; };
 		057C6D9E2CFEEA2D0019FA3E /* StationDetailInfoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationDetailInfoTableViewCell.swift; sourceTree = "<group>"; };
@@ -161,6 +169,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		05763DB62D0826B100385325 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				05763DB72D0826E700385325 /* NotificationListViewController.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
 		05A015522CF40D34004D0844 /* CustomView */ = {
 			isa = PBXGroup;
 			children = (
@@ -294,6 +310,7 @@
 				2D904F332CE0D8E1005CF538 /* LoginModel.swift */,
 				05A015572CF497AA004D0844 /* MainModel.swift */,
 				059082742CE6D2A500E4D204 /* DispatchModel.swift */,
+				05763DB42D08225A00385325 /* MemberModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -309,6 +326,7 @@
 		2DE0055F2CE248B8004DE761 /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				05763DB62D0826B100385325 /* Common */,
 				2DF135112CE7C1E300EAA052 /* Manager */,
 				05D3FA7D2CE2ECD900AFDC6B /* Driver */,
 			);
@@ -329,6 +347,8 @@
 			isa = PBXGroup;
 			children = (
 				2DE005672CE2491C004DE761 /* OfficeViewController.swift */,
+				05763DB22D08176B00385325 /* PhoneBookCollectionViewCell.swift */,
+				05763DB02D07DF3400385325 /* OtherTasksCollectionViewCell.swift */,
 			);
 			path = Office;
 			sourceTree = "<group>";
@@ -524,15 +544,19 @@
 				2D904F1D2CE0B2EA005CF538 /* TemplateViewController.swift in Sources */,
 				2D7C5BDF2D0615A400C381CE /* DispatchOffTableViewCell.swift in Sources */,
 				2D904F172CE0B2DD005CF538 /* TemplateTableViewCell.swift in Sources */,
+				05763DB32D08176B00385325 /* PhoneBookCollectionViewCell.swift in Sources */,
 				2D7C5BDB2D0602BE00C381CE /* DispatchPeopleCountView.swift in Sources */,
 				057C6D9D2CFEE5F60019FA3E /* DispatchRunningView.swift in Sources */,
+				05763DB12D07DF3400385325 /* OtherTasksCollectionViewCell.swift in Sources */,
 				05DB9A8E2CE448F600742317 /* KindsOfDocumentCollectionViewCell.swift in Sources */,
 				2D904EF82CE0B04A005CF538 /* SceneDelegate.swift in Sources */,
 				05DA9BE92CF6AD800024CADE /* DispatchDetailViewController.swift in Sources */,
 				05A227422CEC228700C07662 /* GoToWorkTableViewCell.swift in Sources */,
+				05763DB82D0826E700385325 /* NotificationListViewController.swift in Sources */,
 				05D3FA802CE2EE1500AFDC6B /* User.swift in Sources */,
 				059082752CE6D2A500E4D204 /* DispatchModel.swift in Sources */,
 				2D904F1E2CE0B2EC005CF538 /* TemplateHeaderFooterView.swift in Sources */,
+				05763DB52D08225A00385325 /* MemberModel.swift in Sources */,
 				2DF135132CE7C1F200EAA052 /* ManagerMainViewController.swift in Sources */,
 				2D904F2A2CE0B326005CF538 /* ReferenceValues.swift in Sources */,
 				2D904F2C2CE0B3C2005CF538 /* SplashViewController.swift in Sources */,

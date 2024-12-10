@@ -375,6 +375,7 @@ extension MainViewController: EssentialViewMethods {
             self.navigationItem.leftBarButtonItem = leftBarButtonItem
             
         }
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: .useCustomImage("notificationImage").withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(rightBarButtonItem(_:)))
         
     }
     
@@ -583,6 +584,13 @@ extension MainViewController {
 
 // MARK: - Extension for selector methods
 extension MainViewController {
+    @objc func rightBarButtonItem(_ barButtonItem: UIBarButtonItem) {
+        let vc = NotificationListViewController()
+        
+        self.navigationController?.pushViewController(vc, animated: true)
+        
+    }
+    
     @objc func reloadData(_ notification: Notification) {
         guard let index = notification.userInfo?["index"] as? Int else { return }
         
