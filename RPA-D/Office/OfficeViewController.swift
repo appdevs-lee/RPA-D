@@ -651,8 +651,8 @@ extension OfficeViewController: EssentialViewMethods {
     }
     
     func setViewAfterTransition() {
-        //self.navigationController?.setNavigationBarHidden(false, animated: true)
-        //self.tabBarController?.tabBar.isHidden = false
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
+        self.tabBarController?.tabBar.isHidden = false
     }
     
     func setUpNavigationItem() {
@@ -752,7 +752,25 @@ extension OfficeViewController {
     
     @objc func mainOfficeByRoleButton(_ sender: UIButton) {
         print("mainOfficeByRoleButton")
-        
+        switch self.role {
+        case .driver:
+            let vc = RouteViewController()
+            
+            self.navigationController?.pushViewController(vc, animated: true)
+            
+        case .driverLeader:
+            // FIXME: 임시
+            let vc = RouteViewController()
+            
+            self.navigationController?.pushViewController(vc, animated: true)
+            
+        case .manager:
+            // FIXME: 임시
+            let vc = RouteViewController()
+            
+            self.navigationController?.pushViewController(vc, animated: true)
+            
+        }
     }
 
     @objc func subMainOfficeOneByRoleButton(_ sender: UIButton) {

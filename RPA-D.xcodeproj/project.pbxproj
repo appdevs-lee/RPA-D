@@ -44,6 +44,9 @@
 		2D7C5BDB2D0602BE00C381CE /* DispatchPeopleCountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7C5BDA2D0602BE00C381CE /* DispatchPeopleCountView.swift */; };
 		2D7C5BDD2D060D7500C381CE /* DispatchOffView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7C5BDC2D060D7500C381CE /* DispatchOffView.swift */; };
 		2D7C5BDF2D0615A400C381CE /* DispatchOffTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7C5BDE2D0615A400C381CE /* DispatchOffTableViewCell.swift */; };
+		2D7C5BE22D0896F600C381CE /* CardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7C5BE12D0896F600C381CE /* CardViewController.swift */; };
+		2D7C5BE52D08A7C100C381CE /* RouteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7C5BE42D08A7C100C381CE /* RouteViewController.swift */; };
+		2D7C5BE82D08ADFC00C381CE /* CircularProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7C5BE72D08ADFC00C381CE /* CircularProgress.swift */; };
 		2D904EF62CE0B04A005CF538 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D904EF52CE0B04A005CF538 /* AppDelegate.swift */; };
 		2D904EF82CE0B04A005CF538 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D904EF72CE0B04A005CF538 /* SceneDelegate.swift */; };
 		2D904EFF2CE0B04C005CF538 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D904EFE2CE0B04C005CF538 /* Assets.xcassets */; };
@@ -118,6 +121,9 @@
 		2D7C5BDA2D0602BE00C381CE /* DispatchPeopleCountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchPeopleCountView.swift; sourceTree = "<group>"; };
 		2D7C5BDC2D060D7500C381CE /* DispatchOffView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchOffView.swift; sourceTree = "<group>"; };
 		2D7C5BDE2D0615A400C381CE /* DispatchOffTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchOffTableViewCell.swift; sourceTree = "<group>"; };
+		2D7C5BE12D0896F600C381CE /* CardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardViewController.swift; sourceTree = "<group>"; };
+		2D7C5BE42D08A7C100C381CE /* RouteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteViewController.swift; sourceTree = "<group>"; };
+		2D7C5BE72D08ADFC00C381CE /* CircularProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgress.swift; sourceTree = "<group>"; };
 		2D904EF22CE0B04A005CF538 /* RPA-D.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RPA-D.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D904EF52CE0B04A005CF538 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2D904EF72CE0B04A005CF538 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -223,6 +229,31 @@
 				2D7C5BD22D04CDEA00C381CE /* RefusalSubmitViewController.swift */,
 			);
 			path = Driver;
+			sourceTree = "<group>";
+		};
+		2D7C5BE02D0896EA00C381CE /* Card */ = {
+			isa = PBXGroup;
+			children = (
+				2D7C5BE12D0896F600C381CE /* CardViewController.swift */,
+			);
+			path = Card;
+			sourceTree = "<group>";
+		};
+		2D7C5BE32D08A7B600C381CE /* Route */ = {
+			isa = PBXGroup;
+			children = (
+				2D7C5BE62D08ADE800C381CE /* CustomView */,
+				2D7C5BE42D08A7C100C381CE /* RouteViewController.swift */,
+			);
+			path = Route;
+			sourceTree = "<group>";
+		};
+		2D7C5BE62D08ADE800C381CE /* CustomView */ = {
+			isa = PBXGroup;
+			children = (
+				2D7C5BE72D08ADFC00C381CE /* CircularProgress.swift */,
+			);
+			path = CustomView;
 			sourceTree = "<group>";
 		};
 		2D904EE92CE0B04A005CF538 = {
@@ -352,6 +383,7 @@
 				2DE005672CE2491C004DE761 /* OfficeViewController.swift */,
 				05763DB22D08176B00385325 /* PhoneBookCollectionViewCell.swift */,
 				05763DB02D07DF3400385325 /* OtherTasksCollectionViewCell.swift */,
+				2D7C5BE32D08A7B600C381CE /* Route */,
 			);
 			path = Office;
 			sourceTree = "<group>";
@@ -360,6 +392,7 @@
 			isa = PBXGroup;
 			children = (
 				2DE005692CE2492E004DE761 /* ProfileViewController.swift */,
+				2D7C5BE02D0896EA00C381CE /* Card */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -507,6 +540,7 @@
 			files = (
 				2D7C5BD12D04BF4700C381CE /* RefusalReasonViewController.swift in Sources */,
 				2DE005682CE2491C004DE761 /* OfficeViewController.swift in Sources */,
+				2D7C5BE52D08A7C100C381CE /* RouteViewController.swift in Sources */,
 				2DE005662CE2490C004DE761 /* CalendarViewController.swift in Sources */,
 				2DC362C62CFF58A900859D1D /* DispatchNoteView.swift in Sources */,
 				05DB9A902CE4499900742317 /* DispatchDocumentTableViewCell.swift in Sources */,
@@ -531,6 +565,8 @@
 				05A015582CF497AA004D0844 /* MainModel.swift in Sources */,
 				2D904F292CE0B326005CF538 /* NetworkMonitor.swift in Sources */,
 				2D904F212CE0B2F2005CF538 /* ViewPagerCollectionViewCell.swift in Sources */,
+				2D7C5BE22D0896F600C381CE /* CardViewController.swift in Sources */,
+				2D7C5BE82D08ADFC00C381CE /* CircularProgress.swift in Sources */,
 				2D904F1F2CE0B2EE005CF538 /* TempateViewPagerViewController.swift in Sources */,
 				057C6D9F2CFEEA2D0019FA3E /* StationDetailInfoTableViewCell.swift in Sources */,
 				056D9ACC2D02E122006357B8 /* DailyInspectionTableViewCell.swift in Sources */,

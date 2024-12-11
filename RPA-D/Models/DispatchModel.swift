@@ -384,7 +384,7 @@ final class DispatchModel {
             "Authorization": ReferenceValues.accessToken
         ]
         
-        var parameters: Parameters = [
+        let parameters: Parameters = [
             "regularly_connect_id": dispatchId,
             "station_id": stationId,
             "arrival_time": arriveTime,

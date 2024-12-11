@@ -52,11 +52,61 @@ final class DispatchDetailViewController: UIViewController {
     lazy var kakaoMapButton: UIButton = {
         let button = UIButton()
         button.setImage(.useCustomImage("kakaoMap"), for: .normal)
-        button.setImage(.useCustomImage("highlightedKakaoMap"), for: .highlighted)
+//        button.setImage(.useCustomImage("highlightedKakaoMap"), for: .highlighted)
         button.addTarget(self, action: #selector(kakaoMapButton(_:)), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         
         return button
+    }()
+    
+    lazy var pathBackgroundView: UIView = {
+        let view = UIView()
+        view.alpha = 0.0
+        view.backgroundColor = .useRGB(red: 0, green: 0, blue: 0, alpha: 0.75)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
+    lazy var allPathButton: UIButton = {
+        let button = UIButton()
+        button.setImage(.useCustomImage("path.all"), for: .normal)
+        button.addTarget(self, action: #selector(allPathButton(_:)), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        
+        return button
+    }()
+    
+    lazy var allPathLabel: UILabel = {
+        let label = UILabel()
+        label.alpha = 0.0
+        label.text = "전체 노선"
+        label.textColor = .white
+        label.font = .useFont(ofSize: 14, weight: .Medium)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        return label
+    }()
+    
+    lazy var partPathButton: UIButton = {
+        let button = UIButton()
+        button.isHidden = !self.isRunning
+        button.setImage(.useCustomImage("path.part"), for: .normal)
+        button.addTarget(self, action: #selector(partPathButton(_:)), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        
+        return button
+    }()
+    
+    lazy var partPathLabel: UILabel = {
+        let label = UILabel()
+        label.alpha = 0.0
+        label.text = "다음 정류장"
+        label.textColor = .white
+        label.font = .useFont(ofSize: 14, weight: .Medium)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        return label
     }()
     
     lazy var contentBaseView: UIView = {
@@ -142,6 +192,10 @@ final class DispatchDetailViewController: UIViewController {
     let runningBaseHeight: CGFloat = 328
     var runningMaxHeight: CGFloat = 548
     
+    var isClose: Bool = false
+    var allPathButtonTopAnchorConstraint: NSLayoutConstraint!
+    var partPathButtonTopAnchorConstraint: NSLayoutConstraint!
+    
     init(isRunning: Bool = false, item: DispatchDetailItem, departureDate: String) {
         self.isRunning = isRunning
         self.item = item
@@ -202,6 +256,10 @@ extension DispatchDetailViewController: EssentialViewMethods {
         let bottomSheetPanGesture: UIPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(panGestureHandler(_:)))
         self.forScrollView.addGestureRecognizer(bottomSheetPanGesture)
         self.forScrollView.isUserInteractionEnabled = true
+        
+        let pathBackgroundOffGesture: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tappedPathBackgroundView(_:)))
+        self.pathBackgroundView.addGestureRecognizer(pathBackgroundOffGesture)
+        self.pathBackgroundView.isUserInteractionEnabled = true
     }
     
     func setNotificationCenters() {
@@ -215,6 +273,11 @@ extension DispatchDetailViewController: EssentialViewMethods {
         SupportingMethods.shared.addSubviews([
             self.mapView,
             self.bottomSheetView,
+            self.pathBackgroundView,
+            self.allPathButton,
+            self.allPathLabel,
+            self.partPathButton,
+            self.partPathLabel,
             self.kakaoMapButton,
             self.backgroundView,
             self.dispatchNoteView,
@@ -338,6 +401,43 @@ extension DispatchDetailViewController: EssentialViewMethods {
             self.dispatchOffView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
         ])
         
+        // pathBackgroundView
+        NSLayoutConstraint.activate([
+            self.pathBackgroundView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            self.pathBackgroundView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            self.pathBackgroundView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            self.pathBackgroundView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+        ])
+        
+        // allPathButton
+        self.allPathButtonTopAnchorConstraint = self.allPathButton.topAnchor.constraint(equalTo: self.kakaoMapButton.topAnchor)
+        NSLayoutConstraint.activate([
+            self.allPathButtonTopAnchorConstraint,
+            self.allPathButton.trailingAnchor.constraint(equalTo: self.kakaoMapButton.trailingAnchor),
+            self.allPathButton.heightAnchor.constraint(equalToConstant: 62),
+            self.allPathButton.widthAnchor.constraint(equalToConstant: 62),
+        ])
+        
+        // allPathLabel
+        NSLayoutConstraint.activate([
+            self.allPathLabel.trailingAnchor.constraint(equalTo: self.allPathButton.leadingAnchor),
+            self.allPathLabel.centerYAnchor.constraint(equalTo: self.allPathButton.centerYAnchor),
+        ])
+        
+        // partPathButton
+        self.partPathButtonTopAnchorConstraint = self.partPathButton.topAnchor.constraint(equalTo: self.kakaoMapButton.topAnchor)
+        NSLayoutConstraint.activate([
+            self.partPathButtonTopAnchorConstraint,
+            self.partPathButton.trailingAnchor.constraint(equalTo: self.kakaoMapButton.trailingAnchor),
+            self.partPathButton.heightAnchor.constraint(equalToConstant: 62),
+            self.partPathButton.widthAnchor.constraint(equalToConstant: 62),
+        ])
+        
+        // partPathLabel
+        NSLayoutConstraint.activate([
+            self.partPathLabel.trailingAnchor.constraint(equalTo: self.partPathButton.leadingAnchor),
+            self.partPathLabel.centerYAnchor.constraint(equalTo: self.partPathButton.centerYAnchor),
+        ])
     }
     
     func setViewAfterTransition() {
@@ -559,7 +659,65 @@ extension DispatchDetailViewController {
     }
     
     @objc func kakaoMapButton(_ sender: UIButton) {
-        print("kakaoMapButton")
+        // FIXME: 애니메이션 테스트, 추후 지워야 함.
+        if self.isClose {
+            UIView.transition(with: self.kakaoMapButton, duration: 0.5, options: .transitionFlipFromLeft) {
+                self.pathBackgroundView.alpha = 0.0
+                self.kakaoMapButton.setImage(.useCustomImage("kakaoMap"), for: .normal)
+                self.allPathButtonTopAnchorConstraint.constant = 0
+                self.allPathLabel.alpha = 0.0
+                if self.isRunning {
+                    self.partPathButtonTopAnchorConstraint.constant = 0
+                    self.partPathLabel.alpha = 0.0
+                    
+                }
+                
+                self.view.layoutIfNeeded()
+            }
+            
+            self.isClose = false
+            
+        } else {
+            UIView.transition(with: self.kakaoMapButton, duration: 0.5, options: .transitionFlipFromLeft) {
+                self.pathBackgroundView.alpha = 1.0
+                self.kakaoMapButton.setImage(.useCustomImage("path.close"), for: .normal)
+                self.allPathButtonTopAnchorConstraint.constant = -52.5
+                self.allPathLabel.alpha = 1.0
+                if self.isRunning {
+                    self.partPathButtonTopAnchorConstraint.constant = -101.5
+                    self.partPathLabel.alpha = 1.0
+                    
+                }
+                
+                self.view.layoutIfNeeded()
+            }
+            
+            self.isClose = true
+            
+        }
+        
+    }
+    
+    @objc func tappedPathBackgroundView(_ gesture: UITapGestureRecognizer) {
+        UIView.transition(with: self.kakaoMapButton, duration: 0.5, options: .transitionFlipFromLeft) {
+            self.pathBackgroundView.alpha = 0.0
+            self.allPathLabel.alpha = 0.0
+            self.kakaoMapButton.setImage(.useCustomImage("kakaoMap"), for: .normal)
+            self.allPathButtonTopAnchorConstraint.constant = 0
+            if self.isRunning {
+                self.partPathButtonTopAnchorConstraint.constant = 0
+                self.partPathLabel.alpha = 0.0
+                
+            }
+            
+            self.view.layoutIfNeeded()
+        }
+        
+        self.isClose = false
+        
+    }
+    
+    @objc func partPathButton(_ sender: UIButton) {
         var previousStation: StationInfo?
         var currentStation: StationInfo?
         for index in 0..<self.item.stations.count {
@@ -583,20 +741,22 @@ extension DispatchDetailViewController {
         let previousLatitude = previousStation?.latitude ?? String(userLocation.latitude)
         let previousLongitude = previousStation?.longitude ?? String(userLocation.longitude)
         
-        
         let latitude = currentStation.latitude
         let longitude = currentStation.longitude
         
         // 현재 정류장에서 다음 정류장까지
         let url = URL(string: "kakaomap://route?sp=\(previousLatitude),\(previousLongitude)&ep=\(latitude),\(longitude)&by=CAR")!
         // 내 위치에서 정류장까지
-        let userLocationURL = URL(string: "kakaomap://route?sp=\(userLocation.latitude),\(userLocation.longitude)&ep=\(latitude),\(longitude)&by=CAR")!
+//        let userLocationURL = URL(string: "kakaomap://route?sp=\(userLocation.latitude),\(userLocation.longitude)&ep=\(latitude),\(longitude)&by=CAR")!
         UIApplication.shared.open(url)
         
-//        if self.item.maplink != "" {
-//            guard let url = URL(string: self.item.maplink) else { return }
-//            UIApplication.shared.open(url)
-//        }
+    }
+    
+    @objc func allPathButton(_ sender: UIButton) {
+        if self.item.maplink != "" {
+            guard let url = URL(string: self.item.maplink) else { return }
+            UIApplication.shared.open(url)
+        }
         
     }
     

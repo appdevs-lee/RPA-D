@@ -648,14 +648,14 @@ extension MainViewController {
             // 첫 정류장 도착
             SupportingMethods.shared.turnCoverView(.on)
             self.sendDispatchInfoUpdateRequest(id: routine.info.dispatchId!, workType: routine.info.workType!, type: routine.info.status, time: SupportingMethods.shared.convertDate(intoString: Date(), "HH:mm")) {
-                self.loadDispatchDailyDetailRequest(id: routine.info.dispatchId!, workType: routine.info.workType!) { item in
-                    self.sendStationCheckDataRequest(dispatchId: routine.info.dispatchId!, stationId: item.stations.first!.id) {
-                        self.setData()
-                        
-                    }
-                    
-                }
-                
+//                self.loadDispatchDailyDetailRequest(id: routine.info.dispatchId!, workType: routine.info.workType!) { item in
+//                    self.sendStationCheckDataRequest(dispatchId: routine.info.dispatchId!, stationId: item.stations.first!.id) {
+//                        self.setData()
+//                        
+//                    }
+//                    
+//                }
+                self.setData()
             }
             break
         case .goNextStation:

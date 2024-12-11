@@ -11,6 +11,8 @@ import Alamofire
 final class MemberModel {
     // 전화번호 Get
     private(set) var loadMemberListRequest: DataRequest?
+    // 개인 Info 가져오기
+    private(set) var loadMyInfoRequest: DataRequest?
     // 알림 가져오기
     private(set) var loadNotificationListRequest: DataRequest?
     // 읽은 알림 처리
@@ -60,6 +62,49 @@ final class MemberModel {
                 
             case .failure(let error):
                 print("loadMemberListRequest error: \(error.localizedDescription)")
+                failure?(error.localizedDescription)
+            }
+        }
+    }
+    
+    func loadMyInfoRequest(success: ((MyInfoItem) -> ())?, failure: ((_ message: String) -> ())?) {
+        let url = ServerSetting.server.URL + "/member"
+        
+        let headers: HTTPHeaders = [
+            "accept":"application/json",
+            "Authorization": ReferenceValues.accessToken
+        ]
+        
+        self.loadMyInfoRequest = AF.request(url, method: .get, parameters: nil, encoding: URLEncoding.default, headers: headers)
+        
+        self.loadMyInfoRequest?.responseData { (response) in
+            switch response.result {
+            case .success(let data):
+                guard let statusCode = response.response?.statusCode else {
+                    print("loadMyInfoRequest failure: statusCode nil")
+                    failure?("statusCodeNil")
+                    
+                    return
+                }
+                
+                guard statusCode >= 200 && statusCode < 300 else {
+                    print("loadMyInfoRequest failure: statusCode(\(statusCode))")
+                    failure?("statusCodeError")
+                    
+                    return
+                }
+                
+                if let decodedData = try? JSONDecoder().decode(MyInfo.self, from: data) {
+                    print("loadMyInfoRequest succeeded")
+                    success?(decodedData.data)
+                    
+                } else {
+                    print("loadMyInfoRequest failure: API 성공, Parsing 실패")
+                    failure?("API 성공, Parsing 실패")
+                }
+                
+            case .failure(let error):
+                print("loadMyInfoRequest error: \(error.localizedDescription)")
                 failure?(error.localizedDescription)
             }
         }
@@ -151,6 +196,18 @@ final class MemberModel {
                 failure?(error.localizedDescription)
             }
         }
+    }
+}
+
+struct MyInfo: Codable {
+    let data: MyInfoItem
+}
+
+struct MyInfoItem: Codable {
+    let phoneNum: String
+    
+    enum CodingKeys: String, CodingKey {
+        case phoneNum = "phone_num"
     }
 }
 

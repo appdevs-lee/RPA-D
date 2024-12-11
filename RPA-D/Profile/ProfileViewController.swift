@@ -209,6 +209,8 @@ final class ProfileViewController: UIViewController {
         return label
     }()
     
+    let memberModel = MemberModel()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -461,13 +463,30 @@ extension ProfileViewController: EssentialViewMethods {
 
 // MARK: - Extension for methods added
 extension ProfileViewController {
-    
+    func loadMyInfoRequest(success: ((MyInfoItem) -> ())?) {
+        self.memberModel.loadMyInfoRequest { item in
+            success?(item)
+            
+        } failure: { message in
+            SupportingMethods.shared.checkExpiration {
+                print("sendDispatchInfoUpdateRequest API Error: \(message)")
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+            
+        }
+
+    }
 }
 
 // MARK: - Extension for selector methods
 extension ProfileViewController {
     @objc func rightBarButtonItem(_ barButtonItem: UIBarButtonItem) {
-        
+        self.loadMyInfoRequest { item in
+            let vc = CardViewController(item: item)
+            
+            self.present(vc, animated: true)
+        }
         
     }
     
