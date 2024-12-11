@@ -254,13 +254,13 @@ final class OfficeViewController: UIViewController {
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.itemSize = CGSize(width: 112, height: 117)
         flowLayout.minimumLineSpacing = 12
-        flowLayout.minimumInteritemSpacing = 12
+        flowLayout.minimumInteritemSpacing = 0
         flowLayout.headerReferenceSize = .zero
         flowLayout.footerReferenceSize = .zero
         flowLayout.scrollDirection = .horizontal
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = .useRGB(red: 248, green: 248, blue: 248)
         collectionView.register(PhoneBookCollectionViewCell.self, forCellWithReuseIdentifier: "PhoneBookCollectionViewCell")
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
@@ -354,6 +354,7 @@ final class OfficeViewController: UIViewController {
         super.viewWillAppear(animated)
         
         self.setViewAfterTransition()
+        self.loadPhoneBookList()
     }
     
     //    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -647,7 +648,7 @@ extension OfficeViewController: EssentialViewMethods {
         
         // phoneBookCollectionView
         NSLayoutConstraint.activate([
-            self.phoneBookCollectionView.leadingAnchor.constraint(equalTo: self.phoneBookView.leadingAnchor, constant: 20),
+            self.phoneBookCollectionView.leadingAnchor.constraint(equalTo: self.phoneBookView.leadingAnchor),
             self.phoneBookCollectionView.trailingAnchor.constraint(equalTo: self.phoneBookView.trailingAnchor),
             self.phoneBookCollectionView.topAnchor.constraint(equalTo: self.phoneBookTitleLabel.bottomAnchor, constant: 12),
             self.phoneBookCollectionView.bottomAnchor.constraint(equalTo: self.phoneBookView.bottomAnchor),
@@ -725,7 +726,10 @@ extension OfficeViewController: EssentialViewMethods {
             
         }
         
-        // FIXME: 전화번호 최근 내역 불러오기
+    }
+    
+    func loadPhoneBookList() {
+        self.phoneBookList = SupportingMethods.shared.loadMemberInfoList()
         if self.phoneBookList.isEmpty {
             self.noDataPhoneBookStackView.isHidden = false
             self.phoneBookCollectionView.isHidden = true
@@ -734,9 +738,8 @@ extension OfficeViewController: EssentialViewMethods {
             self.noDataPhoneBookStackView.isHidden = true
             self.phoneBookCollectionView.isHidden = false
             
-            self.phoneBookCollectionView.reloadData()
-            
         }
+        self.phoneBookCollectionView.reloadData()
         
     }
     
@@ -775,6 +778,7 @@ extension OfficeViewController {
             self.navigationController?.pushViewController(vc, animated: true)
             
         }
+        
     }
 
     @objc func subMainOfficeOneByRoleButton(_ sender: UIButton) {
@@ -789,10 +793,17 @@ extension OfficeViewController {
     
     @objc func phoneBookButton(_ sender: UIButton) {
         print("phoneBookButton")
+        let vc = PhoneBookListViewController()
+        
+        self.navigationController?.pushViewController(vc, animated: true)
+        
     }
     
     @objc func moveToPhoneBookButton(_ sender: UIButton) {
         print("moveToPhoneBookButton")
+        let vc = PhoneBookListViewController()
+        
+        self.navigationController?.pushViewController(vc, animated: true)
         
     }
     
@@ -832,11 +843,15 @@ extension OfficeViewController: UICollectionViewDelegateFlowLayout, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let phone = self.phoneBookList[indexPath.row]
-        if let url = URL(string: "tel://\(phone.phoneNum)") {
-            UIApplication.shared.open(url)
+        if collectionView == self.phoneBookCollectionView {
+            let phone = self.phoneBookList[indexPath.row]
+            if let url = URL(string: "tel://\(phone.phoneNum)") {
+                UIApplication.shared.open(url)
+                
+            }
             
         }
+        
     }
     
 }

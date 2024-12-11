@@ -598,6 +598,29 @@ extension SupportingMethods {
             }
         })
     }
+    
+    // MARK: UserDefaults Object 저장 및 불러오기
+    func saveMemberInfoList(memberList: [MemberDetailItem]) {
+        let encoder: JSONEncoder = JSONEncoder()
+        if let memberInfo = try? encoder.encode(memberList) {
+            UserDefaults.standard.set(memberInfo, forKey: "SaveMemberInfo")
+            
+        }
+        
+    }
+    
+    func loadMemberInfoList() -> [MemberDetailItem] {
+        guard let memberInfo = UserDefaults.standard.object(forKey: "SaveMemberInfo") as? Data else { return [] }
+        
+        let decoder: JSONDecoder = JSONDecoder()
+        if let memberList = try? decoder.decode([MemberDetailItem].self, from: memberInfo) {
+            return memberList
+            
+        } else {
+            return []
+            
+        }
+    }
 }
 
 // MARK: Date

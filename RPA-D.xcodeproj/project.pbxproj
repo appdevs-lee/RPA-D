@@ -19,6 +19,8 @@
 		05763DBE2D0951DA00385325 /* RouteModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05763DBD2D0951DA00385325 /* RouteModel.swift */; };
 		05763DC02D096AAE00385325 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05763DBF2D096AAE00385325 /* ProfileModel.swift */; };
 		05763DC32D096B2B00385325 /* SalaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05763DC22D096B2B00385325 /* SalaryViewController.swift */; };
+		05763DC62D09731100385325 /* PhoneBookListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05763DC52D09731100385325 /* PhoneBookListViewController.swift */; };
+		05763DC82D0973BA00385325 /* PhoneBookListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05763DC72D0973BA00385325 /* PhoneBookListTableViewCell.swift */; };
 		057C6D9B2CFEE5E80019FA3E /* DispatchDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057C6D9A2CFEE5E80019FA3E /* DispatchDetailView.swift */; };
 		057C6D9D2CFEE5F60019FA3E /* DispatchRunningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057C6D9C2CFEE5F60019FA3E /* DispatchRunningView.swift */; };
 		057C6D9F2CFEEA2D0019FA3E /* StationDetailInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057C6D9E2CFEEA2D0019FA3E /* StationDetailInfoTableViewCell.swift */; };
@@ -100,6 +102,8 @@
 		05763DBD2D0951DA00385325 /* RouteModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteModel.swift; sourceTree = "<group>"; };
 		05763DBF2D096AAE00385325 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		05763DC22D096B2B00385325 /* SalaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalaryViewController.swift; sourceTree = "<group>"; };
+		05763DC52D09731100385325 /* PhoneBookListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneBookListViewController.swift; sourceTree = "<group>"; };
+		05763DC72D0973BA00385325 /* PhoneBookListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneBookListTableViewCell.swift; sourceTree = "<group>"; };
 		057C6D9A2CFEE5E80019FA3E /* DispatchDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchDetailView.swift; sourceTree = "<group>"; };
 		057C6D9C2CFEE5F60019FA3E /* DispatchRunningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchRunningView.swift; sourceTree = "<group>"; };
 		057C6D9E2CFEEA2D0019FA3E /* StationDetailInfoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationDetailInfoTableViewCell.swift; sourceTree = "<group>"; };
@@ -200,6 +204,15 @@
 				05763DC22D096B2B00385325 /* SalaryViewController.swift */,
 			);
 			path = Salary;
+			sourceTree = "<group>";
+		};
+		05763DC42D09716100385325 /* PhoneBook */ = {
+			isa = PBXGroup;
+			children = (
+				05763DC52D09731100385325 /* PhoneBookListViewController.swift */,
+				05763DC72D0973BA00385325 /* PhoneBookListTableViewCell.swift */,
+			);
+			path = PhoneBook;
 			sourceTree = "<group>";
 		};
 		05A015522CF40D34004D0844 /* CustomView */ = {
@@ -399,6 +412,7 @@
 		2DE005612CE248C7004DE761 /* Office */ = {
 			isa = PBXGroup;
 			children = (
+				05763DC42D09716100385325 /* PhoneBook */,
 				2DE005672CE2491C004DE761 /* OfficeViewController.swift */,
 				05763DB22D08176B00385325 /* PhoneBookCollectionViewCell.swift */,
 				05763DB02D07DF3400385325 /* OtherTasksCollectionViewCell.swift */,
@@ -618,6 +632,7 @@
 				05D3FA802CE2EE1500AFDC6B /* User.swift in Sources */,
 				059082752CE6D2A500E4D204 /* DispatchModel.swift in Sources */,
 				2D904F1E2CE0B2EC005CF538 /* TemplateHeaderFooterView.swift in Sources */,
+				05763DC62D09731100385325 /* PhoneBookListViewController.swift in Sources */,
 				05763DBA2D08293300385325 /* NotificationTableViewCell.swift in Sources */,
 				05763DB52D08225A00385325 /* MemberModel.swift in Sources */,
 				2DF135132CE7C1F200EAA052 /* ManagerMainViewController.swift in Sources */,
@@ -627,6 +642,7 @@
 				2D904F202CE0B2F0005CF538 /* TemplateCollectionViewCell.swift in Sources */,
 				2D904F192CE0B2E1005CF538 /* CustomizedTabBarController.swift in Sources */,
 				2D7C5BCF2D049D3400C381CE /* DispatchCheckListViewController.swift in Sources */,
+				05763DC82D0973BA00385325 /* PhoneBookListTableViewCell.swift in Sources */,
 				056D9ACA2D02E0A9006357B8 /* DailyInspectionViewController.swift in Sources */,
 				2D904F1B2CE0B2E5005CF538 /* AlertPopViewController.swift in Sources */,
 				2D904F1A2CE0B2E3005CF538 /* BottomSheetViewController.swift in Sources */,

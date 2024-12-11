@@ -18,7 +18,7 @@ final class MemberModel {
     // 읽은 알림 처리
     private(set) var sendReadNotificationRequest: DataRequest?
     
-    func loadMemberListRequest(page: Int, success: ((MemberItem) -> ())?, failure: ((_ message: String) -> ())?) {
+    func loadMemberListRequest(page: Int, search: String = "", role: String = "", success: ((MemberItem) -> ())?, failure: ((_ message: String) -> ())?) {
         let url = ServerSetting.server.URL + "/member/list"
         
         let headers: HTTPHeaders = [
@@ -26,11 +26,20 @@ final class MemberModel {
             "Authorization": ReferenceValues.accessToken
         ]
         
-        let parameters: Parameters = [
+        var parameters: Parameters = [
             "page": page,
-            "search": "",
-            "separate_role": "",
         ]
+        
+        // 관리자, 운전원, 용역
+        if role != "" {
+            parameters.updateValue(role, forKey: "separate_role")
+            
+        }
+        
+        if search != "" {
+            parameters.updateValue(search, forKey: "search")
+            
+        }
         
         self.loadMemberListRequest = AF.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default, headers: headers)
         

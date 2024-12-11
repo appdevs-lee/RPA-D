@@ -63,7 +63,7 @@ final class PhoneBookCollectionViewCell: UICollectionViewCell {
 // MARK: - Extension for essential methods
 extension PhoneBookCollectionViewCell: EssentialCellHeaderMethods {
     func setViewFoundation() {
-        self.backgroundColor = .white
+        self.backgroundColor = .useRGB(red: 248, green: 248, blue: 248)
     }
     
     func initializeObjects() {
@@ -91,6 +91,8 @@ extension PhoneBookCollectionViewCell: EssentialCellHeaderMethods {
             self.baseView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             self.baseView.topAnchor.constraint(equalTo: self.topAnchor),
             self.baseView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            self.baseView.widthAnchor.constraint(equalToConstant: 112),
+            self.baseView.heightAnchor.constraint(equalToConstant: 117),
         ])
         
         // nameLabel
