@@ -368,6 +368,10 @@ final class OfficeViewController: UIViewController {
 // MARK: Extension for essential methods
 extension OfficeViewController: EssentialViewMethods {
     func setViewFoundation() {
+        // Pop Slide
+        if self.navigationController?.viewControllers.first === self  {
+            self.navigationController?.interactivePopGestureRecognizer?.delegate = self
+        }
         
     }
     
@@ -833,6 +837,20 @@ extension OfficeViewController: UICollectionViewDelegateFlowLayout, UICollection
             UIApplication.shared.open(url)
             
         }
+    }
+    
+}
+
+// MARK: - Extension for UIGestureRecognizerDelegate
+extension OfficeViewController: UIGestureRecognizerDelegate {
+    // For swipe gesture
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+    
+    // For swipe gesture, prevent working on the root view of navigation controller
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        return self.navigationController!.viewControllers.count > 1 ? true : false
     }
     
 }

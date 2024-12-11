@@ -15,6 +15,10 @@
 		05763DB52D08225A00385325 /* MemberModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05763DB42D08225A00385325 /* MemberModel.swift */; };
 		05763DB82D0826E700385325 /* NotificationListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05763DB72D0826E700385325 /* NotificationListViewController.swift */; };
 		05763DBA2D08293300385325 /* NotificationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05763DB92D08293300385325 /* NotificationTableViewCell.swift */; };
+		05763DBC2D094AA000385325 /* RouteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05763DBB2D094AA000385325 /* RouteTableViewCell.swift */; };
+		05763DBE2D0951DA00385325 /* RouteModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05763DBD2D0951DA00385325 /* RouteModel.swift */; };
+		05763DC02D096AAE00385325 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05763DBF2D096AAE00385325 /* ProfileModel.swift */; };
+		05763DC32D096B2B00385325 /* SalaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05763DC22D096B2B00385325 /* SalaryViewController.swift */; };
 		057C6D9B2CFEE5E80019FA3E /* DispatchDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057C6D9A2CFEE5E80019FA3E /* DispatchDetailView.swift */; };
 		057C6D9D2CFEE5F60019FA3E /* DispatchRunningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057C6D9C2CFEE5F60019FA3E /* DispatchRunningView.swift */; };
 		057C6D9F2CFEEA2D0019FA3E /* StationDetailInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057C6D9E2CFEEA2D0019FA3E /* StationDetailInfoTableViewCell.swift */; };
@@ -92,6 +96,10 @@
 		05763DB42D08225A00385325 /* MemberModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberModel.swift; sourceTree = "<group>"; };
 		05763DB72D0826E700385325 /* NotificationListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationListViewController.swift; sourceTree = "<group>"; };
 		05763DB92D08293300385325 /* NotificationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationTableViewCell.swift; sourceTree = "<group>"; };
+		05763DBB2D094AA000385325 /* RouteTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteTableViewCell.swift; sourceTree = "<group>"; };
+		05763DBD2D0951DA00385325 /* RouteModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteModel.swift; sourceTree = "<group>"; };
+		05763DBF2D096AAE00385325 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
+		05763DC22D096B2B00385325 /* SalaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalaryViewController.swift; sourceTree = "<group>"; };
 		057C6D9A2CFEE5E80019FA3E /* DispatchDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchDetailView.swift; sourceTree = "<group>"; };
 		057C6D9C2CFEE5F60019FA3E /* DispatchRunningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchRunningView.swift; sourceTree = "<group>"; };
 		057C6D9E2CFEEA2D0019FA3E /* StationDetailInfoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationDetailInfoTableViewCell.swift; sourceTree = "<group>"; };
@@ -186,6 +194,14 @@
 			path = Common;
 			sourceTree = "<group>";
 		};
+		05763DC12D096B1D00385325 /* Salary */ = {
+			isa = PBXGroup;
+			children = (
+				05763DC22D096B2B00385325 /* SalaryViewController.swift */,
+			);
+			path = Salary;
+			sourceTree = "<group>";
+		};
 		05A015522CF40D34004D0844 /* CustomView */ = {
 			isa = PBXGroup;
 			children = (
@@ -244,6 +260,7 @@
 			children = (
 				2D7C5BE62D08ADE800C381CE /* CustomView */,
 				2D7C5BE42D08A7C100C381CE /* RouteViewController.swift */,
+				05763DBB2D094AA000385325 /* RouteTableViewCell.swift */,
 			);
 			path = Route;
 			sourceTree = "<group>";
@@ -345,6 +362,8 @@
 				05A015572CF497AA004D0844 /* MainModel.swift */,
 				059082742CE6D2A500E4D204 /* DispatchModel.swift */,
 				05763DB42D08225A00385325 /* MemberModel.swift */,
+				05763DBD2D0951DA00385325 /* RouteModel.swift */,
+				05763DBF2D096AAE00385325 /* ProfileModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -393,6 +412,7 @@
 			children = (
 				2DE005692CE2492E004DE761 /* ProfileViewController.swift */,
 				2D7C5BE02D0896EA00C381CE /* Card */,
+				05763DC12D096B1D00385325 /* Salary */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -538,6 +558,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				05763DC32D096B2B00385325 /* SalaryViewController.swift in Sources */,
 				2D7C5BD12D04BF4700C381CE /* RefusalReasonViewController.swift in Sources */,
 				2DE005682CE2491C004DE761 /* OfficeViewController.swift in Sources */,
 				2D7C5BE52D08A7C100C381CE /* RouteViewController.swift in Sources */,
@@ -550,6 +571,7 @@
 				2DE005642CE248F4004DE761 /* MainViewController.swift in Sources */,
 				2D904F342CE0D8E1005CF538 /* LoginModel.swift in Sources */,
 				2D904F272CE0B326005CF538 /* SupportingMethods.swift in Sources */,
+				05763DBE2D0951DA00385325 /* RouteModel.swift in Sources */,
 				2D904F1C2CE0B2E8005CF538 /* CategoryButton.swift in Sources */,
 				2D904F392CE0DE48005CF538 /* PermissionTableViewCell.swift in Sources */,
 				2D904F162CE0B2DA005CF538 /* TemplateView.swift in Sources */,
@@ -563,6 +585,7 @@
 				2D904EF62CE0B04A005CF538 /* AppDelegate.swift in Sources */,
 				05A0155A2CF58305004D0844 /* StatusView.swift in Sources */,
 				05A015582CF497AA004D0844 /* MainModel.swift in Sources */,
+				05763DBC2D094AA000385325 /* RouteTableViewCell.swift in Sources */,
 				2D904F292CE0B326005CF538 /* NetworkMonitor.swift in Sources */,
 				2D904F212CE0B2F2005CF538 /* ViewPagerCollectionViewCell.swift in Sources */,
 				2D7C5BE22D0896F600C381CE /* CardViewController.swift in Sources */,
@@ -599,6 +622,7 @@
 				05763DB52D08225A00385325 /* MemberModel.swift in Sources */,
 				2DF135132CE7C1F200EAA052 /* ManagerMainViewController.swift in Sources */,
 				2D904F2A2CE0B326005CF538 /* ReferenceValues.swift in Sources */,
+				05763DC02D096AAE00385325 /* ProfileModel.swift in Sources */,
 				2D904F2C2CE0B3C2005CF538 /* SplashViewController.swift in Sources */,
 				2D904F202CE0B2F0005CF538 /* TemplateCollectionViewCell.swift in Sources */,
 				2D904F192CE0B2E1005CF538 /* CustomizedTabBarController.swift in Sources */,

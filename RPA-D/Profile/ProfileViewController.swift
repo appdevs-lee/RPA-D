@@ -210,6 +210,7 @@ final class ProfileViewController: UIViewController {
     }()
     
     let memberModel = MemberModel()
+    let profileModel = ProfileModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -242,7 +243,10 @@ final class ProfileViewController: UIViewController {
 // MARK: Extension for essential methods
 extension ProfileViewController: EssentialViewMethods {
     func setViewFoundation() {
-        self.view.backgroundColor = .white
+        // Pop Slide
+        if self.navigationController?.viewControllers.first === self  {
+            self.navigationController?.interactivePopGestureRecognizer?.delegate = self
+        }
         
     }
     
@@ -428,8 +432,8 @@ extension ProfileViewController: EssentialViewMethods {
     }
     
     func setViewAfterTransition() {
-        //self.navigationController?.setNavigationBarHidden(false, animated: true)
-        //self.tabBarController?.tabBar.isHidden = false
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
+        self.tabBarController?.tabBar.isHidden = false
     }
     
     func setUpNavigationItem() {
@@ -477,6 +481,21 @@ extension ProfileViewController {
         }
 
     }
+    
+    func loadSalaryStatementRequest(date: Date, success: ((String) -> ())?) {
+        self.profileModel.loadSalaryStatementRequest(date: date) { html in
+            success?(html)
+            
+        } failure: { message in
+            SupportingMethods.shared.checkExpiration {
+                print("loadSalaryStatementRequest API Error: \(message)")
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+            
+        }
+
+    }
 }
 
 // MARK: - Extension for selector methods
@@ -491,15 +510,63 @@ extension ProfileViewController {
     }
     
     @objc func thisMonthSalaryButton(_ sender: UIButton) {
+        let date = SupportingMethods.shared.calculateDate(byValue: -1, component: .month, date: Date())
+        
+        switch Role(rawValue: User.shared.role) {
+        case .driver:
+            SupportingMethods.shared.turnCoverView(.on)
+            self.loadSalaryStatementRequest(date: date) { html in
+                let vc = SalaryViewController(html: html)
+                
+                self.navigationController?.pushViewController(vc, animated: true)
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+            
+        default:
+            SupportingMethods.shared.showAlertNoti(title: "현재 기사 분들만 급여 확인이 가능합니다.")
+            
+        }
         
     }
     
     @objc func salaryListButton(_ sender: UIButton) {
-        
+        SupportingMethods.shared.showAlertNoti(title: "추후 업데이트 예정입니다")
     }
     
     @objc func lastMonthSalaryButton(_ sender: UIButton) {
+        let date = SupportingMethods.shared.calculateDate(byValue: -2, component: .month, date: Date())
         
+        switch Role(rawValue: User.shared.role) {
+        case .driver:
+            SupportingMethods.shared.turnCoverView(.on)
+            self.loadSalaryStatementRequest(date: date) { html in
+                let vc = SalaryViewController(html: html)
+                
+                self.navigationController?.pushViewController(vc, animated: true)
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+            
+        default:
+            SupportingMethods.shared.showAlertNoti(title: "현재 기사 분들만 급여 확인이 가능합니다.")
+            
+        }
+        
+    }
+    
+}
+
+// MARK: - Extension for UIGestureRecognizerDelegate
+extension ProfileViewController: UIGestureRecognizerDelegate {
+    // For swipe gesture
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+    
+    // For swipe gesture, prevent working on the root view of navigation controller
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        return self.navigationController!.viewControllers.count > 1 ? true : false
     }
     
 }
