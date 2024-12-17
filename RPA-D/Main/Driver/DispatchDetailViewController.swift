@@ -718,18 +718,18 @@ extension DispatchDetailViewController {
     }
     
     @objc func partPathButton(_ sender: UIButton) {
-        var previousStation: StationInfo?
+//        var previousStation: StationInfo?
         var currentStation: StationInfo?
         for index in 0..<self.item.stations.count {
             if self.item.stations[index].arrivalTime == "" {
                 currentStation = self.item.stations[index]
-                if index != 0 {
-                    previousStation = self.item.stations[index - 1]
-                    
-                } else {
-                    previousStation = nil
-                    
-                }
+//                if index != 0 {
+//                    previousStation = self.item.stations[index - 1]
+//                    
+//                } else {
+//                    previousStation = nil
+//                    
+//                }
                 
                 break
             }
@@ -738,17 +738,17 @@ extension DispatchDetailViewController {
         guard let currentStation = currentStation else { return }
         let userLocation = self.mapView.userLocation.coordinate
         
-        let previousLatitude = previousStation?.latitude ?? String(userLocation.latitude)
-        let previousLongitude = previousStation?.longitude ?? String(userLocation.longitude)
+//        let previousLatitude = previousStation?.latitude ?? String(userLocation.latitude)
+//        let previousLongitude = previousStation?.longitude ?? String(userLocation.longitude)
         
         let latitude = currentStation.latitude
         let longitude = currentStation.longitude
         
         // 현재 정류장에서 다음 정류장까지
-        let url = URL(string: "kakaomap://route?sp=\(previousLatitude),\(previousLongitude)&ep=\(latitude),\(longitude)&by=CAR")!
+//        let url = URL(string: "kakaomap://route?sp=\(previousLatitude),\(previousLongitude)&ep=\(latitude),\(longitude)&by=CAR")!
         // 내 위치에서 정류장까지
-//        let userLocationURL = URL(string: "kakaomap://route?sp=\(userLocation.latitude),\(userLocation.longitude)&ep=\(latitude),\(longitude)&by=CAR")!
-        UIApplication.shared.open(url)
+        let userLocationURL = URL(string: "kakaomap://route?sp=\(userLocation.latitude),\(userLocation.longitude)&ep=\(latitude),\(longitude)&by=CAR")!
+        UIApplication.shared.open(userLocationURL)
         
     }
     

@@ -1,20 +1,20 @@
 //
-//  DispatchDetailView.swift
+//  RouteDetailView.swift
 //  RPA-D
 //
-//  Created by Awesomepia on 12/3/24.
+//  Created by 이주성 on 12/17/24.
 //
 
 import UIKit
 
-class DispatchDetailView: UIView {
+class RouteDetailView: UIView {
     
     lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.backgroundColor = .clear
         tableView.bounces = false
         tableView.showsVerticalScrollIndicator = false
-        tableView.register(DispatchDetailIBaseInfoTableViewCell.self, forCellReuseIdentifier: "DispatchDetailIBaseInfoTableViewCell")
+        tableView.register(RouteBasicInfoTableViewCell.self, forCellReuseIdentifier: "RouteBasicInfoTableViewCell")
         tableView.register(StationDetailInfoTableViewCell.self, forCellReuseIdentifier: "StationDetailInfoTableViewCell")
         tableView.register(DispatchDetailReferencesTableViewCell.self, forCellReuseIdentifier: "DispatchDetailReferencesTableViewCell")
         tableView.delegate = self
@@ -28,12 +28,10 @@ class DispatchDetailView: UIView {
         return tableView
     }()
     
-    var date: String
-    var item: DispatchDetailItem
+    var item: RouteDetailItem
     var stationList: [StationInfo] = []
     
-    init(date: String, item: DispatchDetailItem) {
-        self.date = date
+    init(item: RouteDetailItem) {
         self.item = item
         self.stationList = item.stations
         
@@ -49,7 +47,7 @@ class DispatchDetailView: UIView {
     
 }
 
-extension DispatchDetailView {
+extension RouteDetailView {
     func setSubViews() {
         SupportingMethods.shared.addSubviews([
             self.tableView,
@@ -79,7 +77,7 @@ extension DispatchDetailView {
 }
 
 // MARK: - Extension for selector added
-extension DispatchDetailView: UITableViewDelegate, UITableViewDataSource {
+extension RouteDetailView: UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 3
     }
@@ -100,9 +98,9 @@ extension DispatchDetailView: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "DispatchDetailIBaseInfoTableViewCell", for: indexPath) as! DispatchDetailIBaseInfoTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "RouteBasicInfoTableViewCell", for: indexPath) as! RouteBasicInfoTableViewCell
             
-            cell.setCell(date: self.date, item: self.item)
+            cell.setCell(item: self.item)
             
             return cell
             

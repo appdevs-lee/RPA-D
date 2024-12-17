@@ -94,7 +94,7 @@ final class RouteViewController: UIViewController {
         view.progressLineColor = .useRGB(red: 223, green: 52, blue: 52)
         view.trackLineWidth = 12
         view.trackColor = .useRGB(red: 219, green: 219, blue: 219)
-        view.setProgress(value: 0.5)
+        view.setProgress(value: 0.0)
         view.translatesAutoresizingMaskIntoConstraints = false
         
         return view
@@ -220,7 +220,7 @@ final class RouteViewController: UIViewController {
     var page: Int = 1
     var nextRequest: String?
     
-    var routeList: [RouteDetailItem] = []
+    var routeList: [RouteListItem] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -392,6 +392,8 @@ extension RouteViewController: EssentialViewMethods {
         self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.tabBarController?.tabBar.isHidden = true
         
+        self.reloadData()
+        
     }
     
     func setUpNavigationItem() {
@@ -417,7 +419,7 @@ extension RouteViewController: EssentialViewMethods {
     
     func setData() {
         self.loadKnowRouteListDataRequest(page: 1) { item in
-            self.rateLabel.text = "\(item.knowCount / item.count * 100)"
+            self.rateLabel.text = "\(item.knowCount / item.count * 100)%"
             self.routeKnowCountLabel.text = "\(item.knowCount)/\(item.count)"
             self.circularProgress.setProgress(value: Double(item.knowCount) / Double(item.count * 100))
             
@@ -429,6 +431,25 @@ extension RouteViewController: EssentialViewMethods {
 
 // MARK: - Extension for methods added
 extension RouteViewController {
+    func reloadData() {
+        self.loadKnowRouteListDataRequestForReload { item in
+            self.rateLabel.text = "\(item.knowCount / item.count * 100)%"
+            self.routeKnowCountLabel.text = "\(item.knowCount)/\(item.count)"
+            self.circularProgress.setProgress(value: Double(item.knowCount) / Double(item.count * 100))
+            if self.selectedIndex == 0 {
+                // 노선숙지
+                self.tableView.reloadData()
+                
+            } else {
+                // 즐겨찾기
+                self.loadFavoriteRouteListDataRequest(page: 1)
+                
+            }
+            
+        }
+        
+    }
+    
     func loadRouteListDataRequest(page: Int, search: String = "", group: String = "", know: Bool? = nil, favorite: Bool? = nil, success: ((RouteItem) -> ())?) {
         self.routeModel.loadRouteListDataRequest(page: page, search: search, group: group, know: know, favorite: favorite) { item in
             success?(item)
@@ -442,6 +463,32 @@ extension RouteViewController {
             
         }
 
+    }
+    
+    func loadKnowRouteListDataRequestForReload(completionHandler: ((RouteItem) -> ())? = nil) {
+        SupportingMethods.shared.turnCoverView(.on)
+        self.loadRouteListDataRequest(page: 1, know: true) { item in
+            self.page = 1
+            self.nextRequest = item.next
+            
+            self.routeList = []
+            self.routeList = item.routeList
+            
+            if !item.routeList.isEmpty {
+                self.noRouteDataStackView.isHidden = true
+                
+            } else {
+                self.noRouteDataTitleLabel.text = "숙지된 노선이 없어요"
+                self.noRouteDataSubTitleLabel.text = "자주 운행하는 노선을 검색해서 숙지해 주세요"
+                self.noRouteDataStackView.isHidden = false
+                
+            }
+            
+            SupportingMethods.shared.turnCoverView(.off)
+            completionHandler?(item)
+            
+        }
+        
     }
     
     func loadKnowRouteListDataRequest(page: Int, completionHandler: ((RouteItem) -> ())? = nil) {
@@ -524,6 +571,36 @@ extension RouteViewController {
 
     }
     
+    func deleteRouteBookmarkDataRequest(id: Int, success: (() -> ())?) {
+        self.routeModel.deleteRouteBookmarkDataRequest(id: id) {
+            success?()
+            
+        } failure: { message in
+            SupportingMethods.shared.checkExpiration {
+                print("deleteRouteBookmarkDataRequest API Error: \(message)")
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+            
+        }
+
+    }
+    
+    func loadRouteDetailDataRequest(id: Int, success: ((RouteDetailItem) -> ())?) {
+        self.routeModel.loadRouteDetailDataRequest(id: id) { item in
+            success?(item)
+            
+        } failure: { message in
+            SupportingMethods.shared.checkExpiration {
+                print("loadRouteDetailDataRequest API Error: \(message)")
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+            
+        }
+
+    }
+    
 }
 
 // MARK: - Extension for selector methods
@@ -534,7 +611,9 @@ extension RouteViewController {
     }
     
     @objc func searchButton(_ sender: UIButton) {
+        let vc = RouteSearchViewController()
         
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
 }
@@ -612,7 +691,14 @@ extension RouteViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+        let route = self.routeList[indexPath.row]
+        SupportingMethods.shared.turnCoverView(.on)
+        self.loadRouteDetailDataRequest(id: route.id) { item in
+            let vc = RouteDetailViewController(id: route.id, item: item)
+            
+            self.navigationController?.pushViewController(vc, animated: true)
+            SupportingMethods.shared.turnCoverView(.off)
+        }
     }
     
 }
@@ -620,11 +706,29 @@ extension RouteViewController: UITableViewDelegate, UITableViewDataSource {
 
 // FIXME: 삭제 부분 추가되면 재구현하기
 extension RouteViewController: RouteBookmarkDelegate {
-    func bookmarkRoute(id: Int) {
+    func bookmarkRoute(id: Int, bookmarkStatus: Bool) {
         if self.selectedIndex == 0 {
             SupportingMethods.shared.turnCoverView(.on)
-            self.sendRouteBookmarkDataRequest(id: id) {
-                self.loadKnowRouteListDataRequest(page: 1)
+            if bookmarkStatus {
+                // 현재 즐겨찾기 중, 삭제 요청
+                self.deleteRouteBookmarkDataRequest(id: id) {
+                    self.loadKnowRouteListDataRequest(page: 1)
+                    
+                }
+                
+            } else {
+                // 즐겨찾기 요청
+                self.sendRouteBookmarkDataRequest(id: id) {
+                    self.loadKnowRouteListDataRequest(page: 1)
+                    
+                }
+                
+            }
+            
+        } else {
+            SupportingMethods.shared.turnCoverView(.on)
+            self.deleteRouteBookmarkDataRequest(id: id) {
+                self.loadFavoriteRouteListDataRequest(page: 1)
                 
             }
             

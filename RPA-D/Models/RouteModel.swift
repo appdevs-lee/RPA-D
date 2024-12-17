@@ -11,8 +11,16 @@ import Alamofire
 final class RouteModel {
     // 노선 리스트 전부 불러오기
     private(set) var loadRouteListDataRequest: DataRequest?
-    // 노선 즐겨찾기
+    // 노선 상세 조회
+    private(set) var loadRouteDetailDataRequest: DataRequest?
+    // 노선 숙지
+    private(set) var sendRouteKnowDataRequest: DataRequest?
+    // 노선 숙지 취소
+    private(set) var deleteRouteKnowDataRequest: DataRequest?
+    // 노선 즐겨찾기 등록
     private(set) var sendRouteBookmarkDataRequest: DataRequest?
+    // 노선 즐겨찾기 삭제
+    private(set) var deleteRouteBookmarkDataRequest: DataRequest?
     
     func loadRouteListDataRequest(page: Int, search: String = "", group: String = "", know: Bool? = nil, favorite: Bool? = nil, success: ((RouteItem) -> ())?, failure: ((_ message: String) -> ())?) {
         let url = ServerSetting.server.URL + "/dispatch/regularly"
@@ -71,6 +79,49 @@ final class RouteModel {
         }
     }
     
+    func loadRouteDetailDataRequest(id: Int, success: ((RouteDetailItem) -> ())?, failure: ((_ message: String) -> ())?) {
+        let url = ServerSetting.server.URL + "/dispatch/regularly/\(id)"
+        
+        let headers: HTTPHeaders = [
+            "accept":"application/json",
+            "Authorization": ReferenceValues.accessToken
+        ]
+        
+        self.loadRouteDetailDataRequest = AF.request(url, method: .get, parameters: nil, encoding: URLEncoding.default, headers: headers)
+        
+        self.loadRouteDetailDataRequest?.responseData { (response) in
+            switch response.result {
+            case .success(let data):
+                guard let statusCode = response.response?.statusCode else {
+                    print("loadRouteDetailDataRequest failure: statusCode nil")
+                    failure?("statusCodeNil")
+                    
+                    return
+                }
+                
+                guard statusCode >= 200 && statusCode < 300 else {
+                    print("loadRouteDetailDataRequest failure: statusCode(\(statusCode))")
+                    failure?("statusCodeError")
+                    
+                    return
+                }
+                
+                if let decodedData = try? JSONDecoder().decode(RouteDetail.self, from: data) {
+                    print("loadRouteDetailDataRequest succeeded")
+                    success?(decodedData.data)
+                    
+                } else {
+                    print("loadRouteDetailDataRequest failure: API 성공, Parsing 실패")
+                    failure?("API 성공, Parsing 실패")
+                }
+                
+            case .failure(let error):
+                print("loadRouteDetailDataRequest error: \(error.localizedDescription)")
+                failure?(error.localizedDescription)
+            }
+        }
+    }
+    
     func sendRouteBookmarkDataRequest(id: Int, success: (() -> ())?, failure: ((_ message: String) -> ())?) {
         let url = ServerSetting.server.URL + "/dispatch/regularly/favorite"
         
@@ -87,7 +138,7 @@ final class RouteModel {
         
         self.sendRouteBookmarkDataRequest?.responseData { (response) in
             switch response.result {
-            case .success(let data):
+            case .success(_):
                 guard let statusCode = response.response?.statusCode else {
                     print("sendRouteBookmarkDataRequest failure: statusCode nil")
                     failure?("statusCodeNil")
@@ -111,6 +162,129 @@ final class RouteModel {
             }
         }
     }
+
+    func deleteRouteBookmarkDataRequest(id: Int, success: (() -> ())?, failure: ((_ message: String) -> ())?) {
+        let url = ServerSetting.server.URL + "/dispatch/regularly/favorite"
+        
+        let headers: HTTPHeaders = [
+            "accept": "application/json",
+            "Authorization": ReferenceValues.accessToken
+        ]
+        
+        let parameters: Parameters = [
+            "id": "\(id)"
+        ]
+        
+        self.deleteRouteBookmarkDataRequest = AF.request(url, method: .delete, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
+        
+        self.deleteRouteBookmarkDataRequest?.responseData { (response) in
+            switch response.result {
+            case .success(_):
+                guard let statusCode = response.response?.statusCode else {
+                    print("deleteRouteBookmarkDataRequest failure: statusCode nil")
+                    failure?("statusCodeNil")
+                    
+                    return
+                }
+                
+                guard statusCode >= 200 && statusCode < 300 else {
+                    print("deleteRouteBookmarkDataRequest failure: statusCode(\(statusCode))")
+                    failure?("statusCodeError")
+                    
+                    return
+                }
+                
+                print("deleteRouteBookmarkDataRequest succeeded")
+                success?()
+                
+            case .failure(let error):
+                print("deleteRouteBookmarkDataRequest error: \(error.localizedDescription)")
+                failure?(error.localizedDescription)
+            }
+        }
+    }
+    
+    func sendRouteKnowDataRequest(id: Int, success: (() -> ())?, failure: ((_ message: String) -> ())?) {
+        let url = ServerSetting.server.URL + "/dispatch/regularly/know"
+        
+        let headers: HTTPHeaders = [
+            "accept": "application/json",
+            "Authorization": ReferenceValues.accessToken
+        ]
+        
+        let parameters: Parameters = [
+            "regularly_id": "\(id)"
+        ]
+        
+        self.sendRouteKnowDataRequest = AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
+        
+        self.sendRouteKnowDataRequest?.responseData { (response) in
+            switch response.result {
+            case .success(_):
+                guard let statusCode = response.response?.statusCode else {
+                    print("sendRouteKnowDataRequest failure: statusCode nil")
+                    failure?("statusCodeNil")
+                    
+                    return
+                }
+                
+                guard statusCode >= 200 && statusCode < 300 else {
+                    print("sendRouteKnowDataRequest failure: statusCode(\(statusCode))")
+                    failure?("statusCodeError")
+                    
+                    return
+                }
+                
+                print("sendRouteKnowDataRequest succeeded")
+                success?()
+                
+            case .failure(let error):
+                print("sendRouteKnowDataRequest error: \(error.localizedDescription)")
+                failure?(error.localizedDescription)
+            }
+        }
+    }
+
+    func deleteRouteKnowDataRequest(id: Int, success: (() -> ())?, failure: ((_ message: String) -> ())?) {
+        let url = ServerSetting.server.URL + "/dispatch/regularly/know"
+        
+        let headers: HTTPHeaders = [
+            "accept": "application/json",
+            "Authorization": ReferenceValues.accessToken
+        ]
+        
+        let parameters: Parameters = [
+            "regularly_id": "\(id)"
+        ]
+        
+        self.deleteRouteKnowDataRequest = AF.request(url, method: .delete, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
+        
+        self.deleteRouteKnowDataRequest?.responseData { (response) in
+            switch response.result {
+            case .success(_):
+                guard let statusCode = response.response?.statusCode else {
+                    print("deleteRouteKnowDataRequest failure: statusCode nil")
+                    failure?("statusCodeNil")
+                    
+                    return
+                }
+                
+                guard statusCode >= 200 && statusCode < 300 else {
+                    print("deleteRouteKnowDataRequest failure: statusCode(\(statusCode))")
+                    failure?("statusCodeError")
+                    
+                    return
+                }
+                
+                print("deleteRouteKnowDataRequest succeeded")
+                success?()
+                
+            case .failure(let error):
+                print("deleteRouteKnowDataRequest error: \(error.localizedDescription)")
+                failure?(error.localizedDescription)
+            }
+        }
+    }
 }
 
 struct Route: Codable {
@@ -122,7 +296,7 @@ struct RouteItem: Codable {
     let knowCount: Int
     let next: String?
     let previous: String?
-    let routeList: [RouteDetailItem]
+    let routeList: [RouteListItem]
     
     enum CodingKeys: String, CodingKey {
         case count
@@ -133,7 +307,7 @@ struct RouteItem: Codable {
     }
 }
 
-struct RouteDetailItem: Codable {
+struct RouteListItem: Codable {
     let id: Int
     let workType: String
     
@@ -165,5 +339,38 @@ struct RouteDetailItem: Codable {
         case group
         case route
         case maplink
+    }
+}
+
+class RouteDetail: Codable {
+    let data: RouteDetailItem
+    
+}
+
+class RouteDetailItem: Codable {
+    let group: String
+    let route: String
+    let departure: String
+    let arrival: String
+    var know: String
+    var favorite: String
+    let references: String
+    let maplink: String
+    let departureTime: String
+    let arrivalTime: String
+    let stations: [StationInfo]
+    
+    enum CodingKeys: String, CodingKey {
+        case group
+        case route
+        case departure
+        case arrival
+        case know
+        case favorite
+        case references
+        case maplink
+        case departureTime = "departure_time"
+        case arrivalTime = "arrival_time"
+        case stations
     }
 }

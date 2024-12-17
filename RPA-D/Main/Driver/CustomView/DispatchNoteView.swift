@@ -20,6 +20,7 @@ class DispatchNoteView: UIView {
     
     lazy var dashboardTextField: UITextField = {
         let textField = UITextField()
+        textField.keyboardType = .decimalPad
         textField.borderStyle = .none
         textField.backgroundColor = .useRGB(red: 248, green: 248, blue: 248)
         textField.layer.cornerRadius = 8

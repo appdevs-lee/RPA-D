@@ -317,6 +317,9 @@ final class OfficeViewController: UIViewController {
     ]
     var phoneBookList: [MemberDetailItem] = []
     
+    let noticeModel = NoticeModel()
+    let noticeData: NoticeData? = nil
+    
     init() {
         switch User.shared.role {
         case "운전원":
@@ -688,41 +691,46 @@ extension OfficeViewController: EssentialViewMethods {
     }
     
     func setData() {
-        switch self.role {
-        case .driver:
-            self.mainOfficeByRoleImageView.image = .useCustomImage("pathKnowImage")
-            self.mainOfficeByRoleLabel.text = "노선숙지"
+        self.loadNoticeListDataRequest { item in
+            self.noticeTitleLabel.text = item?.title ?? "새로운 공지사항이 없습니다."
             
-            self.subMainOfficeOneByRoleImageView.image = .useCustomImage("complaints")
-            self.subMainOfficeOneByRoleLabel.text = "민원"
-            
-            self.subMainOfficeTwoByRoleImageView.image = .useCustomImage("fuel")
-            self.subMainOfficeTwoByRoleLabel.text = "주유"
-            break
-            
-        case .driverLeader:
-            // FIXME: 임시
-            self.mainOfficeByRoleImageView.image = .useCustomImage("pathKnowImage")
-            self.mainOfficeByRoleLabel.text = "노선숙지"
-            
-            self.subMainOfficeOneByRoleImageView.image = .useCustomImage("complaints")
-            self.subMainOfficeOneByRoleLabel.text = "민원"
-            
-            self.subMainOfficeTwoByRoleImageView.image = .useCustomImage("fuel")
-            self.subMainOfficeTwoByRoleLabel.text = "주유"
-            break
-            
-        case .manager:
-            // FIXME: 임시
-            self.mainOfficeByRoleImageView.image = .useCustomImage("pathKnowImage")
-            self.mainOfficeByRoleLabel.text = "노선숙지"
-            
-            self.subMainOfficeOneByRoleImageView.image = .useCustomImage("complaints")
-            self.subMainOfficeOneByRoleLabel.text = "민원"
-            
-            self.subMainOfficeTwoByRoleImageView.image = .useCustomImage("fuel")
-            self.subMainOfficeTwoByRoleLabel.text = "주유"
-            break
+            switch self.role {
+            case .driver:
+                self.mainOfficeByRoleImageView.image = .useCustomImage("pathKnowImage")
+                self.mainOfficeByRoleLabel.text = "노선숙지"
+                
+                self.subMainOfficeOneByRoleImageView.image = .useCustomImage("complaints")
+                self.subMainOfficeOneByRoleLabel.text = "민원"
+                
+                self.subMainOfficeTwoByRoleImageView.image = .useCustomImage("fuel")
+                self.subMainOfficeTwoByRoleLabel.text = "주유"
+                break
+                
+            case .driverLeader:
+                // FIXME: 임시
+                self.mainOfficeByRoleImageView.image = .useCustomImage("pathKnowImage")
+                self.mainOfficeByRoleLabel.text = "노선숙지"
+                
+                self.subMainOfficeOneByRoleImageView.image = .useCustomImage("complaints")
+                self.subMainOfficeOneByRoleLabel.text = "민원"
+                
+                self.subMainOfficeTwoByRoleImageView.image = .useCustomImage("fuel")
+                self.subMainOfficeTwoByRoleLabel.text = "주유"
+                break
+                
+            case .manager:
+                // FIXME: 임시
+                self.mainOfficeByRoleImageView.image = .useCustomImage("pathKnowImage")
+                self.mainOfficeByRoleLabel.text = "노선숙지"
+                
+                self.subMainOfficeOneByRoleImageView.image = .useCustomImage("complaints")
+                self.subMainOfficeOneByRoleLabel.text = "민원"
+                
+                self.subMainOfficeTwoByRoleImageView.image = .useCustomImage("fuel")
+                self.subMainOfficeTwoByRoleLabel.text = "주유"
+                break
+                
+            }
             
         }
         
@@ -747,6 +755,20 @@ extension OfficeViewController: EssentialViewMethods {
 
 // MARK: - Extension for methods added
 extension OfficeViewController {
+    func loadNoticeListDataRequest(success: ((NoticeItem?) -> ())?) {
+        self.noticeModel.loadNoticeListDataRequest(page: 1) { data in
+            success?(data.results.first)
+            
+        } failure: { message in
+            SupportingMethods.shared.checkExpiration {
+                print("loadNoticeListDataRequest API Error: \(message)")
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+            
+        }
+
+    }
     
 }
 
@@ -754,6 +776,9 @@ extension OfficeViewController {
 extension OfficeViewController {
     @objc func noticeButton(_ sender: UIButton) {
         print("noticeButton")
+        let vc = NoticeViewController()
+        
+        self.navigationController?.pushViewController(vc, animated: true)
         
     }
     

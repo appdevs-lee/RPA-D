@@ -216,7 +216,6 @@ final class EveningRollCallViewController: UIViewController {
         textField.textColor = .useRGB(red: 46, green: 45, blue: 45)
         textField.font = .useFont(ofSize: 14, weight: .Regular)
         textField.borderStyle = .none
-        textField.keyboardType = .decimalPad
         textField.addLeftPadding()
         textField.setPlaceholder(placeholder: "특이사항을 입력해 주세요")
         textField.layer.cornerRadius = 8
@@ -560,7 +559,7 @@ extension EveningRollCallViewController {
 extension EveningRollCallViewController {
     @objc func fuelValueChanged(_ sender: UISlider) {
         self.fuelLabel.text = "\(String(format: "%.2f", sender.value))%"
-        if sender.value < 30 {
+        if sender.value < 50 {
             self.submitCheck.fuel = false
             
         } else {
@@ -574,7 +573,7 @@ extension EveningRollCallViewController {
     
     @objc func gaugeValueChanged(_ sender: UISlider) {
         self.gaugeLabel.text = "\(Int(sender.value))"
-        if Int(sender.value) < 3 {
+        if Int(sender.value) > 6 {
             self.submitCheck.gauge = false
             
         } else {

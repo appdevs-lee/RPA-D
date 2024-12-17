@@ -8,7 +8,7 @@
 import UIKit
 
 protocol RouteBookmarkDelegate: NSObjectProtocol {
-    func bookmarkRoute(id: Int)
+    func bookmarkRoute(id: Int, bookmarkStatus: Bool)
     
 }
 
@@ -133,6 +133,7 @@ final class RouteTableViewCell: UITableViewCell {
     
     lazy var knowStatusButton: UIButton = {
         let button = UIButton()
+        button.isEnabled = false
         button.setTitleColor(.useRGB(red: 148, green: 147, blue: 147), for: .normal)
         button.titleLabel?.font = .useFont(ofSize: 12, weight: .Regular)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -141,6 +142,7 @@ final class RouteTableViewCell: UITableViewCell {
     }()
     
     var delegate: RouteBookmarkDelegate?
+    var route: RouteListItem?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -318,7 +320,9 @@ extension RouteTableViewCell {
 
 // MARK: - Extension for methods added
 extension RouteTableViewCell {
-    func setCell(route: RouteDetailItem) {
+    func setCell(route: RouteListItem) {
+        self.route = route
+        
         self.titleLabel.text = "\(route.route)"
         self.bookmarkButton.setImage(route.favorite == "true" ? .useCustomImage("bookmark.yes") : .useCustomImage("bookmark.no") , for: .normal)
         
@@ -341,7 +345,13 @@ extension RouteTableViewCell {
 // MARK: - Extension for selector added
 extension RouteTableViewCell {
     @objc func bookmarkButton(_ sender: UIButton) {
-        self.delegate?.bookmarkRoute(id: sender.tag)
+        if self.route?.favorite == "true" {
+            self.delegate?.bookmarkRoute(id: sender.tag, bookmarkStatus: true)
+            
+        } else {
+            self.delegate?.bookmarkRoute(id: sender.tag, bookmarkStatus: false)
+            
+        }
         
     }
     

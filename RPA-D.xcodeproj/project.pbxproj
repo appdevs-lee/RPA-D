@@ -80,6 +80,14 @@
 		2D904F372CE0DCA7005CF538 /* PretendardVariable.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2D904F362CE0DCA5005CF538 /* PretendardVariable.ttf */; };
 		2D904F392CE0DE48005CF538 /* PermissionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D904F382CE0DE48005CF538 /* PermissionTableViewCell.swift */; };
 		2DC362C62CFF58A900859D1D /* DispatchNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC362C52CFF58A900859D1D /* DispatchNoteView.swift */; };
+		2DD46E3F2D0FFA48006E6855 /* NoticeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD46E3E2D0FFA48006E6855 /* NoticeViewController.swift */; };
+		2DD46E412D1002A0006E6855 /* NoticeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD46E402D1002A0006E6855 /* NoticeTableViewCell.swift */; };
+		2DD46E432D10397C006E6855 /* NoticeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD46E422D10397C006E6855 /* NoticeModel.swift */; };
+		2DD46E452D103DCF006E6855 /* NoticeDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD46E442D103DCF006E6855 /* NoticeDetailViewController.swift */; };
+		2DD46E472D104A7F006E6855 /* RouteSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD46E462D104A7F006E6855 /* RouteSearchViewController.swift */; };
+		2DD46E4E2D10FC88006E6855 /* RouteDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD46E4D2D10FC88006E6855 /* RouteDetailViewController.swift */; };
+		2DD46E502D110157006E6855 /* RouteDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD46E4F2D110157006E6855 /* RouteDetailView.swift */; };
+		2DD46E522D1101B1006E6855 /* RouteBasicInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD46E512D1101B1006E6855 /* RouteBasicInfoTableViewCell.swift */; };
 		2DDE3CB02CFAEDE70024A799 /* BottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDE3CAF2CFAEDE70024A799 /* BottomSheetView.swift */; };
 		2DE005642CE248F4004DE761 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE005632CE248F4004DE761 /* MainViewController.swift */; };
 		2DE005662CE2490C004DE761 /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE005652CE2490C004DE761 /* CalendarViewController.swift */; };
@@ -166,6 +174,14 @@
 		2D904F382CE0DE48005CF538 /* PermissionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionTableViewCell.swift; sourceTree = "<group>"; };
 		2D904F3A2CE0E441005CF538 /* RPA-D.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "RPA-D.entitlements"; sourceTree = "<group>"; };
 		2DC362C52CFF58A900859D1D /* DispatchNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchNoteView.swift; sourceTree = "<group>"; };
+		2DD46E3E2D0FFA48006E6855 /* NoticeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeViewController.swift; sourceTree = "<group>"; };
+		2DD46E402D1002A0006E6855 /* NoticeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeTableViewCell.swift; sourceTree = "<group>"; };
+		2DD46E422D10397C006E6855 /* NoticeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeModel.swift; sourceTree = "<group>"; };
+		2DD46E442D103DCF006E6855 /* NoticeDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeDetailViewController.swift; sourceTree = "<group>"; };
+		2DD46E462D104A7F006E6855 /* RouteSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteSearchViewController.swift; sourceTree = "<group>"; };
+		2DD46E4D2D10FC88006E6855 /* RouteDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteDetailViewController.swift; sourceTree = "<group>"; };
+		2DD46E4F2D110157006E6855 /* RouteDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteDetailView.swift; sourceTree = "<group>"; };
+		2DD46E512D1101B1006E6855 /* RouteBasicInfoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteBasicInfoTableViewCell.swift; sourceTree = "<group>"; };
 		2DDE3CAF2CFAEDE70024A799 /* BottomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetView.swift; sourceTree = "<group>"; };
 		2DE005632CE248F4004DE761 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		2DE005652CE2490C004DE761 /* CalendarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewController.swift; sourceTree = "<group>"; };
@@ -274,6 +290,8 @@
 				2D7C5BE62D08ADE800C381CE /* CustomView */,
 				2D7C5BE42D08A7C100C381CE /* RouteViewController.swift */,
 				05763DBB2D094AA000385325 /* RouteTableViewCell.swift */,
+				2DD46E462D104A7F006E6855 /* RouteSearchViewController.swift */,
+				2DD46E4D2D10FC88006E6855 /* RouteDetailViewController.swift */,
 			);
 			path = Route;
 			sourceTree = "<group>";
@@ -282,6 +300,8 @@
 			isa = PBXGroup;
 			children = (
 				2D7C5BE72D08ADFC00C381CE /* CircularProgress.swift */,
+				2DD46E4F2D110157006E6855 /* RouteDetailView.swift */,
+				2DD46E512D1101B1006E6855 /* RouteBasicInfoTableViewCell.swift */,
 			);
 			path = CustomView;
 			sourceTree = "<group>";
@@ -377,6 +397,7 @@
 				05763DB42D08225A00385325 /* MemberModel.swift */,
 				05763DBD2D0951DA00385325 /* RouteModel.swift */,
 				05763DBF2D096AAE00385325 /* ProfileModel.swift */,
+				2DD46E422D10397C006E6855 /* NoticeModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -387,6 +408,26 @@
 				2D904F362CE0DCA5005CF538 /* PretendardVariable.ttf */,
 			);
 			path = Fonts;
+			sourceTree = "<group>";
+		};
+		2DD46E3C2D0FFA24006E6855 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				2DE005672CE2491C004DE761 /* OfficeViewController.swift */,
+				05763DB22D08176B00385325 /* PhoneBookCollectionViewCell.swift */,
+				05763DB02D07DF3400385325 /* OtherTasksCollectionViewCell.swift */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		2DD46E3D2D0FFA2E006E6855 /* Notice */ = {
+			isa = PBXGroup;
+			children = (
+				2DD46E3E2D0FFA48006E6855 /* NoticeViewController.swift */,
+				2DD46E402D1002A0006E6855 /* NoticeTableViewCell.swift */,
+				2DD46E442D103DCF006E6855 /* NoticeDetailViewController.swift */,
+			);
+			path = Notice;
 			sourceTree = "<group>";
 		};
 		2DE0055F2CE248B8004DE761 /* Main */ = {
@@ -412,11 +453,10 @@
 		2DE005612CE248C7004DE761 /* Office */ = {
 			isa = PBXGroup;
 			children = (
-				05763DC42D09716100385325 /* PhoneBook */,
-				2DE005672CE2491C004DE761 /* OfficeViewController.swift */,
-				05763DB22D08176B00385325 /* PhoneBookCollectionViewCell.swift */,
-				05763DB02D07DF3400385325 /* OtherTasksCollectionViewCell.swift */,
+				2DD46E3C2D0FFA24006E6855 /* Main */,
+				2DD46E3D2D0FFA2E006E6855 /* Notice */,
 				2D7C5BE32D08A7B600C381CE /* Route */,
+				05763DC42D09716100385325 /* PhoneBook */,
 			);
 			path = Office;
 			sourceTree = "<group>";
@@ -585,7 +625,9 @@
 				2DE005642CE248F4004DE761 /* MainViewController.swift in Sources */,
 				2D904F342CE0D8E1005CF538 /* LoginModel.swift in Sources */,
 				2D904F272CE0B326005CF538 /* SupportingMethods.swift in Sources */,
+				2DD46E4E2D10FC88006E6855 /* RouteDetailViewController.swift in Sources */,
 				05763DBE2D0951DA00385325 /* RouteModel.swift in Sources */,
+				2DD46E472D104A7F006E6855 /* RouteSearchViewController.swift in Sources */,
 				2D904F1C2CE0B2E8005CF538 /* CategoryButton.swift in Sources */,
 				2D904F392CE0DE48005CF538 /* PermissionTableViewCell.swift in Sources */,
 				2D904F162CE0B2DA005CF538 /* TemplateView.swift in Sources */,
@@ -609,6 +651,7 @@
 				056D9ACC2D02E122006357B8 /* DailyInspectionTableViewCell.swift in Sources */,
 				05DA9BEB2CF6E5DC0024CADE /* MorningRollCallViewController.swift in Sources */,
 				05A015542CF40D47004D0844 /* HourlyWorkView.swift in Sources */,
+				2DD46E412D1002A0006E6855 /* NoticeTableViewCell.swift in Sources */,
 				050295A92D06849600BE3CB7 /* EveningRollCallViewController.swift in Sources */,
 				2D7C5BD52D04D36600C381CE /* RefusalReasonCollectionViewCell.swift in Sources */,
 				05A227482CEC229B00C07662 /* GetOffWorkTableViewCell.swift in Sources */,
@@ -619,6 +662,7 @@
 				2D7C5BDD2D060D7500C381CE /* DispatchOffView.swift in Sources */,
 				2D904F1D2CE0B2EA005CF538 /* TemplateViewController.swift in Sources */,
 				2D7C5BDF2D0615A400C381CE /* DispatchOffTableViewCell.swift in Sources */,
+				2DD46E522D1101B1006E6855 /* RouteBasicInfoTableViewCell.swift in Sources */,
 				2D904F172CE0B2DD005CF538 /* TemplateTableViewCell.swift in Sources */,
 				05763DB32D08176B00385325 /* PhoneBookCollectionViewCell.swift in Sources */,
 				2D7C5BDB2D0602BE00C381CE /* DispatchPeopleCountView.swift in Sources */,
@@ -626,13 +670,17 @@
 				05763DB12D07DF3400385325 /* OtherTasksCollectionViewCell.swift in Sources */,
 				05DB9A8E2CE448F600742317 /* KindsOfDocumentCollectionViewCell.swift in Sources */,
 				2D904EF82CE0B04A005CF538 /* SceneDelegate.swift in Sources */,
+				2DD46E3F2D0FFA48006E6855 /* NoticeViewController.swift in Sources */,
 				05DA9BE92CF6AD800024CADE /* DispatchDetailViewController.swift in Sources */,
+				2DD46E432D10397C006E6855 /* NoticeModel.swift in Sources */,
 				05A227422CEC228700C07662 /* GoToWorkTableViewCell.swift in Sources */,
 				05763DB82D0826E700385325 /* NotificationListViewController.swift in Sources */,
 				05D3FA802CE2EE1500AFDC6B /* User.swift in Sources */,
 				059082752CE6D2A500E4D204 /* DispatchModel.swift in Sources */,
 				2D904F1E2CE0B2EC005CF538 /* TemplateHeaderFooterView.swift in Sources */,
+				2DD46E452D103DCF006E6855 /* NoticeDetailViewController.swift in Sources */,
 				05763DC62D09731100385325 /* PhoneBookListViewController.swift in Sources */,
+				2DD46E502D110157006E6855 /* RouteDetailView.swift in Sources */,
 				05763DBA2D08293300385325 /* NotificationTableViewCell.swift in Sources */,
 				05763DB52D08225A00385325 /* MemberModel.swift in Sources */,
 				2DF135132CE7C1F200EAA052 /* ManagerMainViewController.swift in Sources */,

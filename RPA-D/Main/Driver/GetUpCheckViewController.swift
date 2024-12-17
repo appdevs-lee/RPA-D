@@ -253,8 +253,8 @@ extension GetUpCheckViewController {
             
         }
         // FIXME: 삭제 및 주석 풀기
-//        let vc = DispatchCheckListViewController()
-//        
+//        let vc = EveningRollCallViewController()
+//
 //        self.present(vc, animated: true)
         
     }

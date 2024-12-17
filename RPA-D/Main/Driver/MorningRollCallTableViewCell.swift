@@ -178,7 +178,11 @@ extension MorningRollCallTableViewCell {
             
         }
         
-        if index == 2 {
+        if index == 0 {
+            self.goodButton.setTitle("운행 가능", for: .normal)
+            self.badButton.setTitle("운행 불가능", for: .normal)
+            
+        } else if index == 2 {
             self.goodButton.setTitle("숙지", for: .normal)
             self.badButton.setTitle("미흡", for: .normal)
             
@@ -189,6 +193,7 @@ extension MorningRollCallTableViewCell {
         }
         
     }
+    
 }
 
 // MARK: - Extension for selector added

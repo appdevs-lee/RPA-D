@@ -60,6 +60,7 @@ extension CustomizedTabBarController {
     func setUpTabbar() {
         self.delegate = self
         self.tabBar.backgroundColor = .white
+        self.tabBar.tintColor = .useRGB(red: 46, green: 45, blue: 45)
         self.tabBar.layer.borderWidth = 0
         switch User.shared.role {
         case "운전원", "팀장":

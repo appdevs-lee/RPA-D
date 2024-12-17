@@ -181,6 +181,7 @@ final class DispatchDocumentTableViewCell: UITableViewCell {
     
     lazy var dispatchDetailButton: UIButton = {
         let button = UIButton()
+        button.isEnabled = false
         button.setTitleColor(.useRGB(red: 109, green: 109, blue: 109), for: .normal)
         button.setTitleColor(.useRGB(red: 109, green: 109, blue: 109, alpha: 0.5), for: .highlighted)
         button.titleLabel?.font = .useFont(ofSize: 14, weight: .Regular)
