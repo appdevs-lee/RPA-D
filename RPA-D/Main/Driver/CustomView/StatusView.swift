@@ -291,7 +291,7 @@ extension StatusView {
                 self.titleLabel.text = RoutineStatus.arriveFirstStation.title
                 self.subTitleLabel.text = "도착 후에 버튼을 눌러주세요."
                 self.statusImageView.image = .useCustomImage(RoutineStatus.arriveFirstStation.imageName)
-                self.statusButton.setTitle(RoutineStatus.arriveFirstStation.buttonTitle, for: .normal)
+                self.statusButton.setTitle("첫 정류장 대기 장소 도착", for: .normal)
                 
             case .goNextStation:
                 // 운행 출발

@@ -63,7 +63,7 @@ extension CustomizedTabBarController {
         self.tabBar.tintColor = .useRGB(red: 46, green: 45, blue: 45)
         self.tabBar.layer.borderWidth = 0
         switch User.shared.role {
-        case "운전원", "팀장":
+        case "운전원":
             // Set ViewControllers in Tabbar
             let mainVC = MainViewController()
             let calendarVC = CalendarViewController()
@@ -78,14 +78,36 @@ extension CustomizedTabBarController {
             ]
             break
         
-        default:
-            // Set ViewControllers in Tabbar
-            let mainVC = ManagerMainViewController()
+        case "팀장":
+            let mainVC = MainViewController()
+            let managerMainVC = ManagerMainViewController()
+            let calendarVC = CalendarViewController()
             let officeVC = OfficeViewController()
+            let profileVC = ProfileViewController()
             
             self.viewControllers = [
-                self.createTabBarItem(tabBarTitle: "노선", tabBarImage: "Main", selectedImage: "selectedMain", viewController: mainVC),
+                self.createTabBarItem(tabBarTitle: "운행", tabBarImage: "Main", selectedImage: "selectedMain", viewController: mainVC),
+                self.createTabBarItem(tabBarTitle: "노선", tabBarImage: "ManagerMain", selectedImage: "selectedManagerMain", viewController: managerMainVC),
+                self.createTabBarItem(tabBarTitle: "배차 달력", tabBarImage: "Calendar", selectedImage: "selectedCalendar", viewController: calendarVC),
                 self.createTabBarItem(tabBarTitle: "사무", tabBarImage: "Office", selectedImage: "selectedOffice", viewController: officeVC),
+                self.createTabBarItem(tabBarTitle: "프로필", tabBarImage: "Profile", selectedImage: "selectedProfile", viewController: profileVC),
+            ]
+            break
+        
+        default:
+            // Set ViewControllers in Tabbar
+            let managerMainVC = ManagerMainViewController()
+            let mainVC = MainViewController()
+            let calendarVC = CalendarViewController()
+            let officeVC = OfficeViewController()
+            let profileVC = ProfileViewController()
+            
+            self.viewControllers = [
+                self.createTabBarItem(tabBarTitle: "노선", tabBarImage: "ManagerMain", selectedImage: "selectedManagerMain", viewController: managerMainVC),
+                self.createTabBarItem(tabBarTitle: "운행", tabBarImage: "Main", selectedImage: "selectedMain", viewController: mainVC),
+                self.createTabBarItem(tabBarTitle: "배차 달력", tabBarImage: "Calendar", selectedImage: "selectedCalendar", viewController: calendarVC),
+                self.createTabBarItem(tabBarTitle: "사무", tabBarImage: "Office", selectedImage: "selectedOffice", viewController: officeVC),
+                self.createTabBarItem(tabBarTitle: "프로필", tabBarImage: "Profile", selectedImage: "selectedProfile", viewController: profileVC),
             ]
             break
             
@@ -124,24 +146,85 @@ extension CustomizedTabBarController: UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
         self.currentSelectedIndex = tabBarController.selectedIndex
         
-        if tabBarController.selectedIndex == 0 {
-            print("운행")
-            NotificationCenter.default.post(name: Notification.Name("ReloadAllData"), object: nil)
+        switch User.shared.role {
+        case "운전원":
+            if tabBarController.selectedIndex == 0 {
+                print("운행")
+                NotificationCenter.default.post(name: Notification.Name("ReloadAllData"), object: nil)
+                
+            }
             
-        }
-        
-        if tabBarController.selectedIndex == 1 {
-            print("배차 달력")
+            if tabBarController.selectedIndex == 1 {
+                print("배차 달력")
+                
+            }
             
-        }
-        
-        if tabBarController.selectedIndex == 2 {
-            print("사무")
+            if tabBarController.selectedIndex == 2 {
+                print("사무")
+                
+            }
             
-        }
+            if tabBarController.selectedIndex == 3 {
+                print("프로필")
+                
+            }
+            break
         
-        if tabBarController.selectedIndex == 3 {
-            print("프로필")
+        case "팀장":
+            if tabBarController.selectedIndex == 0 {
+                print("운행")
+                NotificationCenter.default.post(name: Notification.Name("ReloadAllData"), object: nil)
+                
+            }
+            
+            if tabBarController.selectedIndex == 1 {
+                print("노선")
+                
+            }
+            
+            if tabBarController.selectedIndex == 2 {
+                print("배차 달력")
+                
+            }
+            
+            if tabBarController.selectedIndex == 3 {
+                print("사무")
+                
+            }
+            
+            if tabBarController.selectedIndex == 4 {
+                print("프로필")
+                
+            }
+            break
+        
+        default:
+            if tabBarController.selectedIndex == 0 {
+                print("노선")
+                
+            }
+            
+            if tabBarController.selectedIndex == 1 {
+                print("운행")
+                NotificationCenter.default.post(name: Notification.Name("ReloadAllData"), object: nil)
+                
+            }
+            
+            if tabBarController.selectedIndex == 2 {
+                print("배차 달력")
+                
+            }
+            
+            if tabBarController.selectedIndex == 3 {
+                print("사무")
+                
+            }
+            
+            if tabBarController.selectedIndex == 4 {
+                print("프로필")
+                
+            }
+            break
             
         }
         

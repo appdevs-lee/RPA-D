@@ -39,7 +39,7 @@ enum RoutineText: String {
         case .dispatchOn:
             return "탑승 및 운행 시작 완료"
         case .arriveFirstStation:
-            return "첫 정류장 도착 완료"
+            return "첫 정류장 대기장소 도착 완료"
         case .goNextStation:
             return "다음 정류장으로 출발 완료"
         case .dispatchOff:

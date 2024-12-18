@@ -13,6 +13,10 @@ final class MainModel {
     private(set) var loadDailyRoutineDataRequest: DataRequest?
     // 퇴근
     private(set) var sendGetOffWorkDataRequest: DataRequest?
+    // 관리자 메인(노선 문제 발생) 리스트
+    private(set) var loadProblemListDataRequest: DataRequest?
+    // 문제 발생 노선 상세
+    private(set) var loadProblemRouteDetailDataRequest: DataRequest?
     
     func loadDailyRoutineDataRequest(success: ((RoutineItem) -> ())?, failure: ((_ message: String) -> ())?) {
         let checkHour = String(SupportingMethods.shared.convertDate(intoString: Date(), "yyyy-MM-dd HH:mm").split(separator: " ")[1].split(separator: ":")[0])
@@ -94,7 +98,7 @@ final class MainModel {
         
         self.sendGetOffWorkDataRequest?.responseData { (response) in
             switch response.result {
-            case .success(let data):
+            case .success(_):
                 guard let statusCode = response.response?.statusCode else {
                     print("sendGetOffWorkDataRequest failure: statusCode nil")
                     failure?("statusCodeNil")
@@ -120,6 +124,108 @@ final class MainModel {
             
         }
         
+    }
+    
+    func loadProblemListDataRequest(success: (([ProblemListItem]) -> ())?, failure: ((_ message: String) -> ())?) {
+        let checkHour = String(SupportingMethods.shared.convertDate(intoString: Date(), "yyyy-MM-dd HH:mm").split(separator: " ")[1].split(separator: ":")[0])
+        var date = ""
+        if Int(checkHour)! < 04 {
+            date = SupportingMethods.shared.convertDate(intoString: Date(timeIntervalSinceNow: -86400))
+            
+        } else {
+            date = SupportingMethods.shared.convertDate(intoString: Date())
+            
+        }
+        
+        // FIXME: 날짜 다시 조정 필수!!!
+        let url = ServerSetting.server.URL + "/dispatch/problem/list/\(date)"
+        
+        let headers: HTTPHeaders = [
+            "accept":"application/json",
+            "Authorization": ReferenceValues.accessToken
+        ]
+        
+        self.loadProblemListDataRequest = AF.request(url, method: .get, parameters: nil, encoding: URLEncoding.default, headers: headers)
+        
+        self.loadProblemListDataRequest?.responseData { (response) in
+            switch response.result {
+            case .success(let data):
+                guard let statusCode = response.response?.statusCode else {
+                    print("loadProblemListDataRequest failure: statusCode nil")
+                    failure?("statusCodeNil")
+                    
+                    return
+                }
+                
+                guard statusCode >= 200 && statusCode < 300 else {
+                    print("loadProblemListDataRequest failure: statusCode(\(statusCode))")
+                    failure?("statusCodeError")
+                    
+                    return
+                }
+                
+                if let decodedData = try? JSONDecoder().decode(Problem.self, from: data) {
+                    print("loadProblemListDataRequest succeeded")
+                    success?(decodedData.data)
+                    
+                } else {
+                    print("loadProblemListDataRequest failure: API 성공, Parsing 실패")
+                    failure?("API 성공, Parsing 실패")
+                }
+                
+            case .failure(let error):
+                print("loadProblemListDataRequest error: \(error.localizedDescription)")
+                failure?(error.localizedDescription)
+            }
+        }
+    }
+    
+    func loadProblemRouteDetailDataRequest(id: Int, workType: String, success: ((ProblemDetailItem) -> ())?, failure: ((_ message: String) -> ())?) {
+        let url = ServerSetting.server.URL + "/dispatch/problem/detail"
+        
+        let headers: HTTPHeaders = [
+            "accept":"application/json",
+            "Authorization": ReferenceValues.accessToken
+        ]
+        
+        let parameters: Parameters = [
+            "id": id,
+            "work_type": workType,
+        ]
+        
+        self.loadProblemRouteDetailDataRequest = AF.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default, headers: headers)
+        
+        self.loadProblemRouteDetailDataRequest?.responseData { (response) in
+            switch response.result {
+            case .success(let data):
+                guard let statusCode = response.response?.statusCode else {
+                    print("loadProblemRouteDetailDataRequest failure: statusCode nil")
+                    failure?("statusCodeNil")
+                    
+                    return
+                }
+                
+                guard statusCode >= 200 && statusCode < 300 else {
+                    print("loadProblemRouteDetailDataRequest failure: statusCode(\(statusCode))")
+                    failure?("statusCodeError")
+                    
+                    return
+                }
+                
+                if let decodedData = try? JSONDecoder().decode(ProblemDetail.self, from: data) {
+                    print("loadProblemRouteDetailDataRequest succeeded")
+                    success?(decodedData.data)
+                    
+                } else {
+                    print("loadProblemRouteDetailDataRequest failure: API 성공, Parsing 실패")
+                    failure?("API 성공, Parsing 실패")
+                }
+                
+            case .failure(let error):
+                print("loadProblemRouteDetailDataRequest error: \(error.localizedDescription)")
+                failure?(error.localizedDescription)
+            }
+        }
     }
     
 }
@@ -219,5 +325,65 @@ struct StatusInfo: Codable {
     enum CodingKeys: String, CodingKey {
         case statusName = "status_name"
         case completionTime = "completion_time"
+    }
+}
+
+struct Problem: Codable {
+    let data: [ProblemListItem]
+}
+
+struct ProblemListItem: Codable {
+    let id: Int
+    let workType: String
+    let busNum: String
+    let departureDate: String
+    let arrivalDate: String
+    let departure: String
+    let arrival: String
+    let route: String
+    let group: String
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case workType = "work_type"
+        case busNum = "bus_num"
+        case departureDate = "departure_date"
+        case arrivalDate = "arrival_date"
+        case departure
+        case arrival
+        case route
+        case group
+    }
+}
+
+struct ProblemDetail: Codable {
+    let data: ProblemDetailItem
+}
+
+struct ProblemDetailItem: Codable {
+    let driverName: String
+    let driverPhone: String
+    let busNum: String
+    let group: String
+    let route: String
+    let departure: String
+    let arrival: String
+    let departureDate: String
+    let arrivalDate: String
+    let problem: String
+    let stations: [StationInfo]
+    
+    enum CodingKeys: String, CodingKey {
+        case driverName = "driver_name"
+        case driverPhone = "driver_phone"
+        case busNum = "bus_num"
+        case group
+        case route
+        case departure
+        case arrival
+        case departureDate = "departure_date"
+        case arrivalDate = "arrival_date"
+        case problem
+        case stations
     }
 }

@@ -102,7 +102,7 @@ extension NotificationListViewController: EssentialViewMethods {
     
     func setViewAfterTransition() {
         //self.navigationController?.setNavigationBarHidden(false, animated: true)
-        //self.tabBarController?.tabBar.isHidden = false
+        self.tabBarController?.tabBar.isHidden = true
     }
     
     func setUpNavigationItem() {

@@ -1,5 +1,5 @@
 //
-//  RouteDetailViewController.swift
+//  ProblemDetailViewController.swift
 //  RPA-D
 //
 //  Created by 이주성 on 12/17/24.
@@ -8,7 +8,7 @@
 import UIKit
 import MapKit
 
-final class RouteDetailViewController: UIViewController {
+final class ProblemDetailViewController: UIViewController {
     
     lazy var mapView: MKMapView = {
         let mapView = MKMapView()
@@ -39,6 +39,7 @@ final class RouteDetailViewController: UIViewController {
     
     lazy var kakaoMapButton: UIButton = {
         let button = UIButton()
+        button.isHidden = true
         button.setImage(.useCustomImage("kakaoMap"), for: .normal)
 //        button.setImage(.useCustomImage("highlightedKakaoMap"), for: .highlighted)
         button.addTarget(self, action: #selector(kakaoMapButton(_:)), for: .touchUpInside)
@@ -58,6 +59,7 @@ final class RouteDetailViewController: UIViewController {
     
     lazy var allPathButton: UIButton = {
         let button = UIButton()
+        button.isHidden = true
         button.setImage(.useCustomImage("path.all"), for: .normal)
         button.addTarget(self, action: #selector(allPathButton(_:)), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -95,8 +97,8 @@ final class RouteDetailViewController: UIViewController {
         return view
     }()
     
-    lazy var routeDetailView: RouteDetailView = {
-        let view = RouteDetailView(item: self.item)
+    lazy var problemDetailView: ProblemDetailView = {
+        let view = ProblemDetailView(item: self.item)
         view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         view.layer.cornerRadius = 24
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -113,63 +115,17 @@ final class RouteDetailViewController: UIViewController {
         return view
     }()
     
-    lazy var buttonBaseView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .white
-        view.translatesAutoresizingMaskIntoConstraints = false
-        
-        return view
-    }()
-    
-    lazy var bookmarkButton: UIButton = {
-        let button = UIButton()
-        button.setImage(.useCustomImage(self.item.favorite == "true" ? "detail.bookmark.yes" : "detail.bookmark.no"), for: .normal)
-        button.addTarget(self, action: #selector(bookmarkButton(_:)), for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        
-        return button
-    }()
-    
-    lazy var knowButton: UIButton = {
-        let button = UIButton()
-        button.layer.cornerRadius = 8
-        button.addTarget(self, action: #selector(knowButton(_:)), for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        
-        if self.item.know == "true" {
-            button.backgroundColor = .useRGB(red: 223, green: 52, blue: 52)
-            button.setTitle("숙지 취소", for: .normal)
-            button.setTitleColor(.white, for: .normal)
-            button.setTitleColor(.useRGB(red: 255, green: 255, blue: 255, alpha: 0.5), for: .highlighted)
-            button.setTitleColor(.useRGB(red: 255, green: 255, blue: 255, alpha: 0.5), for: .selected)
-            
-        } else {
-            button.backgroundColor = .useRGB(red: 255, green: 245, blue: 245)
-            button.setTitle("숙지 완료 하기", for: .normal)
-            button.setTitleColor(.useRGB(red: 223, green: 52, blue: 52), for: .normal)
-            button.setTitleColor(.useRGB(red: 223, green: 52, blue: 52, alpha: 0.5), for: .highlighted)
-            button.setTitleColor(.useRGB(red: 223, green: 52, blue: 52, alpha: 0.5), for: .selected)
-            
-        }
-        button.titleLabel?.font = .useFont(ofSize: 16, weight: .Bold)
-        
-        return button
-    }()
-    
-    let routeModel = RouteModel()
-    var item: RouteDetailItem
-    var id: Int
+    var item: ProblemDetailItem
     
     var bottomSheetViewHeightAnchorConstraint: NSLayoutConstraint!
     
-    let detailBaseHeight: CGFloat = 75
+    let detailBaseHeight: CGFloat = 142
     var detailMaxHeight: CGFloat = 609
     
     var isClose: Bool = false
     var allPathButtonTopAnchorConstraint: NSLayoutConstraint!
     
-    init(id: Int, item: RouteDetailItem) {
-        self.id = id
+    init(item: ProblemDetailItem) {
         self.item = item
         
         super.init(nibName: nil, bundle: nil)
@@ -210,7 +166,7 @@ final class RouteDetailViewController: UIViewController {
 }
 
 // MARK: Extension for essential methods
-extension RouteDetailViewController: EssentialViewMethods {
+extension ProblemDetailViewController: EssentialViewMethods {
     func setViewFoundation() {
         
     }
@@ -241,7 +197,6 @@ extension RouteDetailViewController: EssentialViewMethods {
         SupportingMethods.shared.addSubviews([
             self.mapView,
             self.bottomSheetView,
-            self.buttonBaseView,
             self.pathBackgroundView,
             self.allPathButton,
             self.allPathLabel,
@@ -254,17 +209,12 @@ extension RouteDetailViewController: EssentialViewMethods {
         ], to: self.view)
         
         SupportingMethods.shared.addSubviews([
-            self.routeDetailView,
+            self.problemDetailView,
         ], to: self.contentBaseView)
         
         SupportingMethods.shared.addSubviews([
             self.contentBaseView,
         ], to: self.bottomSheetView)
-        
-        SupportingMethods.shared.addSubviews([
-            self.bookmarkButton,
-            self.knowButton,
-        ], to: self.buttonBaseView)
         
     }
     
@@ -285,7 +235,7 @@ extension RouteDetailViewController: EssentialViewMethods {
         NSLayoutConstraint.activate([
             self.bottomSheetView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
             self.bottomSheetView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
-            self.bottomSheetView.bottomAnchor.constraint(equalTo: self.buttonBaseView.topAnchor),
+            self.bottomSheetView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor),
             self.bottomSheetViewHeightAnchorConstraint,
         ])
         
@@ -307,10 +257,10 @@ extension RouteDetailViewController: EssentialViewMethods {
         
         // dispatchDetailView
         NSLayoutConstraint.activate([
-            self.routeDetailView.leadingAnchor.constraint(equalTo: self.contentBaseView.leadingAnchor),
-            self.routeDetailView.trailingAnchor.constraint(equalTo: self.contentBaseView.trailingAnchor),
-            self.routeDetailView.topAnchor.constraint(equalTo: self.contentBaseView.topAnchor),
-            self.routeDetailView.bottomAnchor.constraint(equalTo: self.contentBaseView.bottomAnchor),
+            self.problemDetailView.leadingAnchor.constraint(equalTo: self.contentBaseView.leadingAnchor),
+            self.problemDetailView.trailingAnchor.constraint(equalTo: self.contentBaseView.trailingAnchor),
+            self.problemDetailView.topAnchor.constraint(equalTo: self.contentBaseView.topAnchor),
+            self.problemDetailView.bottomAnchor.constraint(equalTo: self.contentBaseView.bottomAnchor),
         ])
         
         // forScrollView
@@ -318,7 +268,7 @@ extension RouteDetailViewController: EssentialViewMethods {
             self.forScrollView.leadingAnchor.constraint(equalTo: self.bottomSheetView.leadingAnchor),
             self.forScrollView.topAnchor.constraint(equalTo: self.bottomSheetView.topAnchor),
             self.forScrollView.trailingAnchor.constraint(equalTo: self.bottomSheetView.trailingAnchor),
-            self.forScrollView.heightAnchor.constraint(equalToConstant: self.detailBaseHeight)
+            self.forScrollView.heightAnchor.constraint(equalToConstant: 70)
         ])
         
         // pathBackgroundView
@@ -344,29 +294,6 @@ extension RouteDetailViewController: EssentialViewMethods {
             self.allPathLabel.centerYAnchor.constraint(equalTo: self.allPathButton.centerYAnchor),
         ])
         
-        // buttonBaseView
-        NSLayoutConstraint.activate([
-            self.buttonBaseView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
-            self.buttonBaseView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
-            self.buttonBaseView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor)
-        ])
-        
-        // bookmarkButton
-        NSLayoutConstraint.activate([
-            self.bookmarkButton.leadingAnchor.constraint(equalTo: self.buttonBaseView.leadingAnchor, constant: 20),
-            self.bookmarkButton.topAnchor.constraint(equalTo: self.buttonBaseView.topAnchor, constant: 12),
-            self.bookmarkButton.bottomAnchor.constraint(equalTo: self.buttonBaseView.bottomAnchor, constant: -12),
-            self.bookmarkButton.widthAnchor.constraint(equalToConstant: 68),
-            self.bookmarkButton.heightAnchor.constraint(equalToConstant: 52),
-        ])
-        
-        // knowButton
-        NSLayoutConstraint.activate([
-            self.knowButton.leadingAnchor.constraint(equalTo: self.bookmarkButton.trailingAnchor, constant: 8),
-            self.knowButton.trailingAnchor.constraint(equalTo: self.buttonBaseView.trailingAnchor, constant: -20),
-            self.knowButton.centerYAnchor.constraint(equalTo: self.bookmarkButton.centerYAnchor),
-            self.knowButton.heightAnchor.constraint(equalToConstant: 52),
-        ])
     }
     
     func setViewAfterTransition() {
@@ -402,7 +329,7 @@ extension RouteDetailViewController: EssentialViewMethods {
 }
 
 // MARK: - Extension for methods added
-extension RouteDetailViewController {
+extension ProblemDetailViewController {
     func drawLineOnMap() {
 //        var points: [CLLocationCoordinate2D] = []
 //        let locations = self.mapModel.read()
@@ -457,95 +384,13 @@ extension RouteDetailViewController {
         
     }
     
-    func reloadBookmark(bookmark: String) {
-        self.bookmarkButton.setImage(.useCustomImage(bookmark == "true" ? "detail.bookmark.yes" : "detail.bookmark.no"), for: .normal)
-        
-    }
-    
-    func reloadKnow(know: String) {
-        if know == "true" {
-            self.knowButton.backgroundColor = .useRGB(red: 223, green: 52, blue: 52)
-            self.knowButton.setTitle("숙지 취소", for: .normal)
-            self.knowButton.setTitleColor(.white, for: .normal)
-            self.knowButton.setTitleColor(.useRGB(red: 255, green: 255, blue: 255, alpha: 0.5), for: .highlighted)
-            self.knowButton.setTitleColor(.useRGB(red: 255, green: 255, blue: 255, alpha: 0.5), for: .selected)
-            
-        } else {
-            self.knowButton.backgroundColor = .useRGB(red: 255, green: 245, blue: 245)
-            self.knowButton.setTitle("숙지 완료 하기", for: .normal)
-            self.knowButton.setTitleColor(.useRGB(red: 223, green: 52, blue: 52), for: .normal)
-            self.knowButton.setTitleColor(.useRGB(red: 223, green: 52, blue: 52, alpha: 0.5), for: .highlighted)
-            self.knowButton.setTitleColor(.useRGB(red: 223, green: 52, blue: 52, alpha: 0.5), for: .selected)
-            
-        }
-        
-    }
-    
     // MARK: API
-    func sendRouteBookmarkDataRequest(id: Int, success: (() -> ())?) {
-        self.routeModel.sendRouteBookmarkDataRequest(id: id) {
-            success?()
-            
-        } failure: { message in
-            SupportingMethods.shared.checkExpiration {
-                print("sendRouteBookmarkDataRequest API Error: \(message)")
-                SupportingMethods.shared.turnCoverView(.off)
-                
-            }
-            
-        }
-
-    }
     
-    func deleteRouteBookmarkDataRequest(id: Int, success: (() -> ())?) {
-        self.routeModel.deleteRouteBookmarkDataRequest(id: id) {
-            success?()
-            
-        } failure: { message in
-            SupportingMethods.shared.checkExpiration {
-                print("deleteRouteBookmarkDataRequest API Error: \(message)")
-                SupportingMethods.shared.turnCoverView(.off)
-                
-            }
-            
-        }
-
-    }
-
-    func sendRouteKnowDataRequest(id: Int, success: (() -> ())?) {
-        self.routeModel.sendRouteKnowDataRequest(id: id) {
-            success?()
-            
-        } failure: { message in
-            SupportingMethods.shared.checkExpiration {
-                print("sendRouteKnowDataRequest API Error: \(message)")
-                SupportingMethods.shared.turnCoverView(.off)
-                
-            }
-            
-        }
-
-    }
-    
-    func deleteRouteKnowDataRequest(id: Int, success: (() -> ())?) {
-        self.routeModel.deleteRouteKnowDataRequest(id: id) {
-            success?()
-            
-        } failure: { message in
-            SupportingMethods.shared.checkExpiration {
-                print("deleteRouteKnowDataRequest API Error: \(message)")
-                SupportingMethods.shared.turnCoverView(.off)
-                
-            }
-            
-        }
-
-    }
     
 }
 
 // MARK: - Extension for selector methods
-extension RouteDetailViewController {
+extension ProblemDetailViewController {
     @objc func leftBarButtonItem(_ barButtonItem: UIBarButtonItem) {
         self.navigationController?.popViewController(animated: true)
         
@@ -630,57 +475,17 @@ extension RouteDetailViewController {
     }
     
     @objc func allPathButton(_ sender: UIButton) {
-        if self.item.maplink != "" {
-            guard let url = URL(string: self.item.maplink) else { return }
-            UIApplication.shared.open(url)
-        }
-        
-    }
-    
-    @objc func bookmarkButton(_ sender: UIButton) {
-        if self.item.favorite == "true" {
-            // 현재 즐겨찾기 중
-            self.deleteRouteBookmarkDataRequest(id: self.id) {
-                self.item.favorite = "false"
-                self.reloadBookmark(bookmark: self.item.favorite)
-                
-            }
-            
-        } else {
-            self.sendRouteBookmarkDataRequest(id: self.id) {
-                self.item.favorite = "true"
-                self.reloadBookmark(bookmark: self.item.favorite)
-                
-            }
-            
-        }
-        
-    }
-    
-    @objc func knowButton(_ sender: UIButton) {
-        if self.item.know == "true" {
-            // 현재 즐겨찾기 중
-            self.deleteRouteKnowDataRequest(id: self.id) {
-                self.item.know = "false"
-                self.reloadKnow(know: self.item.know)
-                
-            }
-            
-        } else {
-            self.sendRouteKnowDataRequest(id: self.id) {
-                self.item.know = "true"
-                self.reloadKnow(know: self.item.know)
-                
-            }
-            
-        }
+//        if self.item.maplink != "" {
+//            guard let url = URL(string: self.item.maplink) else { return }
+//            UIApplication.shared.open(url)
+//        }
         
     }
     
 }
 
 // MARK: - Extension for MKMapViewDelegate
-extension RouteDetailViewController: MKMapViewDelegate {
+extension ProblemDetailViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         guard let polyLine = overlay as? MKPolyline else { return MKOverlayRenderer() }
         
@@ -692,5 +497,4 @@ extension RouteDetailViewController: MKMapViewDelegate {
         
         return renderer
     }
-    
 }
