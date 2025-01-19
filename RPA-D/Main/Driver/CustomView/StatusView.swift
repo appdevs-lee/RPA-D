@@ -26,13 +26,13 @@ enum RoutineStatus: String {
         case .morningDispatchDocument:
             return "운행 일보를\n작성해 주세요"
         case .arriveFirstStation:
-            return "첫 정류장에\n도착해 주세요"
+            return "제 시간 안에\n첫 정류장에 도착해 주세요"
         case .dispatchReady:
-            return "운행 준비를\n확인해 주세요"
+            return "다음 운행을\n준비해 주세요"
         case .goNextStation:
             return "다음 정류장으로\n출발해 주세요"
         case .dispatchRunning:
-            return "운행중 입니다"
+            return "현재 배차\n진행중입니다"
         case .dispatchOff:
             return "운행을\n종료해 주세요"
         case .eveningRollCall:
@@ -40,9 +40,36 @@ enum RoutineStatus: String {
         case .dispatchCheck:
             return "수락 대기중인\n배차를 확인해 주세요"
         case .getOffWork:
-            return "일정이 완료됐습니다.\n퇴근 버튼을 눌러 주세요."
+            return "일정이 완료됐습니다\n퇴근 버튼을 눌러 주세요"
         case .eveningDispatchDocument:
             return "운행 일보를\n작성해 주세요"
+        }
+    }
+    
+    var subTitle: String {
+        switch self {
+        case .dispatchOn:
+            return "탑승 및 운행 시작 버튼을 눌러 관리자에게 알려 주세요"
+        case .morningDispatchDocument:
+            return "운행 일보를 끝까지 작성해 주세요"
+        case .arriveFirstStation:
+            return "도착 버튼을 누르면 관리자에게 알림이 전송 됩니다"
+        case .dispatchReady:
+            return ""
+        case .goNextStation:
+            return "다음 정류장으로 안전히 운행해 주세요"
+        case .dispatchRunning:
+            return "운행모드로 돌아가 운행을 완료해 주세요"
+        case .dispatchOff:
+            return "운행이 종료됨을 관리자에게 알리고 운행 일보를 작성해 주세요"
+        case .eveningRollCall:
+            return "저녁 점호를 빠짐없이 작성해 주세요"
+        case .dispatchCheck:
+            return "배차를 모두 수락해야 합니다"
+        case .getOffWork:
+            return "퇴근 기록을 위해 버튼을 눌러 주세요"
+        case .eveningDispatchDocument:
+            return "운행 일보를 끝까지 작성해 주세요"
         }
     }
     
@@ -51,11 +78,11 @@ enum RoutineStatus: String {
         case .dispatchOn:
             return "탑승 및 운행 시작"
         case .morningDispatchDocument:
-            return "운행일보 작성"
+            return "운행 일보 작성"
         case .arriveFirstStation:
-            return "첫 정류장 도착"
+            return "첫 정류장 대기장소 도착"
         case .dispatchReady:
-            return "운행 준비 확인"
+            return "다음 운행 준비"
         case .goNextStation:
             return "다음 정류장으로 출발"
         case .dispatchRunning:
@@ -115,7 +142,7 @@ class StatusView: UIView {
     
     lazy var subTitleLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .useRGB(red: 101, green: 100, blue: 100)
+        label.textColor = .useRGB(red: 148, green: 147, blue: 147)
         label.font = .useFont(ofSize: 16, weight: .Regular)
         label.numberOfLines = 2
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -169,30 +196,31 @@ extension StatusView {
     func setLayouts() {
         // titleLabel
         NSLayoutConstraint.activate([
-            self.titleLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 28),
-            self.titleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 32),
+            self.titleLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 29),
+            self.titleLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -17),
+            self.titleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 33),
         ])
         
         // subTitleLabel
         NSLayoutConstraint.activate([
             self.subTitleLabel.leadingAnchor.constraint(equalTo: self.titleLabel.leadingAnchor),
-            self.subTitleLabel.topAnchor.constraint(equalTo: self.titleLabel.bottomAnchor, constant: 4),
+            self.subTitleLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -48),
+            self.subTitleLabel.topAnchor.constraint(equalTo: self.titleLabel.bottomAnchor, constant: 8),
         ])
         
         // statusImageView
         NSLayoutConstraint.activate([
-            self.statusImageView.trailingAnchor.constraint(equalTo: self.statusButton.trailingAnchor),
-            self.statusImageView.topAnchor.constraint(equalTo: self.topAnchor),
-            self.statusImageView.bottomAnchor.constraint(equalTo: self.statusButton.bottomAnchor),
-            self.statusImageView.widthAnchor.constraint(equalToConstant: ReferenceValues.Size.Device.width * 135 / 375)
+            self.statusImageView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
+            self.statusImageView.bottomAnchor.constraint(equalTo: self.statusButton.topAnchor, constant: -12),
+            self.statusImageView.widthAnchor.constraint(equalToConstant: 138),
+            self.statusImageView.heightAnchor.constraint(equalToConstant: 138),
         ])
         
         // statusButton
         NSLayoutConstraint.activate([
             self.statusButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
             self.statusButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
-            self.statusButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -24),
-            self.statusButton.topAnchor.constraint(equalTo: self.subTitleLabel.bottomAnchor, constant: 32),
+            self.statusButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -32),
             self.statusButton.heightAnchor.constraint(equalToConstant: 52),
         ])
     }
@@ -222,8 +250,13 @@ extension StatusView {
      10. 배차 확인
      11. 퇴근        
      */
-    func setData(status: String, routine: RoutineItem?) {
-        self.reloadData(status: status, routine: routine)
+    func setData(status: String, routine: RoutineItem?, inspectionCheck: Bool = true) {
+        self.reloadData(status: status, routine: routine, inspectionCheck: inspectionCheck)
+        
+    }
+    
+    // FIXME: 삭제
+    func setTempData() {
         
     }
     
@@ -231,7 +264,7 @@ extension StatusView {
 
 // MARK: - Extension for methods added
 extension StatusView {
-    func reloadData(status: String, routine: RoutineItem?) {
+    func reloadData(status: String, routine: RoutineItem?, inspectionCheck: Bool = true) {
         guard let routine = routine else { return }
         
         if status == "운행 전" {
@@ -244,8 +277,8 @@ extension StatusView {
             self.statusButton.setTitleColor(.useRGB(red: 148, green: 147, blue: 147), for: .normal)
             
         } else if status == "" {
-            self.titleLabel.text = "오늘 하루 고생하셨습니다."
-            self.subTitleLabel.text = "안전 귀가하세요! \(User.shared.name) 님"
+            self.titleLabel.text = "관리자에게\n퇴근 기록을 전송했습니다."
+            self.subTitleLabel.text = "오늘도 고생 많으셨습니다!"
             self.statusImageView.image = .useCustomImage(RoutineStatus.getOffWork.imageName)
             self.statusButton.setTitle("퇴근 완료", for: .normal)
             self.statusButton.isEnabled = false
@@ -259,88 +292,87 @@ extension StatusView {
             switch RoutineStatus(rawValue: status) {
             case .dispatchReady:
                 self.titleLabel.text = RoutineStatus.dispatchReady.title
-                self.subTitleLabel.text = "확인 후에 버튼을 눌러주세요"
+                self.subTitleLabel.text = RoutineStatus.dispatchReady.subTitle
                 self.statusImageView.image = .useCustomImage(RoutineStatus.dispatchReady.imageName)
                 self.statusButton.setTitle(RoutineStatus.dispatchReady.buttonTitle, for: .normal)
                 
             case .dispatchOn:
-                if routine.goToWork.attendanceTime == "" {
+                if inspectionCheck {
+                    // 탑승 및 운행 시작
+                    self.titleLabel.text = RoutineStatus.dispatchOn.title
+                    self.subTitleLabel.text = RoutineStatus.dispatchOn.subTitle
+                    self.statusImageView.image = .useCustomImage(RoutineStatus.dispatchOn.imageName)
+                    self.statusButton.setTitle(RoutineStatus.dispatchOn.buttonTitle, for: .normal)
+                    
+                } else {
                     // 아침 점호 및 일일점검
                     self.titleLabel.text = "아침 업무를 진행해 주세요"
                     self.subTitleLabel.text = "아침 점호 및 일일점검을 완료해야\n출근이 기록됩니다."
                     self.statusImageView.image = .useCustomImage("morninigRollCallStatusImage")
                     self.statusButton.setTitle("아침 점호 및 일일점검", for: .normal)
                     
-                } else {
-                    // 탑승 및 운행 시작
-                    self.titleLabel.text = RoutineStatus.dispatchOn.title
-                    self.subTitleLabel.text = routine.info.departure
-                    self.statusImageView.image = .useCustomImage(RoutineStatus.dispatchOn.imageName)
-                    self.statusButton.setTitle(RoutineStatus.dispatchOn.buttonTitle, for: .normal)
                 }
                 
             case .morningDispatchDocument:
                 // 운행 일보 작성
                 self.titleLabel.text = RoutineStatus.morningDispatchDocument.title
-                self.subTitleLabel.text = "운행 일보를 작성해 주세요."
+                self.subTitleLabel.text = RoutineStatus.morningDispatchDocument.subTitle
                 self.statusImageView.image = .useCustomImage(RoutineStatus.morningDispatchDocument.imageName)
                 self.statusButton.setTitle(RoutineStatus.morningDispatchDocument.buttonTitle, for: .normal)
                 
             case .arriveFirstStation:
                 // 첫 정류장 도착
                 self.titleLabel.text = RoutineStatus.arriveFirstStation.title
-                self.subTitleLabel.text = "도착 후에 버튼을 눌러주세요."
+                self.subTitleLabel.text = RoutineStatus.arriveFirstStation.subTitle
                 self.statusImageView.image = .useCustomImage(RoutineStatus.arriveFirstStation.imageName)
-                self.statusButton.setTitle("첫 정류장 대기 장소 도착", for: .normal)
+                self.statusButton.setTitle(RoutineStatus.arriveFirstStation.buttonTitle, for: .normal)
                 
             case .goNextStation:
                 // 운행 출발
                 self.titleLabel.text = RoutineStatus.goNextStation.title
-                self.subTitleLabel.text = "\(User.shared.name) 기사님 | \(routine.info.busNum)"
+                self.subTitleLabel.text = RoutineStatus.goNextStation.subTitle
                 self.statusImageView.image = .useCustomImage(RoutineStatus.goNextStation.imageName)
                 self.statusButton.setTitle(RoutineStatus.goNextStation.buttonTitle, for: .normal)
                 
             case .dispatchRunning:
                 // 운행중
                 self.titleLabel.text = RoutineStatus.dispatchRunning.title
-                self.subTitleLabel.text = "운행모드로 돌아가\n운행을 완료해 주세요"
+                self.subTitleLabel.text = RoutineStatus.dispatchRunning.subTitle
                 self.statusImageView.image = .useCustomImage(RoutineStatus.dispatchRunning.imageName)
                 self.statusButton.setTitle(RoutineStatus.dispatchRunning.buttonTitle, for: .normal)
                 
-                SupportingMethods.shared.showAlertNoti(title: "현재 진행중인 배차가 있습니다. 운행모드로 돌아가주세요.")
-                
             case .eveningDispatchDocument:
                 // 운행 일보 작성
-                self.titleLabel.text = RoutineStatus.morningDispatchDocument.title
-                self.subTitleLabel.text = "운행 일보를 작성해 주세요."
-                self.statusImageView.image = .useCustomImage(RoutineStatus.morningDispatchDocument.imageName)
+                self.titleLabel.text = RoutineStatus.eveningDispatchDocument.title
+                self.subTitleLabel.text = RoutineStatus.eveningDispatchDocument.subTitle
+                self.statusImageView.image = .useCustomImage(RoutineStatus.eveningDispatchDocument.imageName)
                 self.statusButton.setTitle(RoutineStatus.morningDispatchDocument.buttonTitle, for: .normal)
                 
             case .dispatchOff:
                 // 운행종료
                 self.titleLabel.text = RoutineStatus.dispatchOff.title
-                self.subTitleLabel.text = "운행 종료를 눌러주세요."
+                self.subTitleLabel.text = RoutineStatus.dispatchOff.subTitle
                 self.statusImageView.image = .useCustomImage(RoutineStatus.dispatchOff.imageName)
                 self.statusButton.setTitle(RoutineStatus.dispatchOff.buttonTitle, for: .normal)
                 
             case .eveningRollCall:
                 // 저녁점호
                 self.titleLabel.text = RoutineStatus.eveningRollCall.title
-                self.subTitleLabel.text = "\(User.shared.name) 기사님"
+                self.subTitleLabel.text = RoutineStatus.eveningRollCall.subTitle
                 self.statusImageView.image = .useCustomImage(RoutineStatus.eveningRollCall.imageName)
                 self.statusButton.setTitle(RoutineStatus.eveningRollCall.buttonTitle, for: .normal)
                 
             case .dispatchCheck:
                 // 배차 확인
                 self.titleLabel.text = RoutineStatus.dispatchCheck.title
-                self.subTitleLabel.text = "배차를 모두 수락해야 합니다."
+                self.subTitleLabel.text = RoutineStatus.dispatchCheck.subTitle
                 self.statusImageView.image = .useCustomImage(RoutineStatus.dispatchCheck.imageName)
                 self.statusButton.setTitle(RoutineStatus.dispatchCheck.buttonTitle, for: .normal)
                 
             case .getOffWork:
                 // 퇴근
                 self.titleLabel.text = RoutineStatus.getOffWork.title
-                self.subTitleLabel.text = "퇴근 기록을 위해 버튼을 눌러 주세요."
+                self.subTitleLabel.text = RoutineStatus.getOffWork.subTitle
                 self.statusImageView.image = .useCustomImage(RoutineStatus.getOffWork.imageName)
                 self.statusButton.setTitle(RoutineStatus.getOffWork.buttonTitle, for: .normal)
                 

@@ -65,7 +65,8 @@ extension CustomizedTabBarController {
         switch User.shared.role {
         case "운전원":
             // Set ViewControllers in Tabbar
-            let mainVC = MainViewController()
+            let mainVC = RenewalMainViewController()
+//            let mainVC = MainViewController()
             let calendarVC = CalendarViewController()
             let officeVC = OfficeViewController()
             let profileVC = ProfileViewController()
@@ -79,7 +80,8 @@ extension CustomizedTabBarController {
             break
         
         case "팀장":
-            let mainVC = MainViewController()
+            let mainVC = RenewalMainViewController()
+//            let mainVC = MainViewController()
             let managerMainVC = ManagerMainViewController()
             let calendarVC = CalendarViewController()
             let officeVC = OfficeViewController()

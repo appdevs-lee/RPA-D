@@ -35,6 +35,8 @@ final class DispatchModel {
     private(set) var loadEveningRollCallDataRequest: DataRequest?
     // 일일 점검 전송
     private(set) var sendVehicleCheckDataRequest: DataRequest?
+    // 일일 점검 조회
+    private(set) var loadVehicleCheckDataRequest: DataRequest?
     
     func loadDispatchDailyListRequest(date: String, success: (([DispatchDailyItem]) -> ())?, failure: ((_ message: String) -> ())?) {
         let url = ServerSetting.server.URL + "/dispatch/daily/list/\(date)"
@@ -615,6 +617,49 @@ final class DispatchModel {
         }
     }
     
+    func loadVehicleCheckDataRequest(success: ((_ submitCheck: Bool) -> ())?, failure: ((_ message: String) -> ())?) {
+        let url = ServerSetting.server.URL + "/vehicle/checklist/daily/2025-01-19"
+        
+        let headers: HTTPHeaders = [
+            "accept":"application/json",
+            "Authorization": ReferenceValues.accessToken
+        ]
+        
+        self.loadVehicleCheckDataRequest = AF.request(url, method: .get, parameters: nil, encoding: URLEncoding.default, headers: headers)
+        
+        self.loadVehicleCheckDataRequest?.responseData { (response) in
+            switch response.result {
+            case .success(let data):
+                guard let statusCode = response.response?.statusCode else {
+                    print("loadVehicleCheckDataRequest failure: statusCode nil")
+                    failure?("statusCodeNil")
+                    
+                    return
+                }
+                
+                guard statusCode >= 200 && statusCode < 300 else {
+                    print("loadVehicleCheckDataRequest failure: statusCode(\(statusCode))")
+                    failure?("statusCodeError")
+                    
+                    return
+                }
+                
+                if let decodedData = try? JSONDecoder().decode(DailyInspection.self, from: data) {
+                    print("loadVehicleCheckDataRequest succeeded")
+                    success?(decodedData.data.submitCheck)
+                    
+                } else {
+                    print("loadVehicleCheckDataRequest failure: API 성공, Parsing 실패")
+                    failure?("API 성공, Parsing 실패")
+                }
+                
+            case .failure(let error):
+                print("loadVehicleCheckDataRequest error: \(error.localizedDescription)")
+                failure?(error.localizedDescription)
+            }
+        }
+    }
+    
 }
 
 // 일일 배차 정보 리스트 Model
@@ -759,5 +804,18 @@ struct DrivingHistoryItem: Codable {
         case departureKM = "departure_km"
         case arrivalKM = "arrival_km"
         case passengerNum = "passenger_num"
+    }
+}
+
+// MARK: 일일 점검 Model
+struct DailyInspection: Codable {
+    let data: DailyInspectionItem
+}
+
+struct DailyInspectionItem: Codable {
+    let submitCheck: Bool
+    
+    enum CodingKeys: String, CodingKey {
+        case submitCheck = "submit_check"
     }
 }
