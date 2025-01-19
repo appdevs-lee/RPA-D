@@ -99,7 +99,7 @@ extension CustomizedTabBarController {
         default:
             // Set ViewControllers in Tabbar
             let managerMainVC = ManagerMainViewController()
-            let mainVC = MainViewController()
+            let mainVC = RenewalMainViewController()
             let calendarVC = CalendarViewController()
             let officeVC = OfficeViewController()
             let profileVC = ProfileViewController()
