@@ -18,6 +18,33 @@ final class RenewalMainViewController: UIViewController {
         return scrollView
     }()
     
+    lazy var todayDateLabel: UILabel = {
+        let label = UILabel()
+        label.isHidden = true
+        label.text = SupportingMethods.shared.convertDate(intoString: Date(), "yyyy.MM.dd.EEE요일")
+        label.textColor = .useRGB(red: 46, green: 45, blue: 45)
+        label.font = .useFont(ofSize: 15, weight: .Bold)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        return label
+    }()
+    
+    lazy var scheduleTableView: UITableView = {
+        let tableView = UITableView()
+        tableView.isHidden = true
+        tableView.backgroundColor = .useRGB(red: 248, green: 248, blue: 248)
+        tableView.bounces = false
+        tableView.showsVerticalScrollIndicator = false
+        tableView.register(ScheduleTableViewCell.self, forCellReuseIdentifier: "ScheduleTableViewCell")
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.sectionHeaderTopPadding = 0
+        tableView.separatorStyle = .none
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        
+        return tableView
+    }()
+    
     lazy var baseView: UIView = {
         let view = UIView()
         view.backgroundColor = .useRGB(red: 248, green: 248, blue: 248)
@@ -244,6 +271,8 @@ final class RenewalMainViewController: UIViewController {
     var isLeftDispatchCheck: Bool = false
     var inspectionCheck: Bool = false
     
+    var dispatchList: [RoutineDispatch?] = []
+    
     var dispatchNoteViewBottomAnchorConstraint: NSLayoutConstraint!
     
     init() {
@@ -331,6 +360,8 @@ extension RenewalMainViewController: EssentialViewMethods {
         SupportingMethods.shared.addSubviews([
             self.mainOptionView,
             self.scrollView,
+            self.todayDateLabel,
+            self.scheduleTableView,
             self.backgroundView,
             self.dispatchNoteView,
         ], to: self.view)
@@ -416,6 +447,20 @@ extension RenewalMainViewController: EssentialViewMethods {
             self.dispatchNoteView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
             self.dispatchNoteView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
             self.dispatchNoteViewBottomAnchorConstraint,
+        ])
+        
+        // todayDateLabel
+        NSLayoutConstraint.activate([
+            self.todayDateLabel.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 20),
+            self.todayDateLabel.topAnchor.constraint(equalTo: self.mainOptionView.bottomAnchor, constant: 25),
+        ])
+        
+        // scheduleTableView
+        NSLayoutConstraint.activate([
+            self.scheduleTableView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
+            self.scheduleTableView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
+            self.scheduleTableView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor),
+            self.scheduleTableView.topAnchor.constraint(equalTo: self.todayDateLabel.bottomAnchor),
         ])
         
         // scrollView
@@ -587,6 +632,7 @@ extension RenewalMainViewController: EssentialViewMethods {
                         self.noRoutineDataBaseView.isHidden = true
                         
                         self.goToWorkData = item.goToWork
+                        self.dispatchList = item.tasks
                         self.getOffWorkData = item.getOffWork
                         
                         self.loadVehicleCheckDataRequest { submitCheck in
@@ -594,7 +640,11 @@ extension RenewalMainViewController: EssentialViewMethods {
                             
                         }
                         
-                        SupportingMethods.shared.turnCoverView(.off)
+                        DispatchQueue.main.async {
+                            self.scheduleTableView.reloadData()
+                            SupportingMethods.shared.turnCoverView(.off)
+                            
+                        }
                         
                     }
                     
@@ -723,7 +773,14 @@ extension RenewalMainViewController {
         
         let rate = Double(sumCount) / Double((routine.tasks.count * 5 + 5))
         self.taskRateValueButton.setTitle("\(Int(rate * 100))%", for: .normal)
-        self.taskRateTitleLabel.text = "업무 완료까지 \(100 - Int(rate * 100))% 남았어요."
+        if Int(rate * 100) == 100 {
+            self.taskRateTitleLabel.text = "오늘의 업무가 완료되었습니다."
+            
+        } else {
+            self.taskRateTitleLabel.text = "업무 완료까지 \(100 - Int(rate * 100))% 남았어요."
+            
+        }
+        
         self.progressView.setProgress(Float(rate), animated: true)
         self.progressValueViewLeadingAnchorConstraint.constant = (ReferenceValues.Size.Device.width - 88) * CGFloat(self.progressView.progress)
     }
@@ -894,6 +951,9 @@ extension RenewalMainViewController {
         self.scheduleButton.backgroundColor = .clear
         self.scheduleButton.setTitleColor(.useRGB(red: 148, green: 147, blue: 147), for: .normal)
         
+        self.scrollView.isHidden = false
+        self.todayDateLabel.isHidden = true
+        self.scheduleTableView.isHidden = true
     }
     
     @objc func scheduleButton(_ sender: UIButton) {
@@ -902,6 +962,10 @@ extension RenewalMainViewController {
         
         self.todolistButton.backgroundColor = .clear
         self.todolistButton.setTitleColor(.useRGB(red: 148, green: 147, blue: 147), for: .normal)
+        
+        self.scrollView.isHidden = true
+        self.todayDateLabel.isHidden = false
+        self.scheduleTableView.isHidden = false
         
     }
     
@@ -1137,6 +1201,38 @@ extension RenewalMainViewController {
     }
     
 }
+
+// MARK: - Extension for UITableViewDelegate, UITableViewDataSource
+extension RenewalMainViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.dispatchList.count
+        
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ScheduleTableViewCell", for: indexPath) as! ScheduleTableViewCell
+        let dispatch = self.dispatchList[indexPath.row]
+        
+        cell.setCell(dispatch: dispatch, currentDispatchId: self.routine?.info.dispatchId)
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let dispatch = self.dispatchList[indexPath.row]
+        
+        guard let dispatch = dispatch else { return }
+        self.loadDispatchDailyDetailRequest(id: dispatch.dispatchId!, workType: dispatch.workType) { detailItem in
+            let vc = DispatchDetailViewController(item: detailItem, departureDate: dispatch.departureDate)
+            
+            self.navigationController?.pushViewController(vc, animated: true)
+            
+        }
+        
+    }
+    
+}
+
 
 // MARK: - Extension for UIGestureRecognizerDelegate
 extension RenewalMainViewController: UIGestureRecognizerDelegate {

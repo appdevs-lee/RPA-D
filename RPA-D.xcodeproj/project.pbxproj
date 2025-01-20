@@ -44,6 +44,7 @@
 		05DB9A8E2CE448F600742317 /* KindsOfDocumentCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DB9A8D2CE448F600742317 /* KindsOfDocumentCollectionViewCell.swift */; };
 		05DB9A902CE4499900742317 /* DispatchDocumentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DB9A8F2CE4499900742317 /* DispatchDocumentTableViewCell.swift */; };
 		2D41BEAC2D3BD87200C4D6E8 /* RenewalMainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D41BEAB2D3BD87200C4D6E8 /* RenewalMainViewController.swift */; };
+		2D41BEAE2D3E86C700C4D6E8 /* ScheduleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D41BEAD2D3E86C700C4D6E8 /* ScheduleTableViewCell.swift */; };
 		2D7C5BCF2D049D3400C381CE /* DispatchCheckListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7C5BCE2D049D3400C381CE /* DispatchCheckListViewController.swift */; };
 		2D7C5BD12D04BF4700C381CE /* RefusalReasonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7C5BD02D04BF4700C381CE /* RefusalReasonViewController.swift */; };
 		2D7C5BD32D04CDEA00C381CE /* RefusalSubmitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7C5BD22D04CDEA00C381CE /* RefusalSubmitViewController.swift */; };
@@ -140,6 +141,7 @@
 		05DB9A8D2CE448F600742317 /* KindsOfDocumentCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KindsOfDocumentCollectionViewCell.swift; sourceTree = "<group>"; };
 		05DB9A8F2CE4499900742317 /* DispatchDocumentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchDocumentTableViewCell.swift; sourceTree = "<group>"; };
 		2D41BEAB2D3BD87200C4D6E8 /* RenewalMainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenewalMainViewController.swift; sourceTree = "<group>"; };
+		2D41BEAD2D3E86C700C4D6E8 /* ScheduleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleTableViewCell.swift; sourceTree = "<group>"; };
 		2D7C5BCE2D049D3400C381CE /* DispatchCheckListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchCheckListViewController.swift; sourceTree = "<group>"; };
 		2D7C5BD02D04BF4700C381CE /* RefusalReasonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefusalReasonViewController.swift; sourceTree = "<group>"; };
 		2D7C5BD22D04CDEA00C381CE /* RefusalSubmitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefusalSubmitViewController.swift; sourceTree = "<group>"; };
@@ -291,6 +293,7 @@
 			isa = PBXGroup;
 			children = (
 				2D41BEAB2D3BD87200C4D6E8 /* RenewalMainViewController.swift */,
+				2D41BEAD2D3E86C700C4D6E8 /* ScheduleTableViewCell.swift */,
 			);
 			path = Renewal;
 			sourceTree = "<group>";
@@ -657,6 +660,7 @@
 				2DE005642CE248F4004DE761 /* MainViewController.swift in Sources */,
 				2D904F342CE0D8E1005CF538 /* LoginModel.swift in Sources */,
 				2D904F272CE0B326005CF538 /* SupportingMethods.swift in Sources */,
+				2D41BEAE2D3E86C700C4D6E8 /* ScheduleTableViewCell.swift in Sources */,
 				2DD46E4E2D10FC88006E6855 /* RouteDetailViewController.swift in Sources */,
 				05763DBE2D0951DA00385325 /* RouteModel.swift in Sources */,
 				2DD46E472D104A7F006E6855 /* RouteSearchViewController.swift in Sources */,

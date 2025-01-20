@@ -535,6 +535,23 @@ extension DispatchDetailViewController {
         
         self.mapView.addAnnotations(annotations)
         
+        if !self.isRunning {
+            guard annotations.count > 1 else { return }
+                   
+            var zoomRect: MKMapRect = MKMapRect.null
+            let padding: CGFloat = 50
+
+            for annotation in annotations {
+                let point = MKMapPoint(annotation.coordinate)
+                let rect = MKMapRect(x: point.x, y: point.y, width: 0.1, height: 0.1)
+                    
+                zoomRect = zoomRect.isNull ? rect : zoomRect.union(rect)
+            }
+                   
+            self.mapView.setVisibleMapRect(zoomRect, edgePadding: UIEdgeInsets(top: padding, left: padding, bottom: padding + 150, right: padding), animated: true)
+            
+        }
+        
     }
     
     func reloadData() {
