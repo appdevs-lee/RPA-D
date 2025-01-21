@@ -255,11 +255,6 @@ extension StatusView {
         
     }
     
-    // FIXME: 삭제
-    func setTempData() {
-        
-    }
-    
 }
 
 // MARK: - Extension for methods added

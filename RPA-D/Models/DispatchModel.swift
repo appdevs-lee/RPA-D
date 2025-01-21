@@ -574,18 +574,91 @@ final class DispatchModel {
             "Authorization": ReferenceValues.accessToken
         ]
         
+//        let parameters: Parameters = [
+//            "bus_id": "\(busId)",
+//            "oil_engine_condition": inspectionList[0].status! ? "양호" : "이상",
+//            "oil_power_clutch_condition": inspectionList[1].status! ? "양호" : "이상",
+//            "coolant_washer_condition": inspectionList[2].status! ? "양호" : "이상",
+//            "external_body_condition": inspectionList[3].status! ? "양호" : "이상",
+//            "lighting_device_condition": inspectionList[4].status! ? "양호" : "이상",
+//            "blackbox_condition": inspectionList[5].status! ? "양호" : "이상",
+//            "tire_condition": inspectionList[6].status! ? "양호" : "이상",
+//            "interior_condition": inspectionList[7].status! ? "양호" : "이상",
+//            "safety_belt_slide_condition": inspectionList[8].status! ? "양호" : "이상",
+//            "uniform_worn_condition": inspectionList[9].status! ? "양호" : "이상",
+//        ]
+        
         let parameters: Parameters = [
             "bus_id": "\(busId)",
-            "oil_engine_condition": inspectionList[0].status! ? "양호" : "이상",
-            "oil_power_clutch_condition": inspectionList[1].status! ? "양호" : "이상",
-            "coolant_washer_condition": inspectionList[2].status! ? "양호" : "이상",
-            "external_body_condition": inspectionList[3].status! ? "양호" : "이상",
-            "lighting_device_condition": inspectionList[4].status! ? "양호" : "이상",
-            "blackbox_condition": inspectionList[5].status! ? "양호" : "이상",
-            "tire_condition": inspectionList[6].status! ? "양호" : "이상",
-            "interior_condition": inspectionList[7].status! ? "양호" : "이상",
-            "safety_belt_slide_condition": inspectionList[8].status! ? "양호" : "이상",
-            "uniform_worn_condition": inspectionList[9].status! ? "양호" : "이상",
+            "bus_condition_inside": inspectionList[0].status! ? "양호" : "이상",
+            "bus_condition_outside": inspectionList[1].status! ? "양호" : "이상",
+            "oil_power_clutch_condition": inspectionList[2].status! ? "양호" : "이상",
+            "coolant_washer_condition": inspectionList[3].status! ? "양호" : "이상",
+            "urea_solution_condition": inspectionList[4].status! ? "양호" : "이상",
+            "fan_belt_condition": inspectionList[5].status! ? "양호" : "이상",
+            "main_light": inspectionList[6].status! ? "양호" : "이상",
+            "turn_signal_light": inspectionList[7].status! ? "양호" : "이상",
+            "back_light_brake": inspectionList[8].status! ? "양호" : "이상",
+            "get_on_door": inspectionList[9].status! ? "양호" : "이상",
+            "get_off_door": inspectionList[9].status! ? "양호" : "이상",
+            "overall_height": inspectionList[9].status! ? "양호" : "이상",
+            "front_tire": inspectionList[9].status! ? "양호" : "이상",
+            "back_tire": inspectionList[9].status! ? "양호" : "이상",
+        ]
+        
+        self.sendVehicleCheckDataRequest = AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
+        
+        self.sendVehicleCheckDataRequest?.responseData { (response) in
+            switch response.result {
+            case .success(_):
+                guard let statusCode = response.response?.statusCode else {
+                    print("sendVehicleCheckDataRequest failure: statusCode nil")
+                    failure?("statusCodeNil")
+                    
+                    return
+                }
+                
+                guard statusCode >= 200 && statusCode < 300 else {
+                    print("sendVehicleCheckDataRequest failure: statusCode(\(statusCode))")
+                    failure?("statusCodeError")
+                    
+                    return
+                }
+                
+                print("sendVehicleCheckDataRequest succeeded")
+                success?()
+                
+            case .failure(let error):
+                print("sendVehicleCheckDataRequest error: \(error.localizedDescription)")
+                failure?(error.localizedDescription)
+            }
+        }
+    }
+    
+    func sendVehicleCheckDataRequest(busId: Int, inspectionList: [VehicleInspection], success: (() -> ())?, failure: ((_ message: String) -> ())?) {
+        let url = ServerSetting.server.URL + "/vehicle/checklist/daily/\(SupportingMethods.shared.convertDate(intoString: Date()))"
+        
+        let headers: HTTPHeaders = [
+            "accept": "application/json",
+            "Authorization": ReferenceValues.accessToken
+        ]
+        
+        let parameters: Parameters = [
+            "bus_id": busId,
+            "bus_condition_inside": inspectionList[0].contents[0].status! ? "양호" : "이상", // 내부
+            "bus_condition_outside": inspectionList[0].contents[1].status! ? "양호" : "이상", // 외부
+            "oil_power_clutch_condition": inspectionList[1].contents[0].status! ? "양호" : "이상", // 엔진오일 점검
+            "coolant_washer_condition": inspectionList[2].contents[0].status! ? "양호" : "이상", // 냉각수 점검
+            "urea_solution_condition": inspectionList[3].contents[0].status! ? "양호" : "이상", // 요소수 점검
+            "fan_belt_condition": inspectionList[4].contents[0].status! ? "양호" : "이상", // 팬 벨트
+            "main_light": inspectionList[5].contents[0].status! ? "양호" : "이상", // 라이트(좌, 우)
+            "turn_signal_light": inspectionList[5].contents[1].status! ? "양호" : "이상", // 방향지시등 (좌, 우)
+            "back_light_brake": inspectionList[5].contents[2].status! ? "양호" : "이상", // 후미등 및 브레이크
+            "get_on_door": inspectionList[6].contents[0].status! ? "양호" : "이상", // 전문 (승차문)
+            "get_off_door": inspectionList[6].contents[1].status! ? "양호" : "이상", // 중문 (하차문)
+            "overall_height": inspectionList[6].contents[2].status! ? "양호" : "이상", // 차고
+            "front_tire": inspectionList[7].contents[0].status! ? "양호" : "이상", // 앞바퀴 (상 중 하)
+            "back_tire": inspectionList[7].contents[1].status! ? "양호" : "이상", // 뒷바퀴 (상 중 하)
         ]
         
         self.sendVehicleCheckDataRequest = AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)

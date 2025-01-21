@@ -252,6 +252,7 @@ extension DailyInspectionTableViewCell {
             self.badButton.setTitleColor(.useRGB(red: 148, green: 147, blue: 147), for: .normal)
             return
         }
+        
         if status {
             // 양호 선택
             self.goodButton.backgroundColor = .useRGB(red: 223, green: 52, blue: 52)

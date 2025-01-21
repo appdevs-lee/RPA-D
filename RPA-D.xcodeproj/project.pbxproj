@@ -45,6 +45,8 @@
 		05DB9A902CE4499900742317 /* DispatchDocumentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DB9A8F2CE4499900742317 /* DispatchDocumentTableViewCell.swift */; };
 		2D41BEAC2D3BD87200C4D6E8 /* RenewalMainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D41BEAB2D3BD87200C4D6E8 /* RenewalMainViewController.swift */; };
 		2D41BEAE2D3E86C700C4D6E8 /* ScheduleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D41BEAD2D3E86C700C4D6E8 /* ScheduleTableViewCell.swift */; };
+		2D41BEB02D3F8A2B00C4D6E8 /* RenewalDailyInspectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D41BEAF2D3F8A2B00C4D6E8 /* RenewalDailyInspectionTableViewCell.swift */; };
+		2D41BEB22D3F8A3800C4D6E8 /* RenewalDailyInspectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D41BEB12D3F8A3800C4D6E8 /* RenewalDailyInspectionViewController.swift */; };
 		2D7C5BCF2D049D3400C381CE /* DispatchCheckListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7C5BCE2D049D3400C381CE /* DispatchCheckListViewController.swift */; };
 		2D7C5BD12D04BF4700C381CE /* RefusalReasonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7C5BD02D04BF4700C381CE /* RefusalReasonViewController.swift */; };
 		2D7C5BD32D04CDEA00C381CE /* RefusalSubmitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7C5BD22D04CDEA00C381CE /* RefusalSubmitViewController.swift */; };
@@ -142,6 +144,8 @@
 		05DB9A8F2CE4499900742317 /* DispatchDocumentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchDocumentTableViewCell.swift; sourceTree = "<group>"; };
 		2D41BEAB2D3BD87200C4D6E8 /* RenewalMainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenewalMainViewController.swift; sourceTree = "<group>"; };
 		2D41BEAD2D3E86C700C4D6E8 /* ScheduleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleTableViewCell.swift; sourceTree = "<group>"; };
+		2D41BEAF2D3F8A2B00C4D6E8 /* RenewalDailyInspectionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenewalDailyInspectionTableViewCell.swift; sourceTree = "<group>"; };
+		2D41BEB12D3F8A3800C4D6E8 /* RenewalDailyInspectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenewalDailyInspectionViewController.swift; sourceTree = "<group>"; };
 		2D7C5BCE2D049D3400C381CE /* DispatchCheckListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchCheckListViewController.swift; sourceTree = "<group>"; };
 		2D7C5BD02D04BF4700C381CE /* RefusalReasonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefusalReasonViewController.swift; sourceTree = "<group>"; };
 		2D7C5BD22D04CDEA00C381CE /* RefusalSubmitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefusalSubmitViewController.swift; sourceTree = "<group>"; };
@@ -294,6 +298,8 @@
 			children = (
 				2D41BEAB2D3BD87200C4D6E8 /* RenewalMainViewController.swift */,
 				2D41BEAD2D3E86C700C4D6E8 /* ScheduleTableViewCell.swift */,
+				2D41BEB12D3F8A3800C4D6E8 /* RenewalDailyInspectionViewController.swift */,
+				2D41BEAF2D3F8A2B00C4D6E8 /* RenewalDailyInspectionTableViewCell.swift */,
 			);
 			path = Renewal;
 			sourceTree = "<group>";
@@ -670,6 +676,7 @@
 				2D904F282CE0B326005CF538 /* ServerSetting.swift in Sources */,
 				2DDE3CB02CFAEDE70024A799 /* BottomSheetView.swift in Sources */,
 				058280632D0035D000898A4A /* MorningRollCallTableViewCell.swift in Sources */,
+				2D41BEB02D3F8A2B00C4D6E8 /* RenewalDailyInspectionTableViewCell.swift in Sources */,
 				05A227402CEC225C00C07662 /* WorkRateTableViewCell.swift in Sources */,
 				2DE0056A2CE2492E004DE761 /* ProfileViewController.swift in Sources */,
 				2D7C5BD32D04CDEA00C381CE /* RefusalSubmitViewController.swift in Sources */,
@@ -711,6 +718,7 @@
 				05DB9A8E2CE448F600742317 /* KindsOfDocumentCollectionViewCell.swift in Sources */,
 				2D904EF82CE0B04A005CF538 /* SceneDelegate.swift in Sources */,
 				2DD46E3F2D0FFA48006E6855 /* NoticeViewController.swift in Sources */,
+				2D41BEB22D3F8A3800C4D6E8 /* RenewalDailyInspectionViewController.swift in Sources */,
 				05DA9BE92CF6AD800024CADE /* DispatchDetailViewController.swift in Sources */,
 				2DD46E432D10397C006E6855 /* NoticeModel.swift in Sources */,
 				05A227422CEC228700C07662 /* GoToWorkTableViewCell.swift in Sources */,
