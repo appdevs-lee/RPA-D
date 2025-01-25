@@ -307,11 +307,6 @@ final class RenewalMainViewController: UIViewController {
         self.setLayouts()
         self.setUpNavigationItem()
         self.setData()
-        
-        let vc = RenewalDailyInspectionViewController(busId: 119, busNum: "5004")
-        
-        self.present(vc, animated: true)
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
