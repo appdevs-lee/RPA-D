@@ -96,6 +96,9 @@
 		2DD46E562D11458D006E6855 /* ProblemDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD46E552D11458D006E6855 /* ProblemDetailViewController.swift */; };
 		2DD46E592D11464C006E6855 /* ProblemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD46E582D11464C006E6855 /* ProblemDetailView.swift */; };
 		2DD46E5B2D114678006E6855 /* ProblemBasicInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD46E5A2D114678006E6855 /* ProblemBasicInfoTableViewCell.swift */; };
+		2DD6D1702D46401D00B16C86 /* RenewalProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD6D16F2D46401D00B16C86 /* RenewalProfileViewController.swift */; };
+		2DD6D1722D46586D00B16C86 /* ProfileTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD6D1712D46586D00B16C86 /* ProfileTableViewCell.swift */; };
+		2DD6D1742D465CE900B16C86 /* ProfileDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD6D1732D465CE900B16C86 /* ProfileDetailViewController.swift */; };
 		2DDE3CB02CFAEDE70024A799 /* BottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDE3CAF2CFAEDE70024A799 /* BottomSheetView.swift */; };
 		2DE005642CE248F4004DE761 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE005632CE248F4004DE761 /* MainViewController.swift */; };
 		2DE005662CE2490C004DE761 /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE005652CE2490C004DE761 /* CalendarViewController.swift */; };
@@ -198,6 +201,9 @@
 		2DD46E552D11458D006E6855 /* ProblemDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProblemDetailViewController.swift; sourceTree = "<group>"; };
 		2DD46E582D11464C006E6855 /* ProblemDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProblemDetailView.swift; sourceTree = "<group>"; };
 		2DD46E5A2D114678006E6855 /* ProblemBasicInfoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProblemBasicInfoTableViewCell.swift; sourceTree = "<group>"; };
+		2DD6D16F2D46401D00B16C86 /* RenewalProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenewalProfileViewController.swift; sourceTree = "<group>"; };
+		2DD6D1712D46586D00B16C86 /* ProfileTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTableViewCell.swift; sourceTree = "<group>"; };
+		2DD6D1732D465CE900B16C86 /* ProfileDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileDetailViewController.swift; sourceTree = "<group>"; };
 		2DDE3CAF2CFAEDE70024A799 /* BottomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetView.swift; sourceTree = "<group>"; };
 		2DE005632CE248F4004DE761 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		2DE005652CE2490C004DE761 /* CalendarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewController.swift; sourceTree = "<group>"; };
@@ -467,6 +473,15 @@
 			path = CustomView;
 			sourceTree = "<group>";
 		};
+		2DD6D16E2D46401100B16C86 /* Renewal */ = {
+			isa = PBXGroup;
+			children = (
+				2DD6D16F2D46401D00B16C86 /* RenewalProfileViewController.swift */,
+				2DD6D1712D46586D00B16C86 /* ProfileTableViewCell.swift */,
+			);
+			path = Renewal;
+			sourceTree = "<group>";
+		};
 		2DE0055F2CE248B8004DE761 /* Main */ = {
 			isa = PBXGroup;
 			children = (
@@ -501,7 +516,9 @@
 		2DE005622CE248CD004DE761 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				2DD6D16E2D46401100B16C86 /* Renewal */,
 				2DE005692CE2492E004DE761 /* ProfileViewController.swift */,
+				2DD6D1732D465CE900B16C86 /* ProfileDetailViewController.swift */,
 				2D7C5BE02D0896EA00C381CE /* Card */,
 				05763DC12D096B1D00385325 /* Salary */,
 			);
@@ -655,10 +672,12 @@
 				05763DC32D096B2B00385325 /* SalaryViewController.swift in Sources */,
 				2D7C5BD12D04BF4700C381CE /* RefusalReasonViewController.swift in Sources */,
 				2DE005682CE2491C004DE761 /* OfficeViewController.swift in Sources */,
+				2DD6D1722D46586D00B16C86 /* ProfileTableViewCell.swift in Sources */,
 				2D7C5BE52D08A7C100C381CE /* RouteViewController.swift in Sources */,
 				2DE005662CE2490C004DE761 /* CalendarViewController.swift in Sources */,
 				2DD46E562D11458D006E6855 /* ProblemDetailViewController.swift in Sources */,
 				2DC362C62CFF58A900859D1D /* DispatchNoteView.swift in Sources */,
+				2DD6D1702D46401D00B16C86 /* RenewalProfileViewController.swift in Sources */,
 				05DB9A902CE4499900742317 /* DispatchDocumentTableViewCell.swift in Sources */,
 				2D904F182CE0B2DF005CF538 /* CustomizedNavigationController.swift in Sources */,
 				057C6D9B2CFEE5E80019FA3E /* DispatchDetailView.swift in Sources */,
@@ -727,6 +746,7 @@
 				059082752CE6D2A500E4D204 /* DispatchModel.swift in Sources */,
 				2D904F1E2CE0B2EC005CF538 /* TemplateHeaderFooterView.swift in Sources */,
 				2DD46E452D103DCF006E6855 /* NoticeDetailViewController.swift in Sources */,
+				2DD6D1742D465CE900B16C86 /* ProfileDetailViewController.swift in Sources */,
 				05763DC62D09731100385325 /* PhoneBookListViewController.swift in Sources */,
 				2DD46E502D110157006E6855 /* RouteDetailView.swift in Sources */,
 				05763DBA2D08293300385325 /* NotificationTableViewCell.swift in Sources */,
@@ -887,7 +907,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "RPA-D/RPA-D.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = 3C347T67DV;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "RPA-D/Info.plist";
@@ -925,7 +945,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "RPA-D/RPA-D.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = 3C347T67DV;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "RPA-D/Info.plist";

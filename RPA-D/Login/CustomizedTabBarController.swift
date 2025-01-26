@@ -69,7 +69,7 @@ extension CustomizedTabBarController {
 //            let mainVC = MainViewController()
             let calendarVC = CalendarViewController()
             let officeVC = OfficeViewController()
-            let profileVC = ProfileViewController()
+            let profileVC = RenewalProfileViewController()
             
             self.viewControllers = [
                 self.createTabBarItem(tabBarTitle: "운행", tabBarImage: "Main", selectedImage: "selectedMain", viewController: mainVC),
@@ -85,7 +85,7 @@ extension CustomizedTabBarController {
             let managerMainVC = ManagerMainViewController()
             let calendarVC = CalendarViewController()
             let officeVC = OfficeViewController()
-            let profileVC = ProfileViewController()
+            let profileVC = RenewalProfileViewController()
             
             self.viewControllers = [
                 self.createTabBarItem(tabBarTitle: "운행", tabBarImage: "Main", selectedImage: "selectedMain", viewController: mainVC),
@@ -102,7 +102,7 @@ extension CustomizedTabBarController {
             let mainVC = RenewalMainViewController()
             let calendarVC = CalendarViewController()
             let officeVC = OfficeViewController()
-            let profileVC = ProfileViewController()
+            let profileVC = RenewalProfileViewController()
             
             self.viewControllers = [
                 self.createTabBarItem(tabBarTitle: "노선", tabBarImage: "ManagerMain", selectedImage: "selectedManagerMain", viewController: managerMainVC),

@@ -345,7 +345,20 @@ extension SupportingMethods {
             exit(0)
             
         case .logout:
-            break
+            ReferenceValues.accessToken = ""
+            ReferenceValues.refreshToken = ""
+            ReferenceValues.firstVC?.splashView.isHidden = false
+            guard let _ = ReferenceValues.firstVC?.presentedViewController as? CustomizedTabBarController else {
+                ReferenceValues.firstVC?.dismiss(animated: true)
+                
+                ReferenceValues.firstVC?.startTimer()
+                
+                return
+            }
+            
+            ReferenceValues.firstVC?.dismiss(animated: false)
+            ReferenceValues.firstVC?.navigationController?.popToRootViewController(animated: false)
+            ReferenceValues.firstVC?.startTimer()
             
         case .networkError:
             ReferenceValues.firstVC?.splashView.isHidden = false
