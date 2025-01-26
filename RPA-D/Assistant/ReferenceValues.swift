@@ -100,7 +100,7 @@ struct ReferenceValues {
         return appMark + " v\(version)(\(build))"
     }
     
-    static let kakaoAuthKey = ""
+    static let kakaoAuthKey = "KakaoAK a9ae68eace6999d4b0d87a0424f20836"
     
     static let expiredConditionMessage: String = "다른 기기에서 로그인 되었습니다."
     

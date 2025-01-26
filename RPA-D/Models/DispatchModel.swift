@@ -7,6 +7,7 @@
 
 import Foundation
 import Alamofire
+import CoreLocation
 
 final class DispatchModel {
     // 일일 배차 정보 리스트
@@ -37,6 +38,9 @@ final class DispatchModel {
     private(set) var sendVehicleCheckDataRequest: DataRequest?
     // 일일 점검 조회
     private(set) var loadVehicleCheckDataRequest: DataRequest?
+    
+    // 카카오 다중 경유지 길찾기 API
+    private(set) var searchDistanceRequest: DataRequest?
     
     func loadDispatchDailyListRequest(date: String, success: (([DispatchDailyItem]) -> ())?, failure: ((_ message: String) -> ())?) {
         let url = ServerSetting.server.URL + "/dispatch/daily/list/\(date)"
@@ -287,7 +291,7 @@ final class DispatchModel {
             "Authorization": ReferenceValues.accessToken
         ]
         
-        var parameters: Parameters = [
+        let parameters: Parameters = [
             "id": id,
             "work_type": workType,
         ]
@@ -733,6 +737,61 @@ final class DispatchModel {
         }
     }
     
+    func searchDistanceRequest(origin: CustomCoordinate, destination: CustomCoordinate, wayPoints: [CustomCoordinate], success: ((DirectionSummary) -> ())?, failure: ((_ message: String) -> ())?) {
+        let url = "https://apis-navi.kakaomobility.com/v1/waypoints/directions"
+        
+        let headers: HTTPHeaders = [
+            "Authorization": ReferenceValues.kakaoAuthKey,
+            "Content-Type": "application/json"
+        ]
+        
+//        let parameters: Parameters = [
+//            "origin": origin,
+//            "destination": destination,
+//            "waypoints": wayPoints
+//        ]
+        
+        let parameters: Parameters = [
+            "origin": ["x": origin.x, "y": origin.y],
+            "destination": ["x": destination.x, "y": destination.y],
+            "waypoints": wayPoints.map { ["x": $0.x, "y": $0.y] },
+        ]
+        
+        self.searchDistanceRequest = AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
+        
+        self.searchDistanceRequest?.responseData { (response) in
+            switch response.result {
+            case .success(let data):
+                guard let statusCode = response.response?.statusCode else {
+                    print("searchDistanceRequest failure: statusCode nil")
+                    failure?("statusCodeNil")
+                    
+                    return
+                }
+                
+                guard statusCode >= 200 && statusCode < 300 else {
+                    print("searchDistanceRequest failure: statusCode(\(statusCode))")
+                    failure?("statusCodeError")
+                    
+                    return
+                }
+                
+                if let decodedData = try? JSONDecoder().decode(Direction.self, from: data) {
+                    print("searchDistanceRequest succeeded")
+                    success?(decodedData.routes[0].summary)
+                    
+                } else {
+                    print("searchDistanceRequest failure: API 성공, Parsing 실패")
+                    failure?("API 성공, Parsing 실패")
+                }
+                
+            case .failure(let error):
+                print("searchDistanceRequest error: \(error.localizedDescription)")
+                failure?(error.localizedDescription)
+            }
+        }
+    }
+    
 }
 
 // 일일 배차 정보 리스트 Model
@@ -892,3 +951,29 @@ struct DailyInspectionItem: Codable {
         case submitCheck = "submit_check"
     }
 }
+
+// MARK: 카카오 다중 경유지 길찾기 Model
+struct CustomCoordinate: Codable {
+    let x: String
+    let y: String
+    
+}
+
+struct Direction: Codable {
+    let transId: String
+    let routes: [DirectionRoutes]
+    
+    enum CodingKeys: String, CodingKey {
+        case transId = "trans_id"
+        case routes
+    }
+}
+
+struct DirectionRoutes: Codable {
+    let summary: DirectionSummary
+}
+
+struct DirectionSummary: Codable {
+    let distance: Int?
+}
+

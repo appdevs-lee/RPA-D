@@ -28,9 +28,15 @@ class DispatchDetailView: UIView {
         return tableView
     }()
     
+    let dispatchModel = DispatchModel()
+    
     var date: String
     var item: DispatchDetailItem
     var stationList: [StationInfo] = []
+    var estimatedDistance: Int = 0
+    var realDistance: Int = 0
+    
+    var isFuture: Bool = false
     
     init(date: String, item: DispatchDetailItem) {
         self.date = date
@@ -41,6 +47,7 @@ class DispatchDetailView: UIView {
         
         self.setSubViews()
         self.setLayouts()
+        self.setData()
     }
     
     required init?(coder: NSCoder) {
@@ -66,10 +73,79 @@ extension DispatchDetailView {
         ])
         
     }
+    
+    func setData() {
+        var locations: [CustomCoordinate] = []
+        for station in self.item.stations {
+            locations.append(CustomCoordinate(x: station.longitude, y: station.latitude))
+            
+        }
+        
+        guard let first = locations.first else { return }
+        guard let last = locations.last else { return }
+        
+        locations.removeFirst()
+        locations.removeLast()
+        
+        SupportingMethods.shared.turnCoverView(.on)
+        self.searchDistanceRequest(origin: first, destination: last, wayPoints: locations) { distance in
+            self.estimatedDistance = distance / 1000
+            
+            let date = SupportingMethods.shared.convertString(intoDate: self.date, "yyyy-MM-dd HH:mm")
+            if SupportingMethods.shared.isEqualOrLaterThanTargetDate(targetDate: date) {
+                print("오늘 혹은 과거")
+                self.isFuture = false
+                self.loadDrivingHistoryRequest { realDistance in
+                    self.realDistance = realDistance
+                    
+                    self.tableView.reloadData()
+                    SupportingMethods.shared.turnCoverView(.off)
+                    
+                }
+                
+            } else {
+                print("미래")
+                self.isFuture = true
+                self.tableView.reloadData()
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+            
+        }
+        
+    }
 }
 
 // MARK: - Extension for methods added
 extension DispatchDetailView {
+    func searchDistanceRequest(origin: CustomCoordinate, destination: CustomCoordinate, wayPoints: [CustomCoordinate], success: ((_ distance: Int) -> ())?) {
+        self.dispatchModel.searchDistanceRequest(origin: origin, destination: destination, wayPoints: wayPoints) { summary in
+            success?(summary.distance ?? 0)
+            
+        } failure: { message in
+            SupportingMethods.shared.checkExpiration {
+                print("searchDistanceRequest API Error: \(message)")
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+        }
+
+    }
+    
+    func loadDrivingHistoryRequest(success: ((_ realDistance: Int) -> ())?) {
+        self.dispatchModel.loadDrivingHistoryRequest(id: self.item.id, workType: self.item.workType) { item in
+            let realDistance = (Double(item.arrivalKM) ?? 0) - (Double(item.departureKM) ?? 0)
+            success?(Int(realDistance))
+            
+        } failure: { message in
+            SupportingMethods.shared.checkExpiration {
+                print("loadDrivingHistoryRequest API Error: \(message)")
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+        }
+
+    }
     
 }
 
@@ -102,7 +178,7 @@ extension DispatchDetailView: UITableViewDelegate, UITableViewDataSource {
         if indexPath.section == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "DispatchDetailIBaseInfoTableViewCell", for: indexPath) as! DispatchDetailIBaseInfoTableViewCell
             
-            cell.setCell(date: self.date, item: self.item)
+            cell.setCell(date: self.date, item: self.item, estimatedDistance: self.estimatedDistance, realDistance: self.realDistance, isFuture: self.isFuture)
             
             return cell
             
@@ -110,7 +186,7 @@ extension DispatchDetailView: UITableViewDelegate, UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: "StationDetailInfoTableViewCell", for: indexPath) as! StationDetailInfoTableViewCell
             let station = self.stationList[indexPath.row]
             
-            cell.setCell(station: station)
+            cell.setCell(station: station, index: indexPath.row, lastIndex: self.stationList.count - 1)
             
             return cell
             

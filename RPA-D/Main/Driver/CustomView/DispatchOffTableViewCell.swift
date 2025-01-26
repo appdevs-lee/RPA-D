@@ -9,7 +9,7 @@ import UIKit
 
 final class DispatchOffTableViewCell: UITableViewCell {
     
-    lazy var titleLabel: UILabel = {
+    lazy var leftTitleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .useRGB(red: 101, green: 100, blue: 100)
         label.font = .useFont(ofSize: 12, weight: .Regular)
@@ -18,10 +18,38 @@ final class DispatchOffTableViewCell: UITableViewCell {
         return label
     }()
     
-    lazy var figureLabel: UILabel = {
+    lazy var leftFigureLabel: UILabel = {
         let label = UILabel()
         label.textColor = .useRGB(red: 46, green: 45, blue: 45)
-        label.font = .useFont(ofSize: 14, weight: .Medium)
+        label.font = .useFont(ofSize: 15, weight: .Medium)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        return label
+    }()
+    
+    lazy var arrowImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = .useCustomImage("note.arrow")
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        
+        return imageView
+    }()
+    
+    lazy var rightTitleLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .useRGB(red: 101, green: 100, blue: 100)
+        label.font = .useFont(ofSize: 12, weight: .Regular)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        return label
+    }()
+    
+    lazy var rightFigureLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .useRGB(red: 46, green: 45, blue: 45)
+        label.font = .useFont(ofSize: 15, weight: .Medium)
         label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
@@ -81,8 +109,11 @@ extension DispatchOffTableViewCell {
     // Set subviews
     func setSubviews() {
         SupportingMethods.shared.addSubviews([
-            self.titleLabel,
-            self.figureLabel,
+            self.leftTitleLabel,
+            self.leftFigureLabel,
+            self.arrowImageView,
+            self.rightTitleLabel,
+            self.rightFigureLabel,
         ], to: self)
     }
     
@@ -90,26 +121,50 @@ extension DispatchOffTableViewCell {
     func setLayouts() {
         //let safeArea = self.safeAreaLayoutGuide
         
-        // titleLabel
+        // leftTitleLabel
         NSLayoutConstraint.activate([
-            self.titleLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 24),
-            self.titleLabel.centerYAnchor.constraint(equalTo: self.figureLabel.centerYAnchor),
+            self.leftTitleLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            self.leftTitleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 10),
         ])
         
-        // figureLabel
+        // leftFigureLabel
         NSLayoutConstraint.activate([
-            self.figureLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -24),
-            self.figureLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 6),
-            self.figureLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -6),
+            self.leftFigureLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            self.leftFigureLabel.topAnchor.constraint(equalTo: self.leftTitleLabel.bottomAnchor, constant: 4),
+            self.leftFigureLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10),
+        ])
+        
+        // arrowImageView
+        NSLayoutConstraint.activate([
+            self.arrowImageView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            self.arrowImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            self.arrowImageView.widthAnchor.constraint(equalToConstant: 12),
+            self.arrowImageView.heightAnchor.constraint(equalToConstant: 10),
+        ])
+        
+        // rightTitleLabel
+        NSLayoutConstraint.activate([
+            self.rightTitleLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            self.rightTitleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 10),
+        ])
+        
+        // rightFigureLabel
+        NSLayoutConstraint.activate([
+            self.rightFigureLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            self.rightFigureLabel.topAnchor.constraint(equalTo: self.rightTitleLabel.bottomAnchor, constant: 4),
+            self.rightFigureLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10),
         ])
     }
 }
 
 // MARK: - Extension for methods added
 extension DispatchOffTableViewCell {
-    func setCell(note: (title: String, figure: String)) {
-        self.titleLabel.text = note.title
-        self.figureLabel.text = note.figure
+    func setCell(note: (leftTitle: String, leftFigure: String, rightTitle: String, rightFigure: String)) {
+        self.leftTitleLabel.text = note.leftTitle
+        self.leftFigureLabel.text = note.leftFigure
+        
+        self.rightTitleLabel.text = note.rightTitle
+        self.rightFigureLabel.text = note.rightFigure
         
     }
     

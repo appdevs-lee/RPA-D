@@ -104,7 +104,7 @@ extension ProblemDetailView: UITableViewDelegate, UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: "StationDetailInfoTableViewCell", for: indexPath) as! StationDetailInfoTableViewCell
             let station = self.stationList[indexPath.row]
             
-            cell.setCell(station: station)
+            cell.setCell(station: station, index: indexPath.row, lastIndex: self.stationList.count - 1)
             
             return cell
             

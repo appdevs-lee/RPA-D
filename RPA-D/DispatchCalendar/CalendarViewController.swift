@@ -875,20 +875,29 @@ extension CalendarViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        switch self.tense {
-        case .past, .today:
-            let item = self.dispatchDailyList[indexPath.row]
-            self.loadDispatchDailyDetailRequest(id: item.id, workType: item.workType) { detailItem in
-                print(item.departureDate)
-                print(detailItem)
-                let vc = DispatchDetailViewController(item: detailItem, departureDate: item.departureDate)
-                
-                self.navigationController?.pushViewController(vc, animated: true)
-                
-            }
+//        switch self.tense {
+//        case .past, .today:
+//            let item = self.dispatchDailyList[indexPath.row]
+//            self.loadDispatchDailyDetailRequest(id: item.id, workType: item.workType) { detailItem in
+//                print(item.departureDate)
+//                print(detailItem)
+//                let vc = DispatchDetailViewController(item: detailItem, departureDate: item.departureDate)
+//                
+//                self.navigationController?.pushViewController(vc, animated: true)
+//                
+//            }
+//            
+//        case .future:
+//            break
+//        }
+        let item = self.dispatchDailyList[indexPath.row]
+        self.loadDispatchDailyDetailRequest(id: item.id, workType: item.workType) { detailItem in
+            print(item.departureDate)
+            print(detailItem)
+            let vc = DispatchDetailViewController(item: detailItem, departureDate: item.departureDate)
             
-        case .future:
-            break
+            self.navigationController?.pushViewController(vc, animated: true)
+            
         }
     }
     

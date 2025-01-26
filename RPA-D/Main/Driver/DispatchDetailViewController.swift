@@ -8,15 +8,23 @@
 import UIKit
 import MapKit
 
+// CustomAnnotation에 이미지 관련 프로퍼티 추가
 class CustomAnnotation: NSObject, MKAnnotation {
     var title: String?
     var subtitle: String?
     @objc dynamic var coordinate: CLLocationCoordinate2D
+    var image: UIImage? // 커스텀 이미지를 위한 프로퍼티
+    var width: Int?
+    var height: Int?
 
-    init(title: String, subtitle: String, coordinate: CLLocationCoordinate2D) {
+    init(title: String, subtitle: String, coordinate: CLLocationCoordinate2D, image: UIImage? = nil, width: Int? = nil, height: Int? = nil) {
         self.title = title
         self.subtitle = subtitle
         self.coordinate = coordinate
+        self.image = image
+        self.width = width
+        self.height = height
+        super.init()
     }
 }
 
@@ -186,7 +194,7 @@ final class DispatchDetailViewController: UIViewController {
     var dispatchNoteViewBottomAnchorConstraint: NSLayoutConstraint!
     var peopleCountViewBottomAnchorConstraint: NSLayoutConstraint!
     
-    let detailBaseHeight: CGFloat = 115
+    let detailBaseHeight: CGFloat = 160
     var detailMaxHeight: CGFloat = 609
     
     let runningBaseHeight: CGFloat = 328
@@ -524,34 +532,73 @@ extension DispatchDetailViewController {
     func setAnnotation() {
         var points: [CLLocationCoordinate2D] = []
         var annotations: [MKAnnotation] = []
+        
+        // 각 정류장마다 어노테이션 생성
         for station in self.item.stations {
-            points.append(CLLocationCoordinate2D(latitude: Double(station.latitude.trimmingCharacters(in: .whitespaces))!, longitude: Double(station.longitude.trimmingCharacters(in: .whitespaces))!))
-            annotations.append(CustomAnnotation(title: station.stationName, subtitle: station.stationType, coordinate: CLLocationCoordinate2D(latitude: Double(station.latitude.trimmingCharacters(in: .whitespaces))!, longitude: Double(station.longitude.trimmingCharacters(in: .whitespaces))!)))
+            let coordinate = CLLocationCoordinate2D(
+                latitude: Double(station.latitude.trimmingCharacters(in: .whitespaces))!,
+                longitude: Double(station.longitude.trimmingCharacters(in: .whitespaces))!
+            )
+            points.append(coordinate)
             
+            // 정류장 타입에 따라 다른 이미지 설정
+            var annotationImage: UIImage!
+            var size: (width: Int, height: Int) = (0, 0)
+            
+            if self.item.stations.first?.id == station.id {
+                annotationImage = UIImage(named: "departure.marker")
+                size = (30, 30)
+                
+            } else if self.item.stations.last?.id == station.id {
+                annotationImage = UIImage(named: "arrival.marker")
+                size = (30, 30)
+                
+            } else {
+                annotationImage = UIImage(named: "station.marker")
+                size = (15, 15)
+                
+            }
+            
+            let annotation = CustomAnnotation(
+                title: station.stationName,
+                subtitle: station.stationType,
+                coordinate: coordinate,
+                image: annotationImage,
+                width: size.width,
+                height: size.height
+            )
+            annotations.append(annotation)
         }
         
-        let lineDraw = MKPolyline(coordinates: points, count:points.count)
+        // 경로선 그리기
+        let lineDraw = MKPolyline(coordinates: points, count: points.count)
         self.mapView.addOverlay(lineDraw)
         
+        // 어노테이션 추가
         self.mapView.addAnnotations(annotations)
         
-        if !self.isRunning {
-            guard annotations.count > 1 else { return }
-                   
-            var zoomRect: MKMapRect = MKMapRect.null
-            let padding: CGFloat = 50
-
-            for annotation in annotations {
-                let point = MKMapPoint(annotation.coordinate)
-                let rect = MKMapRect(x: point.x, y: point.y, width: 0.1, height: 0.1)
-                    
-                zoomRect = zoomRect.isNull ? rect : zoomRect.union(rect)
-            }
-                   
-            self.mapView.setVisibleMapRect(zoomRect, edgePadding: UIEdgeInsets(top: padding, left: padding, bottom: padding + 150, right: padding), animated: true)
-            
+        // 모든 어노테이션이 보이도록 지도 영역 조정
+        if !self.isRunning && annotations.count > 1 {
+            self.adjustMapRegion(for: annotations)
+        }
+    }
+    
+    // 지도 영역 조정을 위한 헬퍼 메서드
+    private func adjustMapRegion(for annotations: [MKAnnotation]) {
+        var zoomRect: MKMapRect = .null
+        let padding: CGFloat = 50
+        
+        for annotation in annotations {
+            let point = MKMapPoint(annotation.coordinate)
+            let rect = MKMapRect(x: point.x, y: point.y, width: 0.1, height: 0.1)
+            zoomRect = zoomRect.isNull ? rect : zoomRect.union(rect)
         }
         
+        self.mapView.setVisibleMapRect(
+            zoomRect,
+            edgePadding: UIEdgeInsets(top: padding, left: padding, bottom: padding + 150, right: padding),
+            animated: true
+        )
     }
     
     func reloadData() {
@@ -882,10 +929,42 @@ extension DispatchDetailViewController: MKMapViewDelegate {
         
         let renderer = MKPolylineRenderer(polyline: polyLine)
         
-        renderer.strokeColor = .red
+        renderer.strokeColor = .useRGB(red: 130, green: 130, blue: 130)
         renderer.lineWidth = 5.0
         renderer.alpha = 1.0
         
         return renderer
     }
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        // 현재 위치 표시는 기본 스타일 사용
+        guard !annotation.isKind(of: MKUserLocation.self) else { return nil }
+        
+        // 커스텀 어노테이션 확인
+        guard let customAnnotation = annotation as? CustomAnnotation else { return nil }
+        
+        // 어노테이션 뷰 재사용을 위한 식별자
+        let identifier = "CustomAnnotation"
+        
+        // 재사용 가능한 어노테이션 뷰가 있는지 확인
+        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+        
+        if annotationView == nil {
+            // 새로운 어노테이션 뷰 생성
+            annotationView = MKAnnotationView(annotation: customAnnotation, reuseIdentifier: identifier)
+            annotationView?.canShowCallout = true // 말풍선 표시 여부
+        } else {
+            annotationView?.annotation = customAnnotation
+        }
+        
+        // 이미지 설정
+        annotationView?.image = customAnnotation.image ?? UIImage(named: "station.marker")
+        
+        // 이미지 크기 조정이 필요한 경우
+        annotationView?.frame.size = CGSize(width: customAnnotation.width ?? 30, height: customAnnotation.height ?? 30)
+        
+        return annotationView
+        
+    }
+    
 }

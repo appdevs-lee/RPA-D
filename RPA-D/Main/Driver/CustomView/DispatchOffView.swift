@@ -66,6 +66,16 @@ class DispatchOffView: UIView {
         return label
     }()
     
+    lazy var dispatchMoreInfoLabel: UILabel = {
+        let label = UILabel()
+        label.text = "\(User.shared.name) | \(self.item.busNum)"
+        label.textColor = .useRGB(red: 148, green: 147, blue: 147)
+        label.font = .useFont(ofSize: 14, weight: .Regular)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        return label
+    }()
+    
     lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.backgroundColor = .clear
@@ -97,11 +107,9 @@ class DispatchOffView: UIView {
     
     let dispatchModel = DispatchModel()
     var item: DispatchDetailItem
-    var noteDataList: [(title: String, figure: String)] = [
-        (title: "이동 거리", figure: ""),
-        (title: "출발 계기판", figure: ""),
-        (title: "도착 계기판", figure: ""),
-        (title: "인원수", figure: ""),
+    var noteDataList: [(leftTitle: String, leftFigure: String, rightTitle: String, rightFigure: String)] = [
+        (leftTitle: "출발 계기판", leftFigure: "", rightTitle: "도착 계기판", rightFigure: ""),
+        (leftTitle: "예상 운행거리", leftFigure: "", rightTitle: "실제 운행거리", rightFigure: "")
     ]
     
     init(item: DispatchDetailItem) {
@@ -135,6 +143,7 @@ extension DispatchOffView {
         
         SupportingMethods.shared.addSubviews([
             self.dispatchNoteTitleLabel,
+            self.dispatchMoreInfoLabel,
             self.tableView,
         ], to: self.dispatchNoteBaseView)
     }
@@ -177,16 +186,22 @@ extension DispatchOffView {
         
         // dispatchNoteTitleLabel
         NSLayoutConstraint.activate([
-            self.dispatchNoteTitleLabel.leadingAnchor.constraint(equalTo: self.dispatchNoteBaseView.leadingAnchor, constant: 24),
+            self.dispatchNoteTitleLabel.leadingAnchor.constraint(equalTo: self.dispatchNoteBaseView.leadingAnchor, constant: 20),
             self.dispatchNoteTitleLabel.topAnchor.constraint(equalTo: self.dispatchNoteBaseView.topAnchor, constant: 20),
+        ])
+        
+        // dispatchMoreInfoLabel
+        NSLayoutConstraint.activate([
+            self.dispatchMoreInfoLabel.trailingAnchor.constraint(equalTo: self.dispatchNoteBaseView.trailingAnchor, constant: -20),
+            self.dispatchMoreInfoLabel.centerYAnchor.constraint(equalTo: self.dispatchNoteTitleLabel.centerYAnchor),
         ])
         
         // tableView
         NSLayoutConstraint.activate([
-            self.tableView.leadingAnchor.constraint(equalTo: self.dispatchNoteBaseView.leadingAnchor, constant: 24),
-            self.tableView.trailingAnchor.constraint(equalTo: self.dispatchNoteBaseView.trailingAnchor, constant: -24),
-            self.tableView.topAnchor.constraint(equalTo: self.dispatchNoteTitleLabel.bottomAnchor, constant: 14),
-            self.tableView.bottomAnchor.constraint(equalTo: self.dispatchNoteBaseView.bottomAnchor, constant: -14),
+            self.tableView.leadingAnchor.constraint(equalTo: self.dispatchNoteBaseView.leadingAnchor, constant: 20),
+            self.tableView.trailingAnchor.constraint(equalTo: self.dispatchNoteBaseView.trailingAnchor, constant: -20),
+            self.tableView.topAnchor.constraint(equalTo: self.dispatchNoteTitleLabel.bottomAnchor, constant: 10),
+            self.tableView.bottomAnchor.constraint(equalTo: self.dispatchNoteBaseView.bottomAnchor, constant: -10),
         ])
         
         // dispatchOffButton
@@ -199,17 +214,33 @@ extension DispatchOffView {
     }
     
     func setData(item: DrivingHistoryItem) {
-        self.loadDrivingHistoryRequest { item in
-            if item.arrivalKM != "" {
-                let distance = Int(item.arrivalKM)! - Int(item.departureKM)!
-                self.noteDataList[0].figure = "\(distance.formatterStyle(.decimal)!)KM"
-                self.noteDataList[1].figure = "\(Int(item.departureKM)!.formatterStyle(.decimal)!)"
-                self.noteDataList[2].figure = "\(Int(item.arrivalKM)!.formatterStyle(.decimal)!)"
-                self.noteDataList[3].figure = "\(item.passengerNum)명"
+        var locations: [CustomCoordinate] = []
+        for station in self.item.stations {
+            locations.append(CustomCoordinate(x: station.longitude, y: station.latitude))
+            
+        }
+        
+        guard let first = locations.first else { return }
+        guard let last = locations.last else { return }
+        
+        locations.removeFirst()
+        locations.removeLast()
+        
+        SupportingMethods.shared.turnCoverView(.on)
+        self.searchDistanceRequest(origin: first, destination: last, wayPoints: locations) { distance in
+            self.loadDrivingHistoryRequest { item in
+                if item.arrivalKM != "" {
+                    let realDistance = Int(item.arrivalKM)! - Int(item.departureKM)!
+                    self.noteDataList[0].leftFigure = "\(Int(item.departureKM)!.formatterStyle(.decimal)!)"
+                    self.noteDataList[0].rightFigure = "\(Int(item.arrivalKM)!.formatterStyle(.decimal)!)"
+                    self.noteDataList[1].leftFigure = "\(distance / 1000)KM"
+                    self.noteDataList[1].rightFigure = "\(realDistance)KM"
+                    
+                }
+                
+                self.tableView.reloadData()
                 
             }
-            
-            self.tableView.reloadData()
             
         }
         
@@ -218,6 +249,20 @@ extension DispatchOffView {
 
 // MARK: - Extension for methods added
 extension DispatchOffView {
+    func searchDistanceRequest(origin: CustomCoordinate, destination: CustomCoordinate, wayPoints: [CustomCoordinate], success: ((_ distance: Int) -> ())?) {
+        self.dispatchModel.searchDistanceRequest(origin: origin, destination: destination, wayPoints: wayPoints) { summary in
+            success?(summary.distance ?? 0)
+            
+        } failure: { message in
+            SupportingMethods.shared.checkExpiration {
+                print("searchDistanceRequest API Error: \(message)")
+                SupportingMethods.shared.turnCoverView(.off)
+                
+            }
+        }
+
+    }
+    
     func loadDrivingHistoryRequest(success: ((DrivingHistoryItem) -> ())?) {
         self.dispatchModel.loadDrivingHistoryRequest(id: self.item.id, workType: self.item.workType) { item in
             success?(item)
