@@ -15,6 +15,8 @@ struct ServerSetting {
     enum Server: String {
         case DEV
         
+        case DEV2
+        
         case QA
         
         case RELEASE
@@ -23,6 +25,9 @@ struct ServerSetting {
             switch self {
             case .DEV:
                 return "http://34.121.50.23:8000"
+                
+            case .DEV2:
+                return "http://35.232.200.138:8000"
                 
             case .QA:
                 return ""
